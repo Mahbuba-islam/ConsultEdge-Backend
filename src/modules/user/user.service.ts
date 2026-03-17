@@ -1,9 +1,10 @@
 import status from "http-status";
-import { Role } from "../../../generated/prisma/client"
-import { auth } from "../../../lib/auth";
-import { prisma } from "../../../lib/prisma";
+
 import AppError from "../../errorHelpers/AppError";
 import { IcreateAdmin} from "./userTypes";
+import { prisma } from "../../lib/prisma";
+import { auth } from "../../lib/auth";
+import { Role } from "../../generated/enums";
 
 
 
