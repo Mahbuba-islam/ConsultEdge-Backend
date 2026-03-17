@@ -1,27 +1,16 @@
 //create schedules
 
-import { addHours, addMinutes, format } from "date-fns"
-import { convertDateTime } from "./schdule.utils"
-import { prisma } from "../../../lib/prisma"
-import { ICreateSchedulePayload, IUpdateSchedulePayload } from "./schdules.interface"
-import { IqueryParams } from "../../interfaces/query.interface"
-import { QueryBuilder } from "../../utilis/queryBuilder"
-import { Prisma, Schedule } from "../../../generated/prisma/client"
-import { scheduleFilterableFields, scheduleIncludeConfig, scheduleSearchableFields } from "./schdules.constant"
-import { addHours, addMinutes, format } from "date-fns";
-import { convertDateTime } from "./schdule.utils";
-import { prisma } from "../../../lib/prisma";
-import { ICreateSchedulePayload, IUpdateSchedulePayload } from "./schdules.interface";
-import { IqueryParams } from "../../interfaces/query.interface";
-import { QueryBuilder } from "../../utilis/queryBuilder";
-import { Prisma, Schedule } from "../../../generated/prisma/client";
-import {
-  scheduleFilterableFields,
-  scheduleIncludeConfig,
-  scheduleSearchableFields,
-} from "./schdules.constant";
+
 import AppError from "../../errorHelpers/AppError"
 import status from "http-status"
+import { ICreateSchedulePayload, IUpdateSchedulePayload } from "./schdules.interface";
+import { Prisma, Schedule } from "../../generated/client";
+import { addHours, addMinutes, format } from "date-fns";
+import { convertDateTime } from "./schdule.utils";
+import { prisma } from "../../lib/prisma";
+import { IqueryParams } from "../../interfaces/query.interface";
+import { QueryBuilder } from "../../utilis/queryBuilder";
+import { scheduleFilterableFields, scheduleIncludeConfig, scheduleSearchableFields } from "./schdules.constant";
 
 
 //createSchedules

@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Role } from "@prisma/client";
+
 import { prisma } from "../lib/prisma";
 import { envVars } from "../config/env";
 import { auth } from "../lib/auth";
+import { Role } from "../generated/enums";
 
 
 export const seedSuperAdmin = async()=>{
     try{
     const isSuperAdminExists = await prisma.user.findFirst({
         where:{
-            role:Role.
+            role:Role.SUPER_ADMIN
         }
     })
     if(isSuperAdminExists){

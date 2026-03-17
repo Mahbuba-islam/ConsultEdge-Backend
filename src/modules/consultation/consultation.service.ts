@@ -196,6 +196,7 @@ const bookConsultationWithPayLater = async (
   return result;
 };
 
+
 // INITIATE PAYMENT FOR EXISTING CONSULTATION
 const initiateConsultationPayment = async (
   consultationId: string,
@@ -264,60 +265,55 @@ const initiateConsultationPayment = async (
 
 // CANCEL UNPAID CONSULTATIONS AFTER 30 MINUTES
 const cancelUnpaidConsultations = async () => {
-  const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+  const now = new Date();
 
+  // Consultation start howar 30 min age cutoff
+  const cutoffTime = new Date(now.getTime() + 30 * 60 * 1000);
+
+  // 1. Find consultations that will start within 30 minutes but unpaid
   const unpaidConsultations = await prisma.consultation.findMany({
     where: {
-      createdAt: {
-        lte: thirtyMinutesAgo,
-      },
+      date: { lte: cutoffTime }, // start time is within next 30 minutes
       paymentStatus: PaymentStatus.UNPAID,
       status: ConsultationStatus.PENDING,
     },
-    include: {
-      expertSchedule: true,
+    select: {
+      id: true,
+      expertScheduleId: true,
     },
   });
 
+  if (!unpaidConsultations.length) return;
+
   const consultationIds = unpaidConsultations.map((c) => c.id);
+  const scheduleIds = unpaidConsultations.map((c) => c.expertScheduleId);
 
+  // 2. Cancel them in bulk
   await prisma.$transaction(async (tx) => {
-    if (consultationIds.length) {
-      await tx.consultation.updateMany({
-        where: {
-          id: {
-            in: consultationIds,
-          },
-        },
-        data: {
-          status: ConsultationStatus.CANCELLED,
-        },
-      });
+    // Cancel consultations
+    await tx.consultation.updateMany({
+      where: { id: { in: consultationIds } },
+      data: { status: ConsultationStatus.CANCELLED },
+    });
 
-      await tx.payment.deleteMany({
-        where: {
-          consultationId: {
-            in: consultationIds,
-          },
-        },
-      });
+    // Delete payments
+    await tx.payment.deleteMany({
+      where: { consultationId: { in: consultationIds } },
+    });
 
-      for (const consultation of unpaidConsultations) {
-        if (consultation.expertScheduleId) {
-          await tx.expertSchedule.update({
-            where: {
-              id: consultation.expertScheduleId,
-            },
-            data: {
-              isBooked: false,
-              consultationId: null,
-            },
-          });
-        }
-      }
-    }
+    // Free schedules
+    await tx.expertSchedule.updateMany({
+      where: { id: { in: scheduleIds } },
+      data: {
+        isBooked: false,
+        consultationId: null,
+      },
+    });
   });
 };
+
+
+
 
 export const consultationService = {
   bookConsultation,

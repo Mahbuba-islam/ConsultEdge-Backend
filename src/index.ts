@@ -10,6 +10,7 @@ import { adminRouter } from "./modules/admin/admin.router";
 import { expertScheduleRouter } from "./modules/expertSchdules/expertSchdules.router";
 import { scheduleRoutes } from "./modules/schedules/schedules.router";
 import { userRouter } from "./modules/user/user.router";
+import { consultationRouter } from "./modules/consultation/consultation.router";
 
 
 const router = Router();
@@ -37,6 +38,5 @@ router.use("/admin", adminRouter);
 // Industry / Category
 router.use("/industries", industryRouter);
 router.use("/expert-verification", expertVerificationRouter)
-
 
 export const indexRoutes = router;
