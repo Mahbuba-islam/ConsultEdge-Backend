@@ -28,12 +28,12 @@ export type AggregateExpert = {
 
 export type ExpertAvgAggregateOutputType = {
   experience: number | null
-  price: number | null
+  consultationFee: number | null
 }
 
 export type ExpertSumAggregateOutputType = {
   experience: number | null
-  price: number | null
+  consultationFee: number | null
 }
 
 export type ExpertMinAggregateOutputType = {
@@ -45,7 +45,7 @@ export type ExpertMinAggregateOutputType = {
   bio: string | null
   title: string | null
   experience: number | null
-  price: number | null
+  consultationFee: number | null
   isVerified: boolean | null
   isDeleted: boolean | null
   deletedAt: Date | null
@@ -64,7 +64,7 @@ export type ExpertMaxAggregateOutputType = {
   bio: string | null
   title: string | null
   experience: number | null
-  price: number | null
+  consultationFee: number | null
   isVerified: boolean | null
   isDeleted: boolean | null
   deletedAt: Date | null
@@ -83,7 +83,7 @@ export type ExpertCountAggregateOutputType = {
   bio: number
   title: number
   experience: number
-  price: number
+  consultationFee: number
   isVerified: number
   isDeleted: number
   deletedAt: number
@@ -97,12 +97,12 @@ export type ExpertCountAggregateOutputType = {
 
 export type ExpertAvgAggregateInputType = {
   experience?: true
-  price?: true
+  consultationFee?: true
 }
 
 export type ExpertSumAggregateInputType = {
   experience?: true
-  price?: true
+  consultationFee?: true
 }
 
 export type ExpertMinAggregateInputType = {
@@ -114,7 +114,7 @@ export type ExpertMinAggregateInputType = {
   bio?: true
   title?: true
   experience?: true
-  price?: true
+  consultationFee?: true
   isVerified?: true
   isDeleted?: true
   deletedAt?: true
@@ -133,7 +133,7 @@ export type ExpertMaxAggregateInputType = {
   bio?: true
   title?: true
   experience?: true
-  price?: true
+  consultationFee?: true
   isVerified?: true
   isDeleted?: true
   deletedAt?: true
@@ -152,7 +152,7 @@ export type ExpertCountAggregateInputType = {
   bio?: true
   title?: true
   experience?: true
-  price?: true
+  consultationFee?: true
   isVerified?: true
   isDeleted?: true
   deletedAt?: true
@@ -258,7 +258,7 @@ export type ExpertGroupByOutputType = {
   bio: string | null
   title: string | null
   experience: number
-  price: number
+  consultationFee: number
   isVerified: boolean
   isDeleted: boolean
   deletedAt: Date | null
@@ -300,7 +300,7 @@ export type ExpertWhereInput = {
   bio?: Prisma.StringNullableFilter<"Expert"> | string | null
   title?: Prisma.StringNullableFilter<"Expert"> | string | null
   experience?: Prisma.IntFilter<"Expert"> | number
-  price?: Prisma.IntFilter<"Expert"> | number
+  consultationFee?: Prisma.IntFilter<"Expert"> | number
   isVerified?: Prisma.BoolFilter<"Expert"> | boolean
   isDeleted?: Prisma.BoolFilter<"Expert"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"Expert"> | Date | string | null
@@ -325,7 +325,7 @@ export type ExpertOrderByWithRelationInput = {
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   experience?: Prisma.SortOrder
-  price?: Prisma.SortOrder
+  consultationFee?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -354,7 +354,7 @@ export type ExpertWhereUniqueInput = Prisma.AtLeast<{
   bio?: Prisma.StringNullableFilter<"Expert"> | string | null
   title?: Prisma.StringNullableFilter<"Expert"> | string | null
   experience?: Prisma.IntFilter<"Expert"> | number
-  price?: Prisma.IntFilter<"Expert"> | number
+  consultationFee?: Prisma.IntFilter<"Expert"> | number
   isVerified?: Prisma.BoolFilter<"Expert"> | boolean
   isDeleted?: Prisma.BoolFilter<"Expert"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"Expert"> | Date | string | null
@@ -378,7 +378,7 @@ export type ExpertOrderByWithAggregationInput = {
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   experience?: Prisma.SortOrder
-  price?: Prisma.SortOrder
+  consultationFee?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -405,7 +405,7 @@ export type ExpertScalarWhereWithAggregatesInput = {
   bio?: Prisma.StringNullableWithAggregatesFilter<"Expert"> | string | null
   title?: Prisma.StringNullableWithAggregatesFilter<"Expert"> | string | null
   experience?: Prisma.IntWithAggregatesFilter<"Expert"> | number
-  price?: Prisma.IntWithAggregatesFilter<"Expert"> | number
+  consultationFee?: Prisma.IntWithAggregatesFilter<"Expert"> | number
   isVerified?: Prisma.BoolWithAggregatesFilter<"Expert"> | boolean
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Expert"> | boolean
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Expert"> | Date | string | null
@@ -424,7 +424,7 @@ export type ExpertCreateInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -447,7 +447,7 @@ export type ExpertUncheckedCreateInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -470,7 +470,7 @@ export type ExpertUpdateInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -493,7 +493,7 @@ export type ExpertUncheckedUpdateInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -516,7 +516,7 @@ export type ExpertCreateManyInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -535,7 +535,7 @@ export type ExpertUpdateManyMutationInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -552,7 +552,7 @@ export type ExpertUncheckedUpdateManyInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -576,7 +576,7 @@ export type ExpertCountOrderByAggregateInput = {
   bio?: Prisma.SortOrder
   title?: Prisma.SortOrder
   experience?: Prisma.SortOrder
-  price?: Prisma.SortOrder
+  consultationFee?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -588,7 +588,7 @@ export type ExpertCountOrderByAggregateInput = {
 
 export type ExpertAvgOrderByAggregateInput = {
   experience?: Prisma.SortOrder
-  price?: Prisma.SortOrder
+  consultationFee?: Prisma.SortOrder
 }
 
 export type ExpertMaxOrderByAggregateInput = {
@@ -600,7 +600,7 @@ export type ExpertMaxOrderByAggregateInput = {
   bio?: Prisma.SortOrder
   title?: Prisma.SortOrder
   experience?: Prisma.SortOrder
-  price?: Prisma.SortOrder
+  consultationFee?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -619,7 +619,7 @@ export type ExpertMinOrderByAggregateInput = {
   bio?: Prisma.SortOrder
   title?: Prisma.SortOrder
   experience?: Prisma.SortOrder
-  price?: Prisma.SortOrder
+  consultationFee?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -631,7 +631,7 @@ export type ExpertMinOrderByAggregateInput = {
 
 export type ExpertSumOrderByAggregateInput = {
   experience?: Prisma.SortOrder
-  price?: Prisma.SortOrder
+  consultationFee?: Prisma.SortOrder
 }
 
 export type ExpertScalarRelationFilter = {
@@ -798,7 +798,7 @@ export type ExpertCreateWithoutUserInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -820,7 +820,7 @@ export type ExpertUncheckedCreateWithoutUserInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -858,7 +858,7 @@ export type ExpertUpdateWithoutUserInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -880,7 +880,7 @@ export type ExpertUncheckedUpdateWithoutUserInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -902,7 +902,7 @@ export type ExpertCreateWithoutConsultationsInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -924,7 +924,7 @@ export type ExpertUncheckedCreateWithoutConsultationsInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -962,7 +962,7 @@ export type ExpertUpdateWithoutConsultationsInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -984,7 +984,7 @@ export type ExpertUncheckedUpdateWithoutConsultationsInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1006,7 +1006,7 @@ export type ExpertCreateWithoutSchedulesInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1028,7 +1028,7 @@ export type ExpertUncheckedCreateWithoutSchedulesInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1066,7 +1066,7 @@ export type ExpertUpdateWithoutSchedulesInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1088,7 +1088,7 @@ export type ExpertUncheckedUpdateWithoutSchedulesInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1110,7 +1110,7 @@ export type ExpertCreateWithoutVerificationInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1132,7 +1132,7 @@ export type ExpertUncheckedCreateWithoutVerificationInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1170,7 +1170,7 @@ export type ExpertUpdateWithoutVerificationInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1192,7 +1192,7 @@ export type ExpertUncheckedUpdateWithoutVerificationInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1214,7 +1214,7 @@ export type ExpertCreateWithoutIndustryInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1236,7 +1236,7 @@ export type ExpertUncheckedCreateWithoutIndustryInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1287,7 +1287,7 @@ export type ExpertScalarWhereInput = {
   bio?: Prisma.StringNullableFilter<"Expert"> | string | null
   title?: Prisma.StringNullableFilter<"Expert"> | string | null
   experience?: Prisma.IntFilter<"Expert"> | number
-  price?: Prisma.IntFilter<"Expert"> | number
+  consultationFee?: Prisma.IntFilter<"Expert"> | number
   isVerified?: Prisma.BoolFilter<"Expert"> | boolean
   isDeleted?: Prisma.BoolFilter<"Expert"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"Expert"> | Date | string | null
@@ -1306,7 +1306,7 @@ export type ExpertCreateWithoutTestimonialsInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1328,7 +1328,7 @@ export type ExpertUncheckedCreateWithoutTestimonialsInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1366,7 +1366,7 @@ export type ExpertUpdateWithoutTestimonialsInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1388,7 +1388,7 @@ export type ExpertUncheckedUpdateWithoutTestimonialsInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1410,7 +1410,7 @@ export type ExpertCreateManyIndustryInput = {
   bio?: string | null
   title?: string | null
   experience?: number
-  price: number
+  consultationFee: number
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -1428,7 +1428,7 @@ export type ExpertUpdateWithoutIndustryInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1450,7 +1450,7 @@ export type ExpertUncheckedUpdateWithoutIndustryInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1472,7 +1472,7 @@ export type ExpertUncheckedUpdateManyWithoutIndustryInput = {
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1539,7 +1539,7 @@ export type ExpertSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   bio?: boolean
   title?: boolean
   experience?: boolean
-  price?: boolean
+  consultationFee?: boolean
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
@@ -1565,7 +1565,7 @@ export type ExpertSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   bio?: boolean
   title?: boolean
   experience?: boolean
-  price?: boolean
+  consultationFee?: boolean
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
@@ -1586,7 +1586,7 @@ export type ExpertSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   bio?: boolean
   title?: boolean
   experience?: boolean
-  price?: boolean
+  consultationFee?: boolean
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
@@ -1607,7 +1607,7 @@ export type ExpertSelectScalar = {
   bio?: boolean
   title?: boolean
   experience?: boolean
-  price?: boolean
+  consultationFee?: boolean
   isVerified?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
@@ -1617,7 +1617,7 @@ export type ExpertSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ExpertOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "email" | "profilePhoto" | "phone" | "bio" | "title" | "experience" | "price" | "isVerified" | "isDeleted" | "deletedAt" | "userId" | "industryId" | "createdAt" | "updatedAt", ExtArgs["result"]["expert"]>
+export type ExpertOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "email" | "profilePhoto" | "phone" | "bio" | "title" | "experience" | "consultationFee" | "isVerified" | "isDeleted" | "deletedAt" | "userId" | "industryId" | "createdAt" | "updatedAt", ExtArgs["result"]["expert"]>
 export type ExpertInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   industry?: boolean | Prisma.IndustryDefaultArgs<ExtArgs>
@@ -1655,7 +1655,7 @@ export type $ExpertPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     bio: string | null
     title: string | null
     experience: number
-    price: number
+    consultationFee: number
     isVerified: boolean
     isDeleted: boolean
     deletedAt: Date | null
@@ -2100,7 +2100,7 @@ export interface ExpertFieldRefs {
   readonly bio: Prisma.FieldRef<"Expert", 'String'>
   readonly title: Prisma.FieldRef<"Expert", 'String'>
   readonly experience: Prisma.FieldRef<"Expert", 'Int'>
-  readonly price: Prisma.FieldRef<"Expert", 'Int'>
+  readonly consultationFee: Prisma.FieldRef<"Expert", 'Int'>
   readonly isVerified: Prisma.FieldRef<"Expert", 'Boolean'>
   readonly isDeleted: Prisma.FieldRef<"Expert", 'Boolean'>
   readonly deletedAt: Prisma.FieldRef<"Expert", 'DateTime'>

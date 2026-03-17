@@ -4,7 +4,7 @@ import { validateRequest } from "../../middleware/validateRequest";
 
 import { checkAuth } from "../../middleware/cheackAuth";
 import { Role } from "../../generated/enums";
-import { assignExpertScheduleValidation } from "./expertSchdule.validation";
+import { assignExpertScheduleValidation, updateExpertScheduleValidation } from "./expertSchdule.validation";
 import { expertScheduleController } from "./expertSchdules.controler";
 
 const router = Router();
