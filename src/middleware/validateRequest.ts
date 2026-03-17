@@ -1,0 +1,27 @@
+
+
+
+
+ // support any zod schema
+
+import { NextFunction, Request, Response } from "express"
+import {  ZodType } from "zod"
+
+export const validateRequest = (zodSchema: ZodType) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if(req.body.data){
+      req.body = JSON.parse(req.body.data)
+    }
+    const parsedResult = zodSchema.safeParse(req.body)
+
+    if (!parsedResult.success) {
+      return next(parsedResult.error)
+    }
+   
+    req.body = parsedResult.data
+    next()
+  }
+}
+
+
+

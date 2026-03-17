@@ -1,0 +1,32 @@
+enum ConsultationStatus {
+    PENDING
+    CONFIRMED
+    COMPLETED
+    CANCELLED
+}
+
+enum PaymentStatus {
+    PAID
+    REFUNDED
+    FAILED
+    UNPAID
+}
+
+enum VerificationStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+enum Role {
+    ADMIN
+    EXPERT
+    CLIENT
+}
+
+enum UserStatus {
+    ACTIVE
+    BLOCKED
+    DELETED
+    SUSPENDED
+}

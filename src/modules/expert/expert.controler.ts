@@ -1,0 +1,91 @@
+import status from "http-status";
+
+import { IqueryParams } from "../../interfaces/query.interface";
+import { Request, Response } from "express";
+import { expertService } from "./expert.service";
+import { catchAsync } from "../../shared/catchAsync";
+import { sendResponse } from "../../shared/sendResponsr";
+import { string } from "zod";
+
+
+// ===============================
+// GET ALL EXPERTS
+// ===============================
+const getAllExperts = catchAsync(async (req: Request, res: Response) => {
+  const query = req.query;
+
+  const result = await expertService.getAllExperts(query as IqueryParams);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Experts fetched successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
+
+
+// ===============================
+// GET EXPERT BY ID
+// ===============================
+const getExpertById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+ const expert = await expertService.getExpertById(id as string);
+sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Expert retrieved successfully",
+    data: expert,
+  });
+});
+
+
+
+// ===============================
+// UPDATE EXPERT
+// ===============================
+const updateExpert = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const payload = req.body;
+
+  const updatedExpert = await expertService.updateExpert(id as string, payload);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Expert updated successfully",
+    data: updatedExpert,
+  });
+});
+
+
+
+// ===============================
+// DELETE EXPERT (SOFT DELETE)
+// ===============================
+const deleteExpert = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const deletedExpert = await expertService.deleteExpert(id as string);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Expert deleted successfully",
+    data: deletedExpert,
+  });
+});
+
+
+
+// ===============================
+// EXPORT CONTROLLER
+// ===============================
+export const expertController = {
+  getAllExperts,
+  getExpertById,
+  updateExpert,
+  deleteExpert,
+};

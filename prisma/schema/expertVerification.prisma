@@ -1,0 +1,16 @@
+model ExpertVerification {
+    id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+    expertId String @unique @db.Uuid
+    expert   Expert @relation(fields: [expertId], references: [id])
+
+    status     VerificationStatus @default(PENDING)
+    notes      String?
+    verifiedBy String?
+    verifiedAt DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("expert_verifications")
+}
