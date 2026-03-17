@@ -2,7 +2,7 @@
 import { Router } from "express";
 
 
-import { industryRouter } from "../modules/industry/industry.router"; // replaces speciality
+
 import { expertVerificationRouter } from "./modules/expertVerification/expertVerification.router";
 import { authRoutes } from "./modules/auth/auth.router";
 import { expertRouter } from "./modules/expert/expert.route";
@@ -11,6 +11,7 @@ import { expertScheduleRouter } from "./modules/expertSchdules/expertSchdules.ro
 import { scheduleRoutes } from "./modules/schedules/schedules.router";
 import { userRouter } from "./modules/user/user.router";
 import { consultationRouter } from "./modules/consultation/consultation.router";
+import { industryRouter } from "./modules/industry/industry.router";
 
 
 const router = Router();
@@ -30,7 +31,6 @@ router.use("/expert-schedules", expertScheduleRouter);
 
 // Consultation + Payment
 router.use("/consultations", consultationRouter);
-router.use("/payments", paymentRouter);
 
 // Admin roles
 router.use("/admin", adminRouter);

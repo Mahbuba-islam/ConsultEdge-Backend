@@ -16,7 +16,7 @@ import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
 import { indexRoutes } from ".";
 import { consultationService } from "./modules/consultation/consultation.service";
-import { paymentControler } from "./modules/payment/payment.controler";
+import { paymentController } from "./modules/payment/payment.controler";
 
 const app: Application = express();
 
