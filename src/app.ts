@@ -32,7 +32,7 @@ app.set("views", path.resolve(process.cwd(), "src/app/templates"));
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
-  paymentControler.handlerStripeWebhookEvent
+  paymentController.handleStripeWebhookEvent
 );
 
 /* -------------------------------------------
@@ -72,7 +72,7 @@ app.get("/", (req: Request, res: Response) => {
 cron.schedule("*/25 * * * *", async () => {
   try {
     console.log("Running cron job: cancel unpaid consultations");
-   //  await consultationService.cancelUnpaidConsultations();
+    await consultationService.cancelUnpaidConsultations();
   } catch (error: any) {
     console.error(
       "Error occurred while canceling unpaid consultations:",
@@ -80,7 +80,6 @@ cron.schedule("*/25 * * * *", async () => {
     );
   }
 });
-
 /* -------------------------------------------
    API Routes
 -------------------------------------------- */
