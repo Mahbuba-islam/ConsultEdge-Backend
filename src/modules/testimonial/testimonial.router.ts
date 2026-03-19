@@ -1,11 +1,34 @@
-import { Router } from "express";
+import express from "express";
 
-;
-import auth, { userRole } from "../../middlewares/auth";
-import { reviewController } from "./testimonial.controler";
+import {
+  createTestimonialSchema,
+  updateTestimonialSchema,
+} from "./testimonial.validation";
+import { auth } from "../../lib/auth";
+import { validateRequest } from "../../middleware/validateRequest";
+import { TestimonialController } from "./testimonial.controler";
+import { checkAuth } from "../../middleware/cheackAuth";
+import { Role } from "../../generated/enums";
 
-const router = Router()
+const router = express.Router();
 
-router.post("/", auth(userRole.USER), reviewController.createReview);
+router.post(
+  "/",
+  checkAuth(Role.CLIENT),
+  validateRequest(createTestimonialSchema),
+  TestimonialController.createTestimonial)
 
-export const reviewRouter = router
+router.get("/", TestimonialController.getAllTestimonials);
+
+router.get("/expert/:expertId", TestimonialController.getTestimonialsByExpert);
+
+router.put(
+  "/:id",
+  checkAuth(Role.CLIENT),
+  validateRequest(updateTestimonialSchema),
+  TestimonialController.updateTestimonial
+);
+
+router.delete("/:id", checkAuth(Role.CLIENT), TestimonialController.deleteTestimonial);
+
+export const testimonialRoutes = router;

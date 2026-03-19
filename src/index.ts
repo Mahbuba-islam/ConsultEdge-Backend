@@ -12,6 +12,7 @@ import { scheduleRoutes } from "./modules/schedules/schedules.router";
 import { userRouter } from "./modules/user/user.router";
 import { consultationRouter } from "./modules/consultation/consultation.router";
 import { industryRouter } from "./modules/industry/industry.router";
+import { testimonialRoutes } from "./modules/testimonial/testimonial.router";
 
 
 const router = Router();
@@ -38,5 +39,5 @@ router.use("/admin", adminRouter);
 // Industry / Category
 router.use("/industries", industryRouter);
 router.use("/expert-verification", expertVerificationRouter)
-
+router.use("/testimonial", testimonialRoutes)
 export const indexRoutes = router;

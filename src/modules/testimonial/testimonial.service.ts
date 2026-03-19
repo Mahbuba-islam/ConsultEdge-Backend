@@ -1,66 +1,137 @@
+import AppError from "../../errorHelpers/AppError";
+import status from "http-status";
 import { prisma } from "../../lib/prisma";
+import { IqueryParams } from "../../interfaces/query.interface";
+import { QueryBuilder } from "../../utilis/queryBuilder";
+import { ICreateTestimonialPayload, IUpdateTestimonialPayload } from "./testimonial.types";
+import { testimonialFilterableFields, testimonialIncludeConfig, testimonialSearchableFields } from "./testimonial.constant";
 
-const createReview = async (studentId: string, data: any) => {
-  const { bookingId, rating, comment } = data;
+// ------------------------------
+// CREATE TESTIMONIAL
+// ------------------------------
+const createTestimonial = async (
+  clientId: string,
+  payload: ICreateTestimonialPayload
+) => {
+  const { rating, comment, consultationId } = payload;
 
-  // 1. Validate booking
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
-    include: { tutor: true },
+  const consultation = await prisma.consultation.findUnique({
+    where: { id: consultationId },
   });
 
-  if (!booking) throw new Error("Booking not found");
-  if (booking.studentId !== studentId) throw new Error("Unauthorized");
-
-  // ⭐ Allow review only if session is completed OR past
-  if (booking.status !== "COMPLETED") {
-    throw new Error("Session not completed");
+  if (!consultation) {
+    throw new AppError(status.NOT_FOUND, "Consultation not found");
   }
 
-  // 2. Prevent duplicate review
-  const existing = await prisma.review.findFirst({
-    where: { bookingId },
-  });
+  if (consultation.clientId !== clientId) {
+    throw new AppError(status.FORBIDDEN, "Not your consultation");
+  }
 
-  if (existing) throw new Error("Review already submitted");
+  // ⭐ FIX: ensure expertId is not null
+  if (!consultation.expertId) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Consultation has no expert assigned"
+    );
+  }
 
-  // ⭐ 3. Mark booking as completed (IMPORTANT)
-  await prisma.booking.update({
-    where: { id: bookingId },
-    data: { status: "COMPLETED" },
-  });
-
-  // 4. Create review
-  const review = await prisma.review.create({
+  const testimonial = await prisma.testimonial.create({
     data: {
-      studentId,
-      tutorId: booking.tutorId,
-      bookingId: booking.id,
       rating,
       comment,
+      clientId,
+      expertId: consultation.expertId, // now always string
+      consultationId,
     },
   });
 
-  // 5. Update tutor rating + totalReviews
-  const stats = await prisma.review.aggregate({
-    where: { tutorId: booking.tutorId },
-    _avg: { rating: true },
-    _count: { rating: true },
-  });
-
-  await prisma.tutorProfile.update({
-    where: { id: booking.tutorId },
-    data: {
-      rating: stats._avg.rating || 0,
-      totalReviews: stats._count.rating,
-      //  isFeatured: (stats._avg.rating || 0) > 4, 
-
-    },
-  });
-
-  return review;
+  return testimonial;
 };
 
-export const reviewService = {
-  createReview,
+// ------------------------------
+// GET ALL TESTIMONIALS
+// ------------------------------
+const getAllTestimonials = async (query: IqueryParams) => {
+  const qb = new QueryBuilder(
+    prisma.testimonial,
+    query,
+    {
+      searchableFields: testimonialSearchableFields,
+      filterableFields: testimonialFilterableFields,
+    }
+  );
+
+  const result = await qb
+    .search()
+    .filter()
+    .paginate()
+    .dynamicInclude(testimonialIncludeConfig)
+    .sort()
+    .fields()
+    .excute();
+
+  return result;
+};
+
+// ------------------------------
+// GET TESTIMONIALS BY EXPERT
+// ------------------------------
+const getTestimonialsByExpert = async (expertId: string) => {
+  const result = await prisma.testimonial.findMany({
+    where: { expertId },
+    include: testimonialIncludeConfig,
+  });
+
+  return result;
+};
+
+// ------------------------------
+// UPDATE TESTIMONIAL
+// ------------------------------
+const updateTestimonial = async (
+  id: string,
+  clientId: string,
+  payload: IUpdateTestimonialPayload
+) => {
+  const testimonial = await prisma.testimonial.findUnique({ where: { id } });
+
+  if (!testimonial) {
+    throw new AppError(status.NOT_FOUND, "Testimonial not found");
+  }
+
+  if (testimonial.clientId !== clientId) {
+    throw new AppError(status.FORBIDDEN, "Not your testimonial");
+  }
+
+  return prisma.testimonial.update({
+    where: { id },
+    data: payload,
+  });
+};
+
+// ------------------------------
+// DELETE TESTIMONIAL
+// ------------------------------
+const deleteTestimonial = async (id: string, clientId: string) => {
+  const testimonial = await prisma.testimonial.findUnique({ where: { id } });
+
+  if (!testimonial) {
+    throw new AppError(status.NOT_FOUND, "Testimonial not found");
+  }
+
+  if (testimonial.clientId !== clientId) {
+    throw new AppError(status.FORBIDDEN, "Not your testimonial");
+  }
+
+  await prisma.testimonial.delete({ where: { id } });
+
+  return { message: "Testimonial deleted successfully" };
+};
+
+export const testimonialService = {
+  createTestimonial,
+  getAllTestimonials,
+  getTestimonialsByExpert,
+  updateTestimonial,
+  deleteTestimonial,
 };
