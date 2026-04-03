@@ -3,7 +3,6 @@ import status from "http-status";
 import AppError from "../../errorHelpers/AppError";
 import { tokenUtils } from "../../utilis/token";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
-import { jwtUtil } from "../../utilis/jwt";
 
 import { JwtPayload } from "jsonwebtoken";
 import { IChangePasswordPayload, IGoogleSessionPayload, ILoginUserPayload, IRegisterClientPayload, } from "./auth.interface";
@@ -11,6 +10,7 @@ import { Role, UserStatus } from "../../generated/enums";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import { envVars } from "../../config/env";
+import { jwtUtils } from "../../utilis/jwt";
 
 
 const registerClient = async (payload: IRegisterClientPayload) => {
@@ -69,13 +69,14 @@ const registerClient = async (payload: IRegisterClientPayload) => {
     isDeleted: data.user.isDeleted,
     emailVerified: data.user.emailVerified,
   });
-
+console.log(data, accessToken, refreshToken, client);
   return {
     ...data,
     accessToken,
     refreshToken,
     client,
   };
+
 };
 
 
@@ -84,48 +85,53 @@ const registerClient = async (payload: IRegisterClientPayload) => {
 
 //login//
 
-const loginUser = async(payload:ILoginUserPayload)=>{
-    const {email, password} = payload
-    const data = await auth.api.signInEmail({
-         body :{
-            email,
-            password
-        }
-       
-    })
-    if(data.user.status === UserStatus.BLOCKED){
-        throw new AppError(status.FORBIDDEN, "User is Blocked")
-    }
-    if(data.user.isDeleted || data.user.status=== UserStatus.DELETED){
-        throw new AppError(status.FORBIDDEN, "User is deleted")
-    }
+const loginUser = async (payload: ILoginUserPayload) => {
+  const { email, password } = payload;
 
-    const accessToken = tokenUtils.getAccessToken({
-        userId:data.user.id,
-        email:data.user.email,
-        name:data.user.name,
-        role:data.user.role,
-        status:data.user.status,
-        isDeleted:data.user.isDeleted,
-        emailVerified:data.user.emailVerified
-    })
+  const data = await auth.api.signInEmail({
+    body: { email, password }
+  });
 
-    const refreshToken = tokenUtils.getRefreshToken({
-        userId:data.user.id,
-        email:data.user.email,
-        name:data.user.name,
-        role:data.user.role,
-        status:data.user.status,
-        isDeleted:data.user.isDeleted,
-        emailVerified:data.user.emailVerified
-    })
-     return {
-        ...data,
-        accessToken,                                
-        refreshToken
-     }
-}
+  if (data.user.status === UserStatus.BLOCKED) {
+    throw new AppError(status.FORBIDDEN, "User is Blocked");
+  }
 
+  if (data.user.isDeleted || data.user.status === UserStatus.DELETED) {
+    throw new AppError(status.FORBIDDEN, "User is deleted");
+  }
+
+  const accessToken = tokenUtils.getAccessToken({
+    userId: data.user.id,
+    email: data.user.email,
+    name: data.user.name,
+    role: data.user.role,
+    status: data.user.status,
+    isDeleted: data.user.isDeleted,
+    emailVerified: data.user.emailVerified
+  });
+
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: data.user.id,
+    email: data.user.email,
+    name: data.user.name,
+    role: data.user.role,
+    status: data.user.status,
+    isDeleted: data.user.isDeleted,
+    emailVerified: data.user.emailVerified
+  });
+
+  return {
+    ...data,
+    accessToken,
+    refreshToken,
+    // user: data.user,
+    // token: data.token,        // <-- BetterAuth session token
+    // redirect: data.redirect,
+    // url: data.url,
+    // accessToken,
+    // refreshToken
+  };
+};
 
 
 
@@ -177,7 +183,7 @@ const getNewToken = async(refreshToken:string, sessionToken:string)=> {
     }
 
 
-    const verifyRefreshToken = jwtUtil.verifyToken(refreshToken, envVars.REFRESH_TOKEN_SECRET)
+    const verifyRefreshToken = jwtUtils.verifyToken(refreshToken, envVars.REFRESH_TOKEN_SECRET)
     if(!verifyRefreshToken.success){
      throw new AppError(status.UNAUTHORIZED, "invalid refresh token")
     };
@@ -452,6 +458,16 @@ const googleLoginSuccess = async(session:IGoogleSessionPayload)=>{
 
 
 
+  const checkEmailExists = async (email: string) => {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    return !!user; // true = exists, false = available
+  }
+
+
+
 
 export const authService = {
     registerClient,
@@ -464,5 +480,6 @@ export const authService = {
     forgetPassword,
     resetPassword,
     googleLoginSuccess,
+    checkEmailExists
     
 }

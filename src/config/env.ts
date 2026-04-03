@@ -40,8 +40,8 @@ interface EnvConfig {
     STRIPE_SECRET_KEY:string,
     STRIPE_WEBHOOK_SECRET:string
   }
-SUPER_ADMIN_EMAIL:string
-SUPER_ADMIN_PASSWORD:string
+ADMIN_EMAIL:string
+ADMIN_PASSWORD:string
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -69,8 +69,8 @@ const loadEnvVariables = (): EnvConfig => {
      "CLOUDINARY_API_SECRET",
       "STRIPE_SECRET_KEY",
     "STRIPE_WEBHOOK_SECRET",
-    "SUPER_ADMIN_EMAIL",
-    "SUPER_ADMIN_PASSWORD"
+    "ADMIN_EMAIL",
+    "ADMIN_PASSWORD"
     
     // "BETTER_AUTH_SESSION_TOKEN_EXPIRY",
     // "BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE"
@@ -116,8 +116,8 @@ const loadEnvVariables = (): EnvConfig => {
     STRIPE_WEBHOOK_SECRET:process.env.STRIPE_WEBHOOK_SECRET as string,
      
     },
-    SUPER_ADMIN_EMAIL:process.env.SUPER_ADMIN_EMAIL as string,
-SUPER_ADMIN_PASSWORD:process.env.SUPER_ADMIN_PASSWORD as string
+    ADMIN_EMAIL:process.env.ADMIN_EMAIL as string,
+   ADMIN_PASSWORD:process.env.ADMIN_PASSWORD as string
 
 
     // BETTER_AUTH_SESSION_TOKEN_EXPIRY: process.env.BETTER_AUTH_SESSION_TOKEN_EXPIRY as string,

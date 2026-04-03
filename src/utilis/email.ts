@@ -34,7 +34,9 @@ export interface sendEmailOptions{
 }
 export const sendEmail = async({subject, templateData, templateName, to, attachments}:sendEmailOptions )=>{
     try{
-  const templatePath = path.resolve(process.cwd(), `src/app/templates/${templateName}.ejs`)
+        const templatePath = path.resolve(process.cwd(), `src/templates/${templateName}.ejs`);
+
+ 
   //render html
   const html = await ejs.renderFile(templatePath, templateData);
   const info = await transporter.sendMail({

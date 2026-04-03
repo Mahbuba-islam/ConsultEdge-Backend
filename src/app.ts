@@ -10,13 +10,11 @@ import { auth } from "./lib/auth";
 
 import { envVars } from "./config/env";
 
-
-
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
 import { indexRoutes } from ".";
 import { consultationService } from "./modules/consultation/consultation.service";
-import { paymentController } from "./modules/payment/payment.controler";
+import { PaymentController } from "./modules/payment/payment.controler";
 
 const app: Application = express();
 
@@ -32,7 +30,7 @@ app.set("views", path.resolve(process.cwd(), "src/app/templates"));
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
-  paymentController.handleStripeWebhookEvent
+  PaymentController.handleStripeWebhookEvent
 );
 
 /* -------------------------------------------
@@ -43,21 +41,25 @@ app.use(
     origin: [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   })
 );
 
 /* -------------------------------------------
-   BetterAuth
+   Cookie Parser (🔥 MUST COME BEFORE BetterAuth)
 -------------------------------------------- */
-app.use("/api/auth", toNodeHandler(auth));
+app.use(cookieParser());
 
 /* -------------------------------------------
    Body Parsers
 -------------------------------------------- */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
+/* -------------------------------------------
+   BetterAuth (AFTER cookieParser)
+-------------------------------------------- */
+app.use("/api/auth", toNodeHandler(auth));
 
 /* -------------------------------------------
    Basic Health Route
@@ -80,6 +82,7 @@ cron.schedule("*/25 * * * *", async () => {
     );
   }
 });
+
 /* -------------------------------------------
    API Routes
 -------------------------------------------- */

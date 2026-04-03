@@ -1,74 +1,95 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Stripe from "stripe";
 
-import { PaymentStatus, ConsultationStatus } from "../../generated/enums";
-
-import { envVars } from "../../config/env";
-import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
+import { PaymentStatus } from "../../generated/enums";
 
-const stripe = new Stripe(envVars.STRIPE.STRIPE_SECRET_KEY);
-
-const handleStripeWebhookEvent = async (rawBody: Buffer, signature: string) => {
-  let event: Stripe.Event;
-
-  try {
-    event = stripe.webhooks.constructEvent(
-      rawBody,
-      signature,
-      envVars.STRIPE.STRIPE_WEBHOOK_SECRET
-    );
-  } catch (err: any) {
-    throw new AppError(400, `Webhook signature verification failed: ${err.message}`);
-  }
-
+const handleStripeWebhookEvent = async (event: Stripe.Event) => {
   // Prevent duplicate processing
-  const existing = await prisma.payment.findFirst({
+  const existingPayment = await prisma.payment.findFirst({
     where: { stripeEventId: event.id },
   });
 
-  if (existing) {
+  if (existingPayment) {
     console.log(`Event ${event.id} already processed. Skipping.`);
-    return;
+    return { message: `Event ${event.id} already processed. Skipping.` };
   }
 
   switch (event.type) {
     case "checkout.session.completed": {
-      const session = event.data.object as Stripe.Checkout.Session;
+      const session = event.data.object as any;
 
       const consultationId = session.metadata?.consultationId;
       const paymentId = session.metadata?.paymentId;
 
       if (!consultationId || !paymentId) {
-        console.error("Missing metadata");
-        return;
+        console.error("Missing metadata in Stripe session");
+        return { message: "Missing metadata" };
       }
 
-      await prisma.$transaction(async (tx) => {
-        await tx.consultation.update({
-          where: { id: consultationId },
-          data: {
-            paymentStatus: PaymentStatus.PAID,
-            status: ConsultationStatus.CONFIRMED,
-          },
-        });
-
-        await tx.payment.update({
-          where: { id: paymentId },
-          data: {
-            status: PaymentStatus.PAID,
-            stripeEventId: event.id,
-            paymentGatewayData: session as any,
-          },
-        });
+      // Fetch consultation
+      const consultation = await prisma.consultation.findUnique({
+        where: { id: consultationId },
+        include: { payment: true },
       });
 
+      if (!consultation) {
+        console.error(`Consultation ${consultationId} not found`);
+        return { message: "Consultation not found" };
+      }
+
+      // Update consultation + payment atomically
+      const result = await prisma.$transaction(async (tx) => {
+        const updatedConsultation = await tx.consultation.update({
+          where: { id: consultationId },
+          data: {
+            paymentStatus:
+              session.payment_status === "paid"
+                ? PaymentStatus.PAID
+                : PaymentStatus.UNPAID,
+          },
+        });
+
+        const updatedPayment = await tx.payment.update({
+          where: { id: paymentId },
+          data: {
+            status:
+              session.payment_status === "paid"
+                ? PaymentStatus.PAID
+                : PaymentStatus.UNPAID,
+            paymentGatewayData: session,
+            stripeEventId: event.id,
+          },
+        });
+
+        return { updatedConsultation, updatedPayment };
+      });
+
+      console.log(
+        `Payment ${session.payment_status} for consultation ${consultationId}`
+      );
+      return result;
+    }
+
+    case "checkout.session.expired": {
+      const session = event.data.object;
+      console.log(`Checkout session ${session.id} expired.`);
       break;
     }
+
+    case "payment_intent.payment_failed": {
+      const session = event.data.object;
+      console.log(`Payment intent ${session.id} failed.`);
+      break;
+    }
+
+    default:
+      console.log(`Unhandled event type ${event.type}`);
   }
 
-  return { success: true };
+  return { message: `Webhook event ${event.id} processed successfully` };
 };
 
-export const paymentService = {
+export const PaymentService = {
   handleStripeWebhookEvent,
 };

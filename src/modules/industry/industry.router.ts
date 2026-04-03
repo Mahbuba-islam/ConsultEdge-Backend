@@ -11,7 +11,8 @@ import { Role } from "../../generated/enums";
 
 const router = Router()
 
-router.post("/", multerUpload.single("file"), validateRequest(createIndustryValidation), checkAuth(Role.ADMIN), industryController.createIndustry)
+ router.post("/", multerUpload.single("file"), validateRequest(createIndustryValidation), checkAuth(Role.ADMIN), industryController.createIndustry)
+
 router.get("/", industryController.getAllIndustries)
 router.get("/:id", industryController.getIndustryById);
 

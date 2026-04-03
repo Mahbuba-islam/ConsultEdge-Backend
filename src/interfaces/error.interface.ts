@@ -1,13 +1,13 @@
-export interface IError {
+export interface TErrorSources {
     path: string;
     message: string;
 }
 
-export interface IErrorResponse {
+export interface TErrorResponse {
+    statusCode?: number;
     success: boolean;
     message: string;
-    errorSource: IError[];
-    error?: unknown;
+    errorSources: TErrorSources[];
     stack?: string;
-    statusCode?: number;
+    error?: unknown;
 }

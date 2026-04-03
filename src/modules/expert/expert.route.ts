@@ -10,6 +10,8 @@ const router = Router()
 
 router.get("/", expertController.getAllExperts)
 router.get("/:id", expertController.getExpertById)
+router.post("/apply", checkAuth(Role.CLIENT, Role.ADMIN), expertController.applyExpert)
+
 router.put("/:id", validateRequest(updateExpertValidationSchema), 
 checkAuth(Role.ADMIN, Role.EXPERT), expertController.updateExpert)
 

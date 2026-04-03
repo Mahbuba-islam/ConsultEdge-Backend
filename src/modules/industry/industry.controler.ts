@@ -5,8 +5,9 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponsr";
 
 const createIndustry = catchAsync(async (req, res) => {
+  console.log(req.body);
   const result = await industryService.createIndustry(req.body);
-
+  console.log(result);
   sendResponse(res, {
     httpStatusCode: status.CREATED,
     success: true,

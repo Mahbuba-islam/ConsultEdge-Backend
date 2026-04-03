@@ -135,9 +135,43 @@ const deleteExpert = async (id: string) => {
 
 
 
+
+//apply expert
+
+const applyExpert = async (userId: string, payload: any) => {
+  // Check if already applied
+  const existing = await prisma.expert.findUnique({
+    where: { userId },
+  });
+
+  if (existing) {
+    throw new Error("You have already applied to become an expert");
+  }
+
+  const expert = await prisma.expert.create({
+  data: {
+    fullName: payload.fullName,
+    email: payload.email,        
+    phone: payload.phone,
+    bio: payload.bio,
+    title: payload.title,
+    experience: payload.experience || 0,
+    consultationFee: payload.consultationFee,
+    industryId: payload.industryId,
+    userId,
+  },
+});
+
+ return expert;
+};
+
+
+
+
 export const expertService = {
     getAllExperts,
     updateExpert,
     getExpertById,
-    deleteExpert
+    deleteExpert,
+    applyExpert
 }

@@ -5,15 +5,15 @@ import { authService } from "./auth.service";
 import status from "http-status";
 import { tokenUtils } from "../../utilis/token";
 import AppError from "../../errorHelpers/AppError";
-import { cookieUtils } from "../../utilis/cookie";
 
 
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponsr";
 import { envVars } from "../../config/env";
 import { auth } from "../../lib/auth";
+import { CookieUtils } from "../../utilis/cookie";
 
-const registeredPatient = catchAsync(
+const registeredUser = catchAsync(
     async(req:Request, res:Response)=>{
         const payload = req.body
         console.log(payload);
@@ -21,35 +21,48 @@ const registeredPatient = catchAsync(
         sendResponse(res, {
             httpStatusCode:status.CREATED,
             success:true,
-            message:"client registered successfully",
+            message:"user registered successfully",
             data:result
         })
     }
 )
 
 
-const loginUser = catchAsync(
-    async(req:Request, res:Response)=>{
-        const payload = req.body;
-        const result = await authService.loginUser(payload)
-        const {accessToken, refreshToken, token, ...rest} = result
-        tokenUtils.setAccessTokenInCookie(res, accessToken)
-        tokenUtils.refeshAccessTokenInCookie(res, refreshToken)
-        tokenUtils.setBetterAuthSessionCookie(res, token)
-        
-      sendResponse(res, {
-        httpStatusCode:status.OK,
-        success:true,
-        message:" login successfully",
-        data:{
-            accessToken,
-            refreshToken,
-            ...rest
-        }
-      })
-    }
-)
+const loginUser = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
 
+  // 1) Call service
+  const result = await authService.loginUser(payload);
+
+  const {
+    accessToken,
+    refreshToken,
+    token,        // BetterAuth session token
+    user,         // MUST be included
+    ...rest       // role, emailVerified, needPasswordChange, redirect, etc.
+  } = result;
+
+  // 2) Set your own JWT cookies
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+
+  // 3) Set BetterAuth session cookie
+  tokenUtils.setBetterAuthSessionCookie(res, token);
+
+  // 4) Send response EXACTLY how frontend expects it
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "login successfully",
+    data: {
+      accessToken,
+      refreshToken,
+      token,
+      user,     // REQUIRED
+      ...rest,  // role, emailVerified, needPasswordChange, redirect
+    },
+  });
+});
 
 
 // get me
@@ -79,8 +92,8 @@ const getNewToken = catchAsync(async(req:Request, res:Response)=>{
     const results = await authService.getNewToken(refreshToken, betterAuthSessionToken)
     const {accessToken, refreshToken:newRefreshToken, sessionToken} = results
 
-    tokenUtils.setAccessTokenInCookie(res, accessToken)
-    tokenUtils.refeshAccessTokenInCookie (res, newRefreshToken)
+    tokenUtils.setAccessTokenCookie(res, accessToken)
+    tokenUtils.setRefreshTokenCookie (res, newRefreshToken)
     tokenUtils.setBetterAuthSessionCookie(res, sessionToken)
 
     sendResponse(res,{
@@ -106,8 +119,8 @@ const changePassword = catchAsync(async(req:Request, res:Response)=> {
     const result = await authService.changePassword(payload, betterAuthSessionToken)
     const {accessToken, refreshToken, token} = result
 
-      tokenUtils.setAccessTokenInCookie(res, accessToken)
-    tokenUtils.refeshAccessTokenInCookie (res, refreshToken)
+      tokenUtils.setAccessTokenCookie(res, accessToken)
+    tokenUtils.setRefreshTokenCookie (res, refreshToken)
     tokenUtils.setBetterAuthSessionCookie(res, token as string)
 
   sendResponse(res,{
@@ -125,17 +138,17 @@ const changePassword = catchAsync(async(req:Request, res:Response)=> {
 const logOutUser = catchAsync(async(req:Request, res:Response)=>{
     const betterAuthSessionToken = req.cookies["better-auth.session_token"]
     const result = await authService.logOutUser(betterAuthSessionToken)
-    cookieUtils.clearCookie(res, 'accessToken', {
+    CookieUtils.clearCookie(res, 'accessToken', {
         httpOnly:true,
         secure:true,
         sameSite:"none",
     })
-    cookieUtils.clearCookie(res, 'refreshToken', {
+    CookieUtils.clearCookie(res, 'refreshToken', {
         httpOnly:true,
         secure:true,
         sameSite:"none",
     })
-    cookieUtils.clearCookie(res, 'better-auth.session_token', {
+    CookieUtils.clearCookie(res, 'better-auth.session_token', {
         httpOnly:true,
         secure:true,
         sameSite:"none",
@@ -177,9 +190,9 @@ const forgetPassword = catchAsync(async(req:Request, res:Response)=> {
 
 
    //reset password
-const resetPassword = catchAsync(async(req:Request, res:Response)=> {
-    const {email, otp, newPassword} = req.body
-     await authService.resetPassword(email, otp, newPassword)
+const resetPassword = catchAsync(async(req:Request,  res:Response)=> {
+    const {email, otp,  newPassword} = req.body
+     await authService.resetPassword(email, otp,  newPassword)
 
     sendResponse(res, {
         httpStatusCode:status.OK,
@@ -191,47 +204,54 @@ const resetPassword = catchAsync(async(req:Request, res:Response)=> {
 
 
  //google login
-const googleLogin = catchAsync(async(req:Request, res:Response)=>{
-const redirectPath = req.query.redirect || "/dashboard";
-const encodedRedirectPath = encodeURIComponent(redirectPath as string)
-const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`
-res.render("googleRedirect", {
-    callbackURL:callbackURL,
-    betterAuthUrl:envVars.BETTER_AUTH_URL
-})
-})
+const googleLogin = catchAsync(async (req: Request, res: Response) => {
+  const redirectPath = req.query.redirect || "/dashboard";
+  const encodedRedirectPath = encodeURIComponent(redirectPath as string);
 
-const googleLoginSuccess = catchAsync(async(req:Request, res:Response)=>{
-     const redirectPath = req.query.redirect as string || "/dashboard";
-     const sessionToken = req.cookies["better-auth.session_token"]
-     if(!sessionToken){
-        return res.redirect(`${envVars.FRONTEND_URL}/login?error=oauth_failed`)
-     }
+  const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
 
-     const session = await auth.api.getSession({
-        headers:{
-            "Cookie": `better-auth.session_token=${sessionToken}`
-        }
-     })
+  // Direct redirect to BetterAuth Google login
+  const googleAuthURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google?redirect=${encodedRedirectPath}`;
 
-     if(!session){
-        return res.redirect(`{${envVars.FRONTEND_URL}/login?error=no_session_found}`)
-     }
-     if(session && !session.user){
-        return res.redirect(`{${envVars.FRONTEND_URL}/login?error=no_user_found}`)
-     }
+  return res.redirect(googleAuthURL);
+});
 
-     const result = await authService.googleLoginSuccess(session)
-     const {accessToken, refreshToken} = result
 
-     tokenUtils.setAccessTokenInCookie(res, accessToken)
-     tokenUtils.refeshAccessTokenInCookie(res, refreshToken)
+const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
+  const redirectPath = req.query.redirect as string || "/dashboard";
 
-     const isValidRedirectPath = redirectPath.startsWith("/") && !redirectPath.startsWith("//")
-     const finalRedirectPath = isValidRedirectPath? redirectPath : "/dashboard";
-     res.redirect(`${envVars.FRONTEND_URL}${finalRedirectPath}`)
+  const sessionToken = req.cookies["better-auth.session_token"];
 
-})
+  if (!sessionToken) {
+    return res.redirect(`${envVars.FRONTEND_URL}/login?error=oauth_failed`);
+  }
+
+  const session = await auth.api.getSession({
+    headers: {
+      Cookie: `better-auth.session_token=${sessionToken}`,
+    },
+  });
+
+  if (!session || !session.user) {
+    return res.redirect(`${envVars.FRONTEND_URL}/login?error=no_session`);
+  }
+
+  // Your existing logic
+  const { accessToken, refreshToken } =
+    await authService.googleLoginSuccess(session);
+
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+
+  const isValidRedirectPath =
+    redirectPath.startsWith("/") && !redirectPath.startsWith("//");
+
+  const finalRedirectPath = isValidRedirectPath
+    ? redirectPath
+    : "/dashboard";
+
+  return res.redirect(`${envVars.FRONTEND_URL}${finalRedirectPath}`);
+});
 
 
 
@@ -242,9 +262,30 @@ const handlerOAuthError = catchAsync(async(req:Request, res:Response)=>{
 
 
 
+ const checkEmailAvailability = catchAsync(async (req, res) => {
+    const email = req.query.email as string;
+
+    const exists = await authService.checkEmailExists(email);
+
+    if (exists) {
+      return sendResponse(res, {
+        httpStatusCode: 400,
+        success: false,
+        message: "Email already exists",
+      });
+    }
+
+    return sendResponse(res, {
+      httpStatusCode: 200,
+      success: true,
+      message: "Email available",
+    });
+  })
+
+
 
 export const authControler = {
-    registeredPatient,
+    registeredUser,
     loginUser,
     getMe,
     getNewToken,
@@ -255,5 +296,6 @@ export const authControler = {
     resetPassword,
     googleLogin,
     googleLoginSuccess,
-    handlerOAuthError
+    handlerOAuthError,
+    checkEmailAvailability
 }

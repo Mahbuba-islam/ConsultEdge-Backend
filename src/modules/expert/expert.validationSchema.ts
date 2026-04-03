@@ -1,4 +1,4 @@
-import z from "zod";
+ import z from "zod";
 
 export const updateExpertValidationSchema = z.object({
   body: z.object({
@@ -13,4 +13,17 @@ export const updateExpertValidationSchema = z.object({
     industryId: z.string().uuid("Industry ID must be a valid UUID").optional(),
   }),
 });
+
+
+export const applyExpertValidation = z.object({
+  fullName: z.string().min(2),
+  email: z.string().email("Invalid email"),
+  phone: z.string().optional(),
+  bio: z.string().optional(),
+  title: z.string().optional(),
+  experience: z.number().int().min(0).optional(),
+  consultationFee: z.number().int().min(1),
+  industryId: z.string().uuid(),
+});
+
 

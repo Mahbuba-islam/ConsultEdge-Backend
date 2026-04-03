@@ -13,6 +13,8 @@ import { userRouter } from "./modules/user/user.router";
 import { consultationRouter } from "./modules/consultation/consultation.router";
 import { industryRouter } from "./modules/industry/industry.router";
 import { testimonialRoutes } from "./modules/testimonial/testimonial.router";
+import { StatsRoutes } from "./modules/stats/stats.router";
+import { PaymentRoutes } from "./modules/payment/payment.router";
 
 
 const router = Router();
@@ -35,7 +37,8 @@ router.use("/consultations", consultationRouter);
 
 // Admin roles
 router.use("/admin", adminRouter);
-
+router.use("/stats", StatsRoutes)
+router.use("/payments", PaymentRoutes)
 // Industry / Category
 router.use("/industries", industryRouter);
 router.use("/expert-verification", expertVerificationRouter)

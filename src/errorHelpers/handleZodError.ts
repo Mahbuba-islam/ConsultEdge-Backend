@@ -1,11 +1,11 @@
 import status from "http-status"
 import z from "zod"
-import { IError, IErrorResponse } from "../interfaces/error.interface"
+import {  TErrorResponse, TErrorSources } from "../interfaces/error.interface"
 
-export const handleZodError = (err: z.ZodError):IErrorResponse => {
+export const handleZodError = (err: z.ZodError):TErrorResponse => {
      const statusCode = status.BAD_REQUEST
        const message = 'Zod Validation error'
-       const errorSource: IError[] = []
+       const errorSource: TErrorSources[] = []
             err.issues.forEach(issue => {
                 errorSource.push({
                     path: issue.path.join('.') || "unknown",
@@ -15,7 +15,7 @@ export const handleZodError = (err: z.ZodError):IErrorResponse => {
             return {
                 success: false,
                 message,
-                errorSource,
+                errorSources: errorSource,
                 statusCode
             }
 }

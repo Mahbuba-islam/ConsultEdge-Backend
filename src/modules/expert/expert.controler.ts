@@ -80,6 +80,26 @@ const deleteExpert = catchAsync(async (req: Request, res: Response) => {
 
 
 
+
+
+// apply expert
+
+const applyExpert = catchAsync(async (req, res) => {
+  const userId = req.user.userId; 
+
+  const result = await expertService.applyExpert(userId, req.body);
+
+  sendResponse(res, {
+    success: true,
+    httpStatusCode: 201,
+    message: "Expert application submitted successfully",
+    data: result,
+  });
+});
+
+
+
+
 // ===============================
 // EXPORT CONTROLLER
 // ===============================
@@ -88,4 +108,5 @@ export const expertController = {
   getExpertById,
   updateExpert,
   deleteExpert,
+  applyExpert
 };
