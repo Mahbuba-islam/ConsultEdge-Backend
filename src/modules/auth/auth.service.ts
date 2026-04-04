@@ -418,43 +418,41 @@ await prisma.user.update({
 
 
   //googleLoginSuccess
-const googleLoginSuccess = async(session:IGoogleSessionPayload)=>{
-  const isClientExists = await prisma.client.findUnique({
-    where:{
-        userId:session.user.id
-    }
-  })
-
-  if(!isClientExists){
-    await prisma.client.create({
-        data:{
-            userId:session.user.id,
-            fullName:session.user.name,
-            email:session.user.email,
+const googleLoginSuccess = async (session : Record<string, any>) =>{
+    const isPatientExists = await prisma.client.findUnique({
+        where : {
+            userId : session.user.id,
         }
-
     })
-  }
 
-  const accessToken = tokenUtils.getAccessToken({
-    userId:session.user.id,
-    role:session.user.role,
-    name:session.user.name,
-   
-  })
-  const refreshToken = tokenUtils.getRefreshToken({
-    userId:session.user.id,
-    role:session.user.role,
-    name:session.user.name,
-   
-  })
+    if(!isPatientExists){
+        await prisma.client.create({
+            data : {
+                userId : session.user.id,
+                fullName : session.user.name,
+                email : session.user.email,
+            }
+        
+        })
+    }
 
-  return{
-    accessToken,
-    refreshToken
-  }
+    const accessToken = tokenUtils.getAccessToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    });
+
+    const refreshToken = tokenUtils.getRefreshToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    });
+
+    return {
+        accessToken,
+        refreshToken,
+    }
 }
-
 
 
 

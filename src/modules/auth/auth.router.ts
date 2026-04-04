@@ -22,7 +22,7 @@ router.post("/verify-email", authControler.verifyEmail)
 router.post("/forget-password", validateRequest(forgotPasswordZodSchema), authControler.forgetPassword)
 router.post("/reset-password", authControler.resetPassword)
 
-router.get("/google", authControler.googleLogin)
+router.get("/login/google", authControler.googleLogin)
 router.get("/google/success", authControler.googleLoginSuccess)
 router.get("/oauth/error", authControler.handlerOAuthError)
 router.get("/check-email", authControler.checkEmailAvailability);
