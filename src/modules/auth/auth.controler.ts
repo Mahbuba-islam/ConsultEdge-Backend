@@ -113,26 +113,52 @@ const getNewToken = catchAsync(async(req:Request, res:Response)=>{
 
 
 //change password
-const changePassword = catchAsync(async(req:Request, res:Response)=> {
-    const payload = req.body
-    const betterAuthSessionToken = req.cookies["better-auth.session_token"]
-    const result = await authService.changePassword(payload, betterAuthSessionToken)
-    const {accessToken, refreshToken, token} = result
+// const changePassword = catchAsync(async(req:Request, res:Response)=> {
+//     const payload = req.body
+//     const betterAuthSessionToken = req.cookies["better-auth.session_token"]
+//     const result = await authService.changePassword(payload, betterAuthSessionToken)
+//     const {accessToken, refreshToken, token} = result
 
-      tokenUtils.setAccessTokenCookie(res, accessToken)
-    tokenUtils.setRefreshTokenCookie (res, refreshToken)
-    tokenUtils.setBetterAuthSessionCookie(res, token as string)
+//       tokenUtils.setAccessTokenCookie(res, accessToken)
+//     tokenUtils.setRefreshTokenCookie (res, refreshToken)
+//     tokenUtils.setBetterAuthSessionCookie(res, token as string)
 
-  sendResponse(res,{
-        httpStatusCode:status.OK,
-        success:true,
-        message:"password changed successfully",
-        data:result
-    })
+//   sendResponse(res,{
+//         httpStatusCode:status.OK,
+//         success:true,
+//         message:"password changed successfully",
+//         data:result
+//     })
 
-})
+// })
 
+const changePassword = catchAsync(async (req: Request, res: Response) => {
 
+  const payload = req.body;
+  const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+
+  const result = await authService.changePassword(
+    payload,
+    betterAuthSessionToken
+  );
+
+  const { accessToken, refreshToken } = result;
+  const betterAuthToken = result.token;
+
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+
+  if (betterAuthToken) {
+    tokenUtils.setBetterAuthSessionCookie(res, betterAuthToken);
+  }
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Password changed successfully",
+    data: result,
+  });
+});
 
 //logOut User
 const logOutUser = catchAsync(async(req:Request, res:Response)=>{

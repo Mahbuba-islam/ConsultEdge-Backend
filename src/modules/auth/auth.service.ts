@@ -237,68 +237,138 @@ console.log('verifyRefreshToken', verifyRefreshToken);
 
 
 //change password
-const changePassword = async(payload:IChangePasswordPayload, sessionToken:string)=>{
+// const changePassword = async(payload:IChangePasswordPayload, sessionToken:string)=>{
+//   const session = await auth.api.getSession({
+//     headers:new Headers({
+//         Authorization:`Bearer ${sessionToken}`
+//     })
+//   })
+//   console.log(session);
+//   if(!session){
+//     throw new AppError(status.UNAUTHORIZED, "Invalid session token")
+//   }
+
+// const {currentPassword, newPassword} = payload
+
+// const result = await auth.api.changePassword({
+//     body:{
+//         currentPassword,
+//         newPassword,
+//         revokeOtherSessions:true
+//     },
+//     headers: new Headers({
+//         Authorization:`Bearer ${sessionToken}`
+//     })
+
+// })
+// if(session.user.needPasswordChange){
+// await prisma.user.update({
+//     where:{
+//         id:session.user.id
+//     },
+//     data:{
+//         needPasswordChange:false
+//     }
+//  })
+// }
+ 
+// console.log('session', session?.user);
+
+// const accessToken = tokenUtils.getAccessToken({
+//         userId:session.user.id,
+//         email:session.user.email,
+//         name:session.user.name,
+//         role:session.user.role,
+//         status:session.user.status,
+//         isDeleted:session.user.isDeleted,
+//         emailVerified:session.user.emailVerified
+//     })
+
+//     const refreshToken = tokenUtils.getRefreshToken({
+//         userId:session.user.id,
+//         email:session.user.email,
+//         name:session.user.name,
+//         role:session.user.role,
+//         status:session.user.status,
+//         isDeleted:session.user.isDeleted,
+//         emailVerified:session.user.emailVerified
+//     })
+// return {
+//   ...result,
+//   accessToken,
+//   refreshToken
+// }
+// } 
+
+
+
+const changePassword = async (
+  payload: IChangePasswordPayload,
+  sessionToken: string
+) => {
+
   const session = await auth.api.getSession({
-    headers:new Headers({
-        Authorization:`Bearer ${sessionToken}`
-    })
-  })
-  console.log(session);
-  if(!session){
-    throw new AppError(status.UNAUTHORIZED, "Invalid session token")
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`,
+    }),
+  });
+
+  if (!session) {
+    throw new AppError(status.UNAUTHORIZED, "Invalid session token");
   }
 
-const {currentPassword, newPassword} = payload
+  const { currentPassword, newPassword } = payload;
 
-const result = await auth.api.changePassword({
-    body:{
-        currentPassword,
-        newPassword,
-        revokeOtherSessions:true
+  const result = await auth.api.changePassword({
+    body: {
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true,
     },
     headers: new Headers({
-        Authorization:`Bearer ${sessionToken}`
-    })
+      Authorization: `Bearer ${sessionToken}`,
+    }),
+  });
 
-})
-if(session.user.needPasswordChange){
-await prisma.user.update({
-    where:{
-        id:session.user.id
-    },
-    data:{
-        needPasswordChange:false
-    }
- })
-}
- 
-console.log('session', session?.user);
+  // update needPasswordChange
+  if (session.user.needPasswordChange) {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { needPasswordChange: false },
+    });
+  }
 
-const accessToken = tokenUtils.getAccessToken({
-        userId:session.user.id,
-        email:session.user.email,
-        name:session.user.name,
-        role:session.user.role,
-        status:session.user.status,
-        isDeleted:session.user.isDeleted,
-        emailVerified:session.user.emailVerified
-    })
+  // 🔥 updated user fetch
+  const updatedUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  });
 
-    const refreshToken = tokenUtils.getRefreshToken({
-        userId:session.user.id,
-        email:session.user.email,
-        name:session.user.name,
-        role:session.user.role,
-        status:session.user.status,
-        isDeleted:session.user.isDeleted,
-        emailVerified:session.user.emailVerified
-    })
-return {
-  ...result,
-  accessToken,
-  refreshToken
-}
-} 
+  const accessToken = tokenUtils.getAccessToken({
+    userId: updatedUser!.id,
+    email: updatedUser!.email,
+    name: updatedUser!.name,
+    role: updatedUser!.role,
+    status: updatedUser!.status,
+    isDeleted: updatedUser!.isDeleted,
+    emailVerified: updatedUser!.emailVerified,
+  });
+
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: updatedUser!.id,
+    email: updatedUser!.email,
+    name: updatedUser!.name,
+    role: updatedUser!.role,
+    status: updatedUser!.status,
+    isDeleted: updatedUser!.isDeleted,
+    emailVerified: updatedUser!.emailVerified,
+  });
+
+  return {
+    ...result,
+    accessToken,
+    refreshToken,
+  };
+};
 
 
 //logout
