@@ -97,6 +97,11 @@ export type ExpertVerification = Prisma.ExpertVerificationModel
  */
 export type Industry = Prisma.IndustryModel
 /**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
  * Model Payment
  * 
  */
@@ -106,11 +111,6 @@ export type Payment = Prisma.PaymentModel
  * 
  */
 export type Schedule = Prisma.ScheduleModel
-/**
- * Model SuperAdmin
- * 
- */
-export type SuperAdmin = Prisma.SuperAdminModel
 /**
  * Model Testimonial
  * 

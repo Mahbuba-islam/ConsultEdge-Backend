@@ -243,7 +243,7 @@ export type UserWhereInput = {
   client?: Prisma.XOR<Prisma.ClientNullableScalarRelationFilter, Prisma.ClientWhereInput> | null
   expert?: Prisma.XOR<Prisma.ExpertNullableScalarRelationFilter, Prisma.ExpertWhereInput> | null
   admin?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
-  superAdmin?: Prisma.XOR<Prisma.SuperAdminNullableScalarRelationFilter, Prisma.SuperAdminWhereInput> | null
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -264,7 +264,7 @@ export type UserOrderByWithRelationInput = {
   client?: Prisma.ClientOrderByWithRelationInput
   expert?: Prisma.ExpertOrderByWithRelationInput
   admin?: Prisma.AdminOrderByWithRelationInput
-  superAdmin?: Prisma.SuperAdminOrderByWithRelationInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -288,7 +288,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   client?: Prisma.XOR<Prisma.ClientNullableScalarRelationFilter, Prisma.ClientWhereInput> | null
   expert?: Prisma.XOR<Prisma.ExpertNullableScalarRelationFilter, Prisma.ExpertWhereInput> | null
   admin?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
-  superAdmin?: Prisma.XOR<Prisma.SuperAdminNullableScalarRelationFilter, Prisma.SuperAdminWhereInput> | null
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -345,7 +345,7 @@ export type UserCreateInput = {
   client?: Prisma.ClientCreateNestedOneWithoutUserInput
   expert?: Prisma.ExpertCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -366,7 +366,7 @@ export type UserUncheckedCreateInput = {
   client?: Prisma.ClientUncheckedCreateNestedOneWithoutUserInput
   expert?: Prisma.ExpertUncheckedCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -387,7 +387,7 @@ export type UserUpdateInput = {
   client?: Prisma.ClientUpdateOneWithoutUserNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -408,7 +408,7 @@ export type UserUncheckedUpdateInput = {
   client?: Prisma.ClientUncheckedUpdateOneWithoutUserNestedInput
   expert?: Prisma.ExpertUncheckedUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUncheckedUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -584,18 +584,18 @@ export type UserUpdateOneRequiredWithoutExpertNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExpertInput, Prisma.UserUpdateWithoutExpertInput>, Prisma.UserUncheckedUpdateWithoutExpertInput>
 }
 
-export type UserCreateNestedOneWithoutSuperAdminInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSuperAdminInput, Prisma.UserUncheckedCreateWithoutSuperAdminInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSuperAdminInput
+export type UserCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutSuperAdminNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSuperAdminInput, Prisma.UserUncheckedCreateWithoutSuperAdminInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSuperAdminInput
-  upsert?: Prisma.UserUpsertWithoutSuperAdminInput
+export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutNotificationsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSuperAdminInput, Prisma.UserUpdateWithoutSuperAdminInput>, Prisma.UserUncheckedUpdateWithoutSuperAdminInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
 }
 
 export type UserCreateWithoutAdminInput = {
@@ -615,7 +615,7 @@ export type UserCreateWithoutAdminInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   client?: Prisma.ClientCreateNestedOneWithoutUserInput
   expert?: Prisma.ExpertCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAdminInput = {
@@ -635,7 +635,7 @@ export type UserUncheckedCreateWithoutAdminInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   client?: Prisma.ClientUncheckedCreateNestedOneWithoutUserInput
   expert?: Prisma.ExpertUncheckedCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAdminInput = {
@@ -671,7 +671,7 @@ export type UserUpdateWithoutAdminInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   client?: Prisma.ClientUpdateOneWithoutUserNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminInput = {
@@ -691,7 +691,7 @@ export type UserUncheckedUpdateWithoutAdminInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   client?: Prisma.ClientUncheckedUpdateOneWithoutUserNestedInput
   expert?: Prisma.ExpertUncheckedUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -711,7 +711,7 @@ export type UserCreateWithoutSessionsInput = {
   client?: Prisma.ClientCreateNestedOneWithoutUserInput
   expert?: Prisma.ExpertCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -731,7 +731,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   client?: Prisma.ClientUncheckedCreateNestedOneWithoutUserInput
   expert?: Prisma.ExpertUncheckedCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -767,7 +767,7 @@ export type UserUpdateWithoutSessionsInput = {
   client?: Prisma.ClientUpdateOneWithoutUserNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -787,7 +787,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   client?: Prisma.ClientUncheckedUpdateOneWithoutUserNestedInput
   expert?: Prisma.ExpertUncheckedUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUncheckedUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -807,7 +807,7 @@ export type UserCreateWithoutAccountsInput = {
   client?: Prisma.ClientCreateNestedOneWithoutUserInput
   expert?: Prisma.ExpertCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -827,7 +827,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   client?: Prisma.ClientUncheckedCreateNestedOneWithoutUserInput
   expert?: Prisma.ExpertUncheckedCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -863,7 +863,7 @@ export type UserUpdateWithoutAccountsInput = {
   client?: Prisma.ClientUpdateOneWithoutUserNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -883,7 +883,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   client?: Prisma.ClientUncheckedUpdateOneWithoutUserNestedInput
   expert?: Prisma.ExpertUncheckedUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUncheckedUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutClientInput = {
@@ -903,7 +903,7 @@ export type UserCreateWithoutClientInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   expert?: Prisma.ExpertCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutClientInput = {
@@ -923,7 +923,7 @@ export type UserUncheckedCreateWithoutClientInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   expert?: Prisma.ExpertUncheckedCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutClientInput = {
@@ -959,7 +959,7 @@ export type UserUpdateWithoutClientInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientInput = {
@@ -979,7 +979,7 @@ export type UserUncheckedUpdateWithoutClientInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   expert?: Prisma.ExpertUncheckedUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUncheckedUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutExpertInput = {
@@ -999,7 +999,7 @@ export type UserCreateWithoutExpertInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   client?: Prisma.ClientCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExpertInput = {
@@ -1019,7 +1019,7 @@ export type UserUncheckedCreateWithoutExpertInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   client?: Prisma.ClientUncheckedCreateNestedOneWithoutUserInput
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUserInput
-  superAdmin?: Prisma.SuperAdminUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExpertInput = {
@@ -1055,7 +1055,7 @@ export type UserUpdateWithoutExpertInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   client?: Prisma.ClientUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExpertInput = {
@@ -1075,10 +1075,10 @@ export type UserUncheckedUpdateWithoutExpertInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   client?: Prisma.ClientUncheckedUpdateOneWithoutUserNestedInput
   admin?: Prisma.AdminUncheckedUpdateOneWithoutUserNestedInput
-  superAdmin?: Prisma.SuperAdminUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutSuperAdminInput = {
+export type UserCreateWithoutNotificationsInput = {
   id: string
   name: string
   email: string
@@ -1098,7 +1098,7 @@ export type UserCreateWithoutSuperAdminInput = {
   admin?: Prisma.AdminCreateNestedOneWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutSuperAdminInput = {
+export type UserUncheckedCreateWithoutNotificationsInput = {
   id: string
   name: string
   email: string
@@ -1118,23 +1118,23 @@ export type UserUncheckedCreateWithoutSuperAdminInput = {
   admin?: Prisma.AdminUncheckedCreateNestedOneWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutSuperAdminInput = {
+export type UserCreateOrConnectWithoutNotificationsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutSuperAdminInput, Prisma.UserUncheckedCreateWithoutSuperAdminInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
 }
 
-export type UserUpsertWithoutSuperAdminInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutSuperAdminInput, Prisma.UserUncheckedUpdateWithoutSuperAdminInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutSuperAdminInput, Prisma.UserUncheckedCreateWithoutSuperAdminInput>
+export type UserUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutSuperAdminInput = {
+export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutSuperAdminInput, Prisma.UserUncheckedUpdateWithoutSuperAdminInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
 }
 
-export type UserUpdateWithoutSuperAdminInput = {
+export type UserUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1154,7 +1154,7 @@ export type UserUpdateWithoutSuperAdminInput = {
   admin?: Prisma.AdminUpdateOneWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutSuperAdminInput = {
+export type UserUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1182,11 +1182,13 @@ export type UserUncheckedUpdateWithoutSuperAdminInput = {
 export type UserCountOutputType = {
   sessions: number
   accounts: number
+  notifications: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
+  notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -1213,6 +1215,13 @@ export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.AccountWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1232,7 +1241,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   client?: boolean | Prisma.User$clientArgs<ExtArgs>
   expert?: boolean | Prisma.User$expertArgs<ExtArgs>
   admin?: boolean | Prisma.User$adminArgs<ExtArgs>
-  superAdmin?: boolean | Prisma.User$superAdminArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1288,7 +1297,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   client?: boolean | Prisma.User$clientArgs<ExtArgs>
   expert?: boolean | Prisma.User$expertArgs<ExtArgs>
   admin?: boolean | Prisma.User$adminArgs<ExtArgs>
-  superAdmin?: boolean | Prisma.User$superAdminArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1302,7 +1311,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     client: Prisma.$ClientPayload<ExtArgs> | null
     expert: Prisma.$ExpertPayload<ExtArgs> | null
     admin: Prisma.$AdminPayload<ExtArgs> | null
-    superAdmin: Prisma.$SuperAdminPayload<ExtArgs> | null
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1716,7 +1725,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   client<T extends Prisma.User$clientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clientArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   expert<T extends Prisma.User$expertArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$expertArgs<ExtArgs>>): Prisma.Prisma__ExpertClient<runtime.Types.Result.GetResult<Prisma.$ExpertPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   admin<T extends Prisma.User$adminArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$adminArgs<ExtArgs>>): Prisma.Prisma__AdminClient<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  superAdmin<T extends Prisma.User$superAdminArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$superAdminArgs<ExtArgs>>): Prisma.Prisma__SuperAdminClient<runtime.Types.Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2256,22 +2265,27 @@ export type User$adminArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 }
 
 /**
- * User.superAdmin
+ * User.notifications
  */
-export type User$superAdminArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the SuperAdmin
+   * Select specific fields to fetch from the Notification
    */
-  select?: Prisma.SuperAdminSelect<ExtArgs> | null
+  select?: Prisma.NotificationSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the SuperAdmin
+   * Omit specific fields from the Notification
    */
-  omit?: Prisma.SuperAdminOmit<ExtArgs> | null
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.SuperAdminInclude<ExtArgs> | null
-  where?: Prisma.SuperAdminWhereInput
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

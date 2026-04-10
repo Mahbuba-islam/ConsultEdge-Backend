@@ -24,7 +24,7 @@ export const seedAdmin = async()=>{
         body:{
             email:envVars.ADMIN_EMAIL,
             password:envVars.ADMIN_PASSWORD,
-            name:" Admin Saheb",
+            name:"Admin Saheb",
             role:Role.ADMIN,
             needPasswordChange:true,
             rememberMe:false

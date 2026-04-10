@@ -5,6 +5,9 @@ import { IcreateAdmin} from "./userTypes";
 import { prisma } from "../../lib/prisma";
 import { auth } from "../../lib/auth";
 import { Role } from "../../generated/enums";
+import { IqueryParams } from "../../interfaces/query.interface";
+import { QueryBuilder } from "../../utilis/queryBuilder";
+import { Client, Prisma } from "../../generated/client";
 
 
 
@@ -107,19 +110,45 @@ console.log("Admin Data from DB:", adminData.id)
 }
     
 
+// get all clients
+const getAllClients = async (query: IqueryParams) => {
+    const queryBuilder = new QueryBuilder<
+        Client,
+        Prisma.ClientWhereInput,
+        Prisma.ClientInclude
+    >(prisma.client, query, {
+        searchableFields: ["fullName", "email", "phone", "address", "user.name", "user.email"],
+        filterableFields: ["fullName", "email", "phone", "address", "isDeleted", "userId"],
+    });
 
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .where({
+            isDeleted: false,
+        })
+        .include({
+            user: {
+                select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                    role: true,
+                    status: true,
+                    emailVerified: true,
+                },
+            },
+        })
+        .paginate()
+        .sort()
+        .fields()
+        .excute();
 
-
-
-
-
-
-
-
-
-
+    return result;
+};
 
 export const userService = {
    createAdmin,
+   getAllClients,
   
 }

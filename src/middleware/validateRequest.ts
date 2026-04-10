@@ -5,21 +5,56 @@
  // support any zod schema
 
 import { NextFunction, Request, Response } from "express"
-import {  ZodType } from "zod"
+import { ZodType } from "zod"
 
 export const validateRequest = (zodSchema: ZodType) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    if(req.body.data){
-      req.body = JSON.parse(req.body.data)
-    }
-    const parsedResult = zodSchema.safeParse(req.body)
+    try {
+      if (typeof req.body?.data === "string") {
+        req.body = JSON.parse(req.body.data)
+      }
 
-    if (!parsedResult.success) {
-      return next(parsedResult.error)
+      const requestData = {
+        body: req.body,
+        query: req.query,
+        params: req.params,
+      }
+
+      const wrappedResult = zodSchema.safeParse(requestData)
+
+      if (wrappedResult.success) {
+        const parsedData = wrappedResult.data as {
+          body?: unknown
+          query?: unknown
+          params?: unknown
+        }
+
+        if (parsedData.body !== undefined) {
+          req.body = parsedData.body as Request["body"]
+        }
+
+        if (parsedData.query !== undefined) {
+          req.query = parsedData.query as Request["query"]
+        }
+
+        if (parsedData.params !== undefined) {
+          req.params = parsedData.params as Request["params"]
+        }
+
+        return next()
+      }
+
+      const bodyOnlyResult = zodSchema.safeParse(req.body)
+
+      if (!bodyOnlyResult.success) {
+        return next(bodyOnlyResult.error)
+      }
+
+      req.body = bodyOnlyResult.data
+      next()
+    } catch (error) {
+      next(error)
     }
-   
-    req.body = parsedResult.data
-    next()
   }
 }
 

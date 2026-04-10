@@ -395,9 +395,9 @@ export const ModelName = {
   ExpertSchedule: 'ExpertSchedule',
   ExpertVerification: 'ExpertVerification',
   Industry: 'Industry',
+  Notification: 'Notification',
   Payment: 'Payment',
   Schedule: 'Schedule',
-  SuperAdmin: 'SuperAdmin',
   Testimonial: 'Testimonial'
 } as const
 
@@ -414,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin" | "user" | "session" | "account" | "verification" | "client" | "consultation" | "expert" | "expertSchedule" | "expertVerification" | "industry" | "payment" | "schedule" | "superAdmin" | "testimonial"
+    modelProps: "admin" | "user" | "session" | "account" | "verification" | "client" | "consultation" | "expert" | "expertSchedule" | "expertVerification" | "industry" | "notification" | "payment" | "schedule" | "testimonial"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1232,6 +1232,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Notification: {
+      payload: Prisma.$NotificationPayload<ExtArgs>
+      fields: Prisma.NotificationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NotificationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NotificationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        findFirst: {
+          args: Prisma.NotificationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NotificationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        findMany: {
+          args: Prisma.NotificationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+        }
+        create: {
+          args: Prisma.NotificationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        createMany: {
+          args: Prisma.NotificationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NotificationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+        }
+        delete: {
+          args: Prisma.NotificationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        update: {
+          args: Prisma.NotificationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        deleteMany: {
+          args: Prisma.NotificationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NotificationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NotificationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+        }
+        upsert: {
+          args: Prisma.NotificationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>
+        }
+        aggregate: {
+          args: Prisma.NotificationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNotification>
+        }
+        groupBy: {
+          args: Prisma.NotificationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NotificationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificationCountAggregateOutputType> | number
+        }
+      }
+    }
     Payment: {
       payload: Prisma.$PaymentPayload<ExtArgs>
       fields: Prisma.PaymentFieldRefs
@@ -1377,80 +1451,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ScheduleCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ScheduleCountAggregateOutputType> | number
-        }
-      }
-    }
-    SuperAdmin: {
-      payload: Prisma.$SuperAdminPayload<ExtArgs>
-      fields: Prisma.SuperAdminFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.SuperAdminFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.SuperAdminFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>
-        }
-        findFirst: {
-          args: Prisma.SuperAdminFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.SuperAdminFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>
-        }
-        findMany: {
-          args: Prisma.SuperAdminFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
-        }
-        create: {
-          args: Prisma.SuperAdminCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>
-        }
-        createMany: {
-          args: Prisma.SuperAdminCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.SuperAdminCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
-        }
-        delete: {
-          args: Prisma.SuperAdminDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>
-        }
-        update: {
-          args: Prisma.SuperAdminUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>
-        }
-        deleteMany: {
-          args: Prisma.SuperAdminDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.SuperAdminUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.SuperAdminUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
-        }
-        upsert: {
-          args: Prisma.SuperAdminUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SuperAdminPayload>
-        }
-        aggregate: {
-          args: Prisma.SuperAdminAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSuperAdmin>
-        }
-        groupBy: {
-          args: Prisma.SuperAdminGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SuperAdminGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.SuperAdminCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SuperAdminCountAggregateOutputType> | number
         }
       }
     }
@@ -1744,6 +1744,18 @@ export const IndustryScalarFieldEnum = {
 export type IndustryScalarFieldEnum = (typeof IndustryScalarFieldEnum)[keyof typeof IndustryScalarFieldEnum]
 
 
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  message: 'message',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  read: 'read'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
 export const PaymentScalarFieldEnum = {
   id: 'id',
   consultationId: 'consultationId',
@@ -1770,22 +1782,6 @@ export const ScheduleScalarFieldEnum = {
 } as const
 
 export type ScheduleScalarFieldEnum = (typeof ScheduleScalarFieldEnum)[keyof typeof ScheduleScalarFieldEnum]
-
-
-export const SuperAdminScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  name: 'name',
-  email: 'email',
-  profilePhoto: 'profilePhoto',
-  contactNumber: 'contactNumber',
-  isDeleted: 'isDeleted',
-  deletedAt: 'deletedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SuperAdminScalarFieldEnum = (typeof SuperAdminScalarFieldEnum)[keyof typeof SuperAdminScalarFieldEnum]
 
 
 export const TestimonialScalarFieldEnum = {
@@ -2101,9 +2097,9 @@ export type GlobalOmitConfig = {
   expertSchedule?: Prisma.ExpertScheduleOmit
   expertVerification?: Prisma.ExpertVerificationOmit
   industry?: Prisma.IndustryOmit
+  notification?: Prisma.NotificationOmit
   payment?: Prisma.PaymentOmit
   schedule?: Prisma.ScheduleOmit
-  superAdmin?: Prisma.SuperAdminOmit
   testimonial?: Prisma.TestimonialOmit
 }
 

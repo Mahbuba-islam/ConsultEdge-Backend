@@ -62,9 +62,9 @@ export const ModelName = {
   ExpertSchedule: 'ExpertSchedule',
   ExpertVerification: 'ExpertVerification',
   Industry: 'Industry',
+  Notification: 'Notification',
   Payment: 'Payment',
   Schedule: 'Schedule',
-  SuperAdmin: 'SuperAdmin',
   Testimonial: 'Testimonial'
 } as const
 
@@ -261,6 +261,18 @@ export const IndustryScalarFieldEnum = {
 export type IndustryScalarFieldEnum = (typeof IndustryScalarFieldEnum)[keyof typeof IndustryScalarFieldEnum]
 
 
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  message: 'message',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  read: 'read'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
 export const PaymentScalarFieldEnum = {
   id: 'id',
   consultationId: 'consultationId',
@@ -287,22 +299,6 @@ export const ScheduleScalarFieldEnum = {
 } as const
 
 export type ScheduleScalarFieldEnum = (typeof ScheduleScalarFieldEnum)[keyof typeof ScheduleScalarFieldEnum]
-
-
-export const SuperAdminScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  name: 'name',
-  email: 'email',
-  profilePhoto: 'profilePhoto',
-  contactNumber: 'contactNumber',
-  isDeleted: 'isDeleted',
-  deletedAt: 'deletedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SuperAdminScalarFieldEnum = (typeof SuperAdminScalarFieldEnum)[keyof typeof SuperAdminScalarFieldEnum]
 
 
 export const TestimonialScalarFieldEnum = {

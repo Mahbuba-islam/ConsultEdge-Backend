@@ -13,8 +13,8 @@ export interface ILoginUserPayload{
 
 
 export interface IChangePasswordPayload {
-  currentPassword:string
-  newPassword:string
+  currentPassword?: string
+  newPassword: string
 }
 
 

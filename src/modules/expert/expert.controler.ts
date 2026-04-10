@@ -86,8 +86,8 @@ const deleteExpert = catchAsync(async (req: Request, res: Response) => {
 
 const applyExpert = catchAsync(async (req, res) => {
   const userId = req.user.userId; 
-
-  const result = await expertService.applyExpert(userId, req.body);
+  const profilePicture = req.file ? req.file.path : null;
+  const result = await expertService.applyExpert(userId, { ...req.body, profilePicture });
 
   sendResponse(res, {
     success: true,

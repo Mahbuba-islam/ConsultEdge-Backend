@@ -28,6 +28,17 @@ const bookConsultationWithPayLater = catchAsync(async (req, res) => {
   });
 });
 
+const getMyBookings = catchAsync(async (req, res) => {
+  const result = await consultationService.getMyBookings(req.user);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "My bookings retrieved successfully",
+    data: result,
+  });
+});
+
 const initiateConsultationPayment = catchAsync(async (req, res) => {
   const { consultationId } = req.params;
 
@@ -59,6 +70,7 @@ const cancelUnpaidConsultations = catchAsync(async (_req, res) => {
 export const consultationController = {
   bookConsultation,
   bookConsultationWithPayLater,
+  getMyBookings,
   initiateConsultationPayment,
   cancelUnpaidConsultations,
 };

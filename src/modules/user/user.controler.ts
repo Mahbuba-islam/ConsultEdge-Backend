@@ -4,6 +4,7 @@ import { userService } from "./user.service";
 import status from "http-status";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponsr";
+import { IqueryParams } from "../../interfaces/query.interface";
 
 
 
@@ -23,12 +24,21 @@ const createAdmin = catchAsync(async(req: Request, res: Response) => {
    })
 })
 
+const getAllClients = catchAsync(async (req: Request, res: Response) => {
+    const result = await userService.getAllClients(req.query as IqueryParams)
 
-
-
+    sendResponse(res, {
+        success: true,
+        httpStatusCode: status.OK,
+        message: "Clients retrieved successfully",
+        data: result.data,
+        meta: result.meta,
+    })
+})
 
 export const userController = {
    createAdmin,
+   getAllClients,
     
 }
 

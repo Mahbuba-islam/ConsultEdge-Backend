@@ -49,14 +49,17 @@ const setRefreshTokenCookie = (res: Response, token: string) => {
 }
 
 const setBetterAuthSessionCookie = (res: Response, token: string) => {
-    CookieUtils.setCookie(res, "better-auth.session_token", token, {
+    const options = {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: "none" as const,
         path: '/',
         //1 day
         maxAge: 60 * 60 * 24 * 1000,
-    });
+    };
+
+    CookieUtils.setCookie(res, "better-auth.session_token", token, options);
+    CookieUtils.setCookie(res, "__Secure-better-auth.session_token", token, options);
 }
 
 

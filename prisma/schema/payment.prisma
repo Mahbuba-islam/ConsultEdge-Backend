@@ -18,3 +18,27 @@ model Payment {
     @@index([transactionId])
     @@map("payments")
 }
+
+// model Payment {
+//     id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+//     projectId String
+//     project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+//     clientId String
+//     client   User   @relation(fields: [clientId], references: [id])
+
+//     amount Float
+//     status PaymentStatus @default(UNPAID)
+
+//     transactionId      String  @unique
+//     stripeEventId      String? @unique
+//     paymentGatewayData Json?
+
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     @@index([projectId])
+//     @@index([transactionId])
+//     @@map("payments")
+// }

@@ -4,10 +4,19 @@ import { industryService } from "./industry.service";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponsr";
 
+
 const createIndustry = catchAsync(async (req, res) => {
-  console.log(req.body);
-  const result = await industryService.createIndustry(req.body);
-  console.log(result);
+  const { name, description } = req.body;
+
+  const icon = req.file?.path || undefined; // FIX
+  console.log(icon);
+
+  const result = await industryService.createIndustry({
+    name,
+    description,
+    icon
+  });
+
   sendResponse(res, {
     httpStatusCode: status.CREATED,
     success: true,

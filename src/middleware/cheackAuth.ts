@@ -108,6 +108,7 @@
 
 import { NextFunction, Request, Response } from "express";
 import status from "http-status";
+import { auth } from "../lib/auth";
 import { prisma } from "../lib/prisma";
 import AppError from "../errorHelpers/AppError";
 import { Role, UserStatus } from "../generated/enums";
@@ -119,53 +120,7 @@ export const checkAuth =
   (...authRoles: Role[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // DEBUG: See what cookies server actually receives
-      console.log("COOKIES RECEIVED:", req.cookies);
-
-      // 1️⃣ Read session token
-      const sessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
-     console.log(sessionToken, 'session token');
-      if (!sessionToken) {
-        throw new AppError(status.UNAUTHORIZED, "Unauthorized! No session token.");
-      }
-
-      // 2️⃣ Validate session
-      const session = await prisma.session.findFirst({
-        where: {
-          token: sessionToken,
-          expiresAt: { gt: new Date() },
-        },
-        include: { user: true },
-      });
-
-      if (!session || !session.user) {
-        throw new AppError(status.UNAUTHORIZED, "Unauthorized! Invalid session.");
-      }
-
-      const user = session.user;
-
-      // 3️⃣ Check user status
-      if (
-        user.status === UserStatus.BLOCKED ||
-        user.status === UserStatus.DELETED ||
-        user.isDeleted
-      ) {
-        throw new AppError(status.UNAUTHORIZED, "Unauthorized! User inactive.");
-      }
-
-      // 4️⃣ Role check (if required)
-      if (authRoles.length > 0 && !authRoles.includes(user.role)) {
-        throw new AppError(status.FORBIDDEN, "Forbidden! No permission.");
-      }
-
-      // 5️⃣ Attach user to req
-      req.user = {
-        userId: user.id,
-        role: user.role,
-        email: user.email,
-      };
-
-      // 6️⃣ Access token verification
+      // 1️⃣ Verify access token first
       const accessToken = CookieUtils.getCookie(req, "accessToken");
 
       if (!accessToken) {
@@ -174,13 +129,69 @@ export const checkAuth =
 
       const verified = jwtUtils.verifyToken(accessToken, envVars.ACCESS_TOKEN_SECRET);
 
-      if (!verified.success) {
+      if (!verified.success || !verified.data?.userId) {
         throw new AppError(status.UNAUTHORIZED, "Unauthorized! Invalid token.");
       }
 
-      // 7️⃣ Role check again (token-based)
-      if (authRoles.length > 0 && !authRoles.includes(verified.data!.role as Role)) {
+      // 2️⃣ Load fresh user data from DB
+      const user = await prisma.user.findUnique({
+        where: { id: String(verified.data.userId) },
+      });
+
+      if (!user) {
+        throw new AppError(status.UNAUTHORIZED, "Unauthorized! User not found.");
+      }
+
+      const userRole = user.role as Role;
+
+      if (
+        user.status === UserStatus.BLOCKED ||
+        user.status === UserStatus.DELETED ||
+        user.isDeleted
+      ) {
+        throw new AppError(status.UNAUTHORIZED, "Unauthorized! User inactive.");
+      }
+
+      if (authRoles.length > 0 && !authRoles.includes(userRole)) {
         throw new AppError(status.FORBIDDEN, "Forbidden! No permission.");
+      }
+
+      // 3️⃣ Attach authenticated user
+      req.user = {
+        userId: user.id,
+        role: userRole,
+        email: user.email,
+      };
+
+      // 4️⃣ Optionally inspect BetterAuth session if cookie exists, but do not fail request
+      const cookieHeader = req.headers.cookie;
+      if (cookieHeader?.includes("better-auth.session_token")) {
+        const betterAuthSession = await auth.api.getSession({
+          headers: {
+            cookie: cookieHeader,
+          },
+        }).catch(() => null);
+
+        if (
+          betterAuthSession?.session &&
+          betterAuthSession.user?.id === user.id
+        ) {
+          const now = new Date();
+          const expiresAt = new Date(betterAuthSession.session.expiresAt);
+          const createdAt = new Date(betterAuthSession.session.createdAt);
+          const sessionLifetime = expiresAt.getTime() - createdAt.getTime();
+          const timeRemaining = expiresAt.getTime() - now.getTime();
+
+          if (sessionLifetime > 0) {
+            const percentRemaining = (timeRemaining / sessionLifetime) * 100;
+
+            if (percentRemaining < 20) {
+              res.setHeader("X-Session-Refresh", "true");
+              res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
+              res.setHeader("X-Time-Remaining", timeRemaining.toString());
+            }
+          }
+        }
       }
 
       next();

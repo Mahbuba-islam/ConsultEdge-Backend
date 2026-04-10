@@ -13,7 +13,7 @@ const router = Router();
 router.post(
   "/assign",
   validateRequest(assignExpertScheduleValidation),
-  checkAuth(Role.EXPERT),
+  checkAuth(),
   expertScheduleController.assignExpertSchedules
 );
 

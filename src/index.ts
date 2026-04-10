@@ -15,6 +15,8 @@ import { industryRouter } from "./modules/industry/industry.router";
 import { testimonialRoutes } from "./modules/testimonial/testimonial.router";
 import { StatsRoutes } from "./modules/stats/stats.router";
 import { PaymentRoutes } from "./modules/payment/payment.router";
+import { notificationRouter } from "./modules/notification/notification.route";
+import { clientRouter } from "./modules/client/client.router";
 
 
 const router = Router();
@@ -27,6 +29,7 @@ router.use("/users", userRouter);
 
 // Core business modules
 router.use("/experts", expertRouter);
+router.use("/clients", clientRouter);
 
 // Scheduling
 router.use("/schedules", scheduleRoutes);
@@ -39,6 +42,7 @@ router.use("/consultations", consultationRouter);
 router.use("/admin", adminRouter);
 router.use("/stats", StatsRoutes)
 router.use("/payments", PaymentRoutes)
+router.use("/notifications", notificationRouter)
 // Industry / Category
 router.use("/industries", industryRouter);
 router.use("/expert-verification", expertVerificationRouter)

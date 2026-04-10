@@ -24,3 +24,4 @@ model Client {
     @@index([isDeleted], name: "idx_client_isDeleted")
     @@map("clients")
 }
+

@@ -27,6 +27,13 @@ router.post(
   consultationController.bookConsultationWithPayLater
 );
 
+// Client / Expert: see own bookings
+router.get(
+  "/my-bookings",
+  checkAuth(Role.CLIENT, Role.EXPERT),
+  consultationController.getMyBookings
+);
+
 // Client: initiate payment for existing consultation
 router.post(
   "/:consultationId/initiate-payment",

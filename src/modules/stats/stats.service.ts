@@ -117,13 +117,25 @@ const getExpertStats = async (user: IRequestUser) => {
 //client stats
 
 const getClientStats = async (user: IRequestUser) => {
+  const client = await prisma.client.findUnique({
+    where: { userId: user.userId },
+    select: { id: true },
+  });
+
+  if (!client) {
+    return {
+      consultationCount: 0,
+      consultationStatusDistribution: [],
+    };
+  }
+
   const consultationCount = await prisma.consultation.count({
-    where: { clientId: user.userId },
+    where: { clientId: client.id },
   });
 
   const consultationStatusDistribution = await prisma.consultation.groupBy({
     by: ["status"],
-    where: { clientId: user.userId },
+    where: { clientId: client.id },
     _count: { id: true },
   });
 

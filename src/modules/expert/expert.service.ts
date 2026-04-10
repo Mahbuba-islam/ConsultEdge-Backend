@@ -7,7 +7,7 @@ import { IqueryParams } from "../../interfaces/query.interface";
 import { QueryBuilder } from "../../utilis/queryBuilder";
 
 import { expertFilterableFields, expertIncludeConfig, expertSearchableFields } from "./expert.constant";
-import { Expert, Prisma, UserStatus } from "../../generated/client";
+import { Expert, Prisma, Role, UserStatus } from "../../generated/client";
 import { any } from "zod";
 import { prisma } from "../../lib/prisma";
 
@@ -145,25 +145,71 @@ const applyExpert = async (userId: string, payload: any) => {
   });
 
   if (existing) {
-    throw new Error("You have already applied to become an expert");
+    throw new AppError(status.BAD_REQUEST, "You have already applied to become an expert");
   }
 
-  const expert = await prisma.expert.create({
-  data: {
-    fullName: payload.fullName,
-    email: payload.email,        
-    phone: payload.phone,
-    bio: payload.bio,
-    title: payload.title,
-    experience: payload.experience || 0,
-    consultationFee: payload.consultationFee,
-    industryId: payload.industryId,
-    userId,
-  },
-});
+  const parsedExperience = Number(payload.experience ?? 0);
+  const parsedConsultationFee = Number(payload.consultationFee);
 
- return expert;
+  if (!Number.isInteger(parsedExperience) || parsedExperience < 0) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Experience must be a non-negative integer"
+    );
+  }
+
+  if (!Number.isInteger(parsedConsultationFee) || parsedConsultationFee <= 0) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Consultation fee must be a positive integer"
+    );
+  }
+
+  // Create expert profile
+  const expert = await prisma.expert.create({
+    data: {
+      fullName: payload.fullName,
+      email: payload.email,
+      phone: payload.phone,
+      bio: payload.bio,
+      title: payload.title,
+      experience: parsedExperience,
+      consultationFee: parsedConsultationFee,
+      industryId: payload.industryId,
+      profilePhoto: payload.profilePicture ?? payload.profilePhoto,
+      userId,
+    },
+  });
+
+  // ⭐ Update user role → CLIENT → EXPERT
+  await prisma.user.update({
+    where: { id: userId },
+    data: { role: Role.EXPERT },
+  });
+
+  // Notify all active admins
+  const admins = await prisma.user.findMany({
+    where: {
+      role: Role.ADMIN,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
+    },
+    select: { id: true },
+  });
+
+  if (admins.length > 0) {
+    await prisma.notification.createMany({
+      data: admins.map((admin) => ({
+        type: "EXPERT_APPLICATION",
+        message: `${expert.fullName} applied to become an expert`,
+        userId: admin.id,
+      })),
+    });
+  }
+
+  return expert;
 };
+
 
 
 

@@ -10,6 +10,8 @@ import { Role } from "../../generated/enums";
 
 
 const router = Router()
+
+router.get("/clients", checkAuth(Role.ADMIN), userController.getAllClients)
 router.post("/create-admin", validateRequest(createAdminZodSchema), checkAuth(Role.ADMIN), userController.createAdmin)
 
 export const userRouter = router

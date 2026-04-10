@@ -3,7 +3,7 @@ import { v7 as uuidv7 } from "uuid";
 
 import { IBookConsultationPayload } from "./consultation.interface";
 
-import { ConsultationStatus, PaymentStatus } from "../../generated/enums";
+import { ConsultationStatus, PaymentStatus, Role } from "../../generated/enums";
 import { envVars } from "../../config/env";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { prisma } from "../../lib/prisma";
@@ -197,6 +197,55 @@ const bookConsultationWithPayLater = async (
 };
 
 
+// GET MY BOOKINGS FOR CLIENT / EXPERT
+const getMyBookings = async (user: IRequestUser) => {
+  if (user.role === Role.CLIENT) {
+    const client = await prisma.client.findUniqueOrThrow({
+      where: { userId: user.userId },
+    });
+
+    return prisma.consultation.findMany({
+      where: { clientId: client.id },
+      include: {
+        client: true,
+        expert: true,
+        payment: true,
+        expertSchedule: {
+          include: {
+            schedule: true,
+          },
+        },
+        testimonial: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  if (user.role === Role.EXPERT) {
+    const expert = await prisma.expert.findUniqueOrThrow({
+      where: { userId: user.userId },
+    });
+
+    return prisma.consultation.findMany({
+      where: { expertId: expert.id },
+      include: {
+        client: true,
+        expert: true,
+        payment: true,
+        expertSchedule: {
+          include: {
+            schedule: true,
+          },
+        },
+        testimonial: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  throw new AppError(status.FORBIDDEN, "Only clients and experts can view their bookings");
+};
+
 // INITIATE PAYMENT FOR EXISTING CONSULTATION
 const initiateConsultationPayment = async (
   consultationId: string,
@@ -318,6 +367,7 @@ const cancelUnpaidConsultations = async () => {
 export const consultationService = {
   bookConsultation,
   bookConsultationWithPayLater,
+  getMyBookings,
   initiateConsultationPayment,
   cancelUnpaidConsultations,
 };

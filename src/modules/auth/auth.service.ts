@@ -153,7 +153,7 @@ const getMe = async (user: IRequestUser) => {
        
       },
       admin: true,
-      superAdmin: true,
+      
     },
   });
 
@@ -166,68 +166,83 @@ const getMe = async (user: IRequestUser) => {
 
 
 //get new token
-const getNewToken = async(refreshToken:string, sessionToken:string)=> {
-
-    const isSessionTokenExists = await prisma.session.findUnique({
-      where:{
-        token:sessionToken,
-     } ,
-      include:{
-        user:true
-      }
-    })
-
-
-    if(!isSessionTokenExists){
-        throw new AppError(status.UNAUTHORIZED, "Invalid session token")
-    }
-
-
+const getNewToken = async(refreshToken:string, sessionToken?:string)=> {
     const verifyRefreshToken = jwtUtils.verifyToken(refreshToken, envVars.REFRESH_TOKEN_SECRET)
     if(!verifyRefreshToken.success){
      throw new AppError(status.UNAUTHORIZED, "invalid refresh token")
     };
-console.log('verifyRefreshToken', verifyRefreshToken);
+
     const data = verifyRefreshToken.data as JwtPayload
-  console.log('data',data.userId);
+
+    if(!data?.userId){
+      throw new AppError(status.UNAUTHORIZED, "invalid refresh token payload")
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: data.userId,
+      },
+    })
+
+    if(!user || user.isDeleted || user.status === UserStatus.DELETED || user.status === UserStatus.BLOCKED){
+      throw new AppError(status.UNAUTHORIZED, "User is not authorized")
+    }
+
+    let nextSessionToken: string | null = null
+
+    if (sessionToken) {
+      try {
+        const betterAuthSession = await auth.api.getSession({
+          headers: {
+            Cookie: `better-auth.session_token=${sessionToken}`,
+          },
+        })
+
+        if (
+          betterAuthSession?.session &&
+          betterAuthSession.user?.id === user.id
+        ) {
+          await prisma.session.update({
+            where: {
+              token: betterAuthSession.session.token,
+            },
+            data: {
+              expiresAt: new Date(Date.now() + 60 * 60 * 60 * 24 * 1000),
+              updatedAt: new Date(),
+            },
+          }).catch(() => null)
+
+          nextSessionToken = sessionToken
+        }
+      } catch {
+        nextSessionToken = null
+      }
+    }
+
    const newAccessToken = tokenUtils.getAccessToken({
-        userId:data.userId,
-        email:data.email,
-        name:data.name,
-        role:data.role,
-        status:data.status,
-        isDeleted:data.isDeleted,
-        emailVerified:data.emailVerified
+        userId:user.id,
+        email:user.email,
+        name:user.name,
+        role:user.role,
+        status:user.status,
+        isDeleted:user.isDeleted,
+        emailVerified:user.emailVerified
     })
 
     const newRefreshToken = tokenUtils.getRefreshToken({
-        userId:data.id,
-        email:data.email,
-        name:data.name,
-        role:data.role,
-        status:data.status,
-        isDeleted:data.isDeleted,
-        emailVerified:data.emailVerified
+        userId:user.id,
+        email:user.email,
+        name:user.name,
+        role:user.role,
+        status:user.status,
+        isDeleted:user.isDeleted,
+        emailVerified:user.emailVerified
     })
-
-   // update session token
-    const {token} = await prisma.session.update({
-        where:{
-            token:sessionToken
-        },
-        data:{
-            token:sessionToken,
-            expiresAt:new Date(Date.now()+60*60*60*24*1000),
-            updatedAt: new Date()
-        }
-    })
-
-
 
     return {
         accessToken:newAccessToken,
         refreshToken:newRefreshToken,
-        sessionToken:token
+        sessionToken:nextSessionToken
     }
 }
 
@@ -306,31 +321,56 @@ const changePassword = async (
   payload: IChangePasswordPayload,
   sessionToken: string
 ) => {
+  if (!sessionToken) {
+    throw new AppError(status.UNAUTHORIZED, "Session expired. Please login again.");
+  }
 
-  const session = await auth.api.getSession({
-    headers: new Headers({
-      Authorization: `Bearer ${sessionToken}`,
-    }),
+  const authHeaders = new Headers({
+    Authorization: `Bearer ${sessionToken}`,
+    Cookie: `better-auth.session_token=${sessionToken}`,
   });
 
-  if (!session) {
+  const session = await auth.api.getSession({
+    headers: authHeaders,
+  });
+
+  if (!session?.user) {
     throw new AppError(status.UNAUTHORIZED, "Invalid session token");
   }
 
   const { currentPassword, newPassword } = payload;
 
-  const result = await auth.api.changePassword({
-    body: {
-      currentPassword,
-      newPassword,
-      revokeOtherSessions: true,
+  const credentialAccount = await prisma.account.findFirst({
+    where: {
+      userId: session.user.id,
+      providerId: "credential",
     },
-    headers: new Headers({
-      Authorization: `Bearer ${sessionToken}`,
-    }),
   });
 
-  // update needPasswordChange
+  let result;
+
+  if (credentialAccount?.password) {
+    if (!currentPassword) {
+      throw new AppError(status.BAD_REQUEST, "Current password is required");
+    }
+
+    result = await auth.api.changePassword({
+      body: {
+        currentPassword,
+        newPassword,
+        revokeOtherSessions: true,
+      },
+      headers: authHeaders,
+    });
+  } else {
+    result = await auth.api.setPassword({
+      body: {
+        newPassword,
+      },
+      headers: authHeaders,
+    });
+  }
+
   if (session.user.needPasswordChange) {
     await prisma.user.update({
       where: { id: session.user.id },
@@ -338,33 +378,41 @@ const changePassword = async (
     });
   }
 
-  // 🔥 updated user fetch
   const updatedUser = await prisma.user.findUnique({
     where: { id: session.user.id },
   });
 
+  if (!updatedUser) {
+    throw new AppError(status.NOT_FOUND, "User not found");
+  }
+
   const accessToken = tokenUtils.getAccessToken({
-    userId: updatedUser!.id,
-    email: updatedUser!.email,
-    name: updatedUser!.name,
-    role: updatedUser!.role,
-    status: updatedUser!.status,
-    isDeleted: updatedUser!.isDeleted,
-    emailVerified: updatedUser!.emailVerified,
+    userId: updatedUser.id,
+    email: updatedUser.email,
+    name: updatedUser.name,
+    role: updatedUser.role,
+    status: updatedUser.status,
+    isDeleted: updatedUser.isDeleted,
+    emailVerified: updatedUser.emailVerified,
   });
 
   const refreshToken = tokenUtils.getRefreshToken({
-    userId: updatedUser!.id,
-    email: updatedUser!.email,
-    name: updatedUser!.name,
-    role: updatedUser!.role,
-    status: updatedUser!.status,
-    isDeleted: updatedUser!.isDeleted,
-    emailVerified: updatedUser!.emailVerified,
+    userId: updatedUser.id,
+    email: updatedUser.email,
+    name: updatedUser.name,
+    role: updatedUser.role,
+    status: updatedUser.status,
+    isDeleted: updatedUser.isDeleted,
+    emailVerified: updatedUser.emailVerified,
   });
 
+  const betterAuthToken = "token" in result ? result.token : null;
+  const operationStatus = "status" in result ? result.status : true;
+
   return {
-    ...result,
+    status: operationStatus,
+    token: betterAuthToken,
+    user: updatedUser,
     accessToken,
     refreshToken,
   };
@@ -537,6 +585,50 @@ const googleLoginSuccess = async (session : Record<string, any>) =>{
 
 
 
+
+
+  const updateProfile = async (user: IRequestUser, payload: any) => {
+  const baseUpdate = {
+    name: payload.name,
+    email: payload.email,
+    image: payload.image,
+  };
+
+  const updatedUser = await prisma.user.update({
+    where: { id: user.userId },
+    data: baseUpdate,
+  });
+
+  // Expert update
+  if (updatedUser.role === "EXPERT") {
+    await prisma.expert.update({
+      where: { userId: user.userId },
+      data: {
+        title: payload.title,
+        experience: payload.experience,
+        industryId: payload.industryId,
+      },
+    });
+  }
+
+  // Client update
+  if (updatedUser.role === "CLIENT") {
+    await prisma.client.update({
+      where: { userId: user.userId },
+      data: {
+        fullName: payload.fullName,
+      },
+    });
+  }
+
+  return updatedUser;
+};
+
+
+
+
+
+
 export const authService = {
     registerClient,
     loginUser,
@@ -548,6 +640,7 @@ export const authService = {
     forgetPassword,
     resetPassword,
     googleLoginSuccess,
-    checkEmailExists
+    checkEmailExists,
+    updateProfile
     
 }

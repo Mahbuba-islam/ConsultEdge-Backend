@@ -72,17 +72,21 @@ app.get("/", (req: Request, res: Response) => {
 /* -------------------------------------------
    Cron Job — Cancel Unpaid Consultations
 -------------------------------------------- */
-cron.schedule("*/25 * * * *", async () => {
-  try {
-    console.log("Running cron job: cancel unpaid consultations");
-    await consultationService.cancelUnpaidConsultations();
-  } catch (error: any) {
-    console.error(
-      "Error occurred while canceling unpaid consultations:",
-      error.message
-    );
-  }
-});
+// cron.schedule("*/25 * * * *", async () => {
+//   try {
+//     console.log("Running cron job: cancel unpaid consultations");
+//     await consultationService.cancelUnpaidConsultations();
+//   } catch (error: any) {
+//     console.error(
+//       "Error occurred while canceling unpaid consultations:",
+//       error.message
+//     );
+//   }
+// });
+// cron.schedule("*/25 * * * *", async () => {
+//   await yourService.cleanup();
+// });
+
 
 /* -------------------------------------------
    API Routes
