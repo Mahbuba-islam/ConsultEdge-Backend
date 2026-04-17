@@ -14,8 +14,11 @@ export const validateRequest = (zodSchema: ZodType) => {
         req.body = JSON.parse(req.body.data)
       }
 
+      // Ensure schema validation always receives an object for body
+      const normalizedBody = req.body ?? {}
+
       const requestData = {
-        body: req.body,
+        body: normalizedBody,
         query: req.query,
         params: req.params,
       }
@@ -44,7 +47,7 @@ export const validateRequest = (zodSchema: ZodType) => {
         return next()
       }
 
-      const bodyOnlyResult = zodSchema.safeParse(req.body)
+      const bodyOnlyResult = zodSchema.safeParse(normalizedBody)
 
       if (!bodyOnlyResult.success) {
         return next(bodyOnlyResult.error)

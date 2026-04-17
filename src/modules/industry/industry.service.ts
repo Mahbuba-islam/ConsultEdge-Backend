@@ -44,7 +44,7 @@ const getAllIndustries = async (): Promise<Industry[]> => {
 // GET INDUSTRY BY ID
 // ===============================
 const getIndustryById = async (id: string): Promise<Industry> => {
-  const industry = await prisma.industry.findUnique({
+  const industry = await prisma.industry.findFirst({
     where: { id, isDeleted: false },
     include: { experts: true },
   });
@@ -61,9 +61,9 @@ const getIndustryById = async (id: string): Promise<Industry> => {
 // ===============================
 const updateIndustry = async (
   id: string,
-  data: Partial<Industry>
+  data: Partial<IIndustry>
 ): Promise<Industry> => {
-  const exists = await prisma.industry.findUnique({
+  const exists = await prisma.industry.findFirst({
     where: { id, isDeleted: false },
   });
 

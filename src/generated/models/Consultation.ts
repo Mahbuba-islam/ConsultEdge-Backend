@@ -30,6 +30,15 @@ export type ConsultationMinAggregateOutputType = {
   status: $Enums.ConsultationStatus | null
   paymentStatus: $Enums.PaymentStatus | null
   date: Date | null
+  startedAt: Date | null
+  endedAt: Date | null
+  cancelledAt: Date | null
+  cancelReason: string | null
+  cancelledBy: $Enums.Role | null
+  rescheduledAt: Date | null
+  rescheduleReason: string | null
+  rescheduledBy: $Enums.Role | null
+  sessionSummary: string | null
   clientId: string | null
   expertScheduleId: string | null
   createdAt: Date | null
@@ -43,6 +52,15 @@ export type ConsultationMaxAggregateOutputType = {
   status: $Enums.ConsultationStatus | null
   paymentStatus: $Enums.PaymentStatus | null
   date: Date | null
+  startedAt: Date | null
+  endedAt: Date | null
+  cancelledAt: Date | null
+  cancelReason: string | null
+  cancelledBy: $Enums.Role | null
+  rescheduledAt: Date | null
+  rescheduleReason: string | null
+  rescheduledBy: $Enums.Role | null
+  sessionSummary: string | null
   clientId: string | null
   expertScheduleId: string | null
   createdAt: Date | null
@@ -56,6 +74,15 @@ export type ConsultationCountAggregateOutputType = {
   status: number
   paymentStatus: number
   date: number
+  startedAt: number
+  endedAt: number
+  cancelledAt: number
+  cancelReason: number
+  cancelledBy: number
+  rescheduledAt: number
+  rescheduleReason: number
+  rescheduledBy: number
+  sessionSummary: number
   clientId: number
   expertScheduleId: number
   createdAt: number
@@ -71,6 +98,15 @@ export type ConsultationMinAggregateInputType = {
   status?: true
   paymentStatus?: true
   date?: true
+  startedAt?: true
+  endedAt?: true
+  cancelledAt?: true
+  cancelReason?: true
+  cancelledBy?: true
+  rescheduledAt?: true
+  rescheduleReason?: true
+  rescheduledBy?: true
+  sessionSummary?: true
   clientId?: true
   expertScheduleId?: true
   createdAt?: true
@@ -84,6 +120,15 @@ export type ConsultationMaxAggregateInputType = {
   status?: true
   paymentStatus?: true
   date?: true
+  startedAt?: true
+  endedAt?: true
+  cancelledAt?: true
+  cancelReason?: true
+  cancelledBy?: true
+  rescheduledAt?: true
+  rescheduleReason?: true
+  rescheduledBy?: true
+  sessionSummary?: true
   clientId?: true
   expertScheduleId?: true
   createdAt?: true
@@ -97,6 +142,15 @@ export type ConsultationCountAggregateInputType = {
   status?: true
   paymentStatus?: true
   date?: true
+  startedAt?: true
+  endedAt?: true
+  cancelledAt?: true
+  cancelReason?: true
+  cancelledBy?: true
+  rescheduledAt?: true
+  rescheduleReason?: true
+  rescheduledBy?: true
+  sessionSummary?: true
   clientId?: true
   expertScheduleId?: true
   createdAt?: true
@@ -183,6 +237,15 @@ export type ConsultationGroupByOutputType = {
   status: $Enums.ConsultationStatus
   paymentStatus: $Enums.PaymentStatus
   date: Date
+  startedAt: Date | null
+  endedAt: Date | null
+  cancelledAt: Date | null
+  cancelReason: string | null
+  cancelledBy: $Enums.Role | null
+  rescheduledAt: Date | null
+  rescheduleReason: string | null
+  rescheduledBy: $Enums.Role | null
+  sessionSummary: string | null
   clientId: string
   expertScheduleId: string
   createdAt: Date
@@ -217,6 +280,15 @@ export type ConsultationWhereInput = {
   status?: Prisma.EnumConsultationStatusFilter<"Consultation"> | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFilter<"Consultation"> | $Enums.PaymentStatus
   date?: Prisma.DateTimeFilter<"Consultation"> | Date | string
+  startedAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  endedAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  cancelReason?: Prisma.StringNullableFilter<"Consultation"> | string | null
+  cancelledBy?: Prisma.EnumRoleNullableFilter<"Consultation"> | $Enums.Role | null
+  rescheduledAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  rescheduleReason?: Prisma.StringNullableFilter<"Consultation"> | string | null
+  rescheduledBy?: Prisma.EnumRoleNullableFilter<"Consultation"> | $Enums.Role | null
+  sessionSummary?: Prisma.StringNullableFilter<"Consultation"> | string | null
   clientId?: Prisma.UuidFilter<"Consultation"> | string
   expertScheduleId?: Prisma.UuidFilter<"Consultation"> | string
   createdAt?: Prisma.DateTimeFilter<"Consultation"> | Date | string
@@ -226,6 +298,7 @@ export type ConsultationWhereInput = {
   expertSchedule?: Prisma.XOR<Prisma.ExpertScheduleScalarRelationFilter, Prisma.ExpertScheduleWhereInput>
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
   testimonial?: Prisma.XOR<Prisma.TestimonialNullableScalarRelationFilter, Prisma.TestimonialWhereInput> | null
+  chatRooms?: Prisma.ChatRoomListRelationFilter
   expert?: Prisma.XOR<Prisma.ExpertNullableScalarRelationFilter, Prisma.ExpertWhereInput> | null
 }
 
@@ -235,6 +308,15 @@ export type ConsultationOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  rescheduledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rescheduleReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  rescheduledBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  sessionSummary?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertScheduleId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -244,6 +326,7 @@ export type ConsultationOrderByWithRelationInput = {
   expertSchedule?: Prisma.ExpertScheduleOrderByWithRelationInput
   payment?: Prisma.PaymentOrderByWithRelationInput
   testimonial?: Prisma.TestimonialOrderByWithRelationInput
+  chatRooms?: Prisma.ChatRoomOrderByRelationAggregateInput
   expert?: Prisma.ExpertOrderByWithRelationInput
 }
 
@@ -257,6 +340,15 @@ export type ConsultationWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumConsultationStatusFilter<"Consultation"> | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFilter<"Consultation"> | $Enums.PaymentStatus
   date?: Prisma.DateTimeFilter<"Consultation"> | Date | string
+  startedAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  endedAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  cancelReason?: Prisma.StringNullableFilter<"Consultation"> | string | null
+  cancelledBy?: Prisma.EnumRoleNullableFilter<"Consultation"> | $Enums.Role | null
+  rescheduledAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  rescheduleReason?: Prisma.StringNullableFilter<"Consultation"> | string | null
+  rescheduledBy?: Prisma.EnumRoleNullableFilter<"Consultation"> | $Enums.Role | null
+  sessionSummary?: Prisma.StringNullableFilter<"Consultation"> | string | null
   clientId?: Prisma.UuidFilter<"Consultation"> | string
   createdAt?: Prisma.DateTimeFilter<"Consultation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Consultation"> | Date | string
@@ -265,6 +357,7 @@ export type ConsultationWhereUniqueInput = Prisma.AtLeast<{
   expertSchedule?: Prisma.XOR<Prisma.ExpertScheduleScalarRelationFilter, Prisma.ExpertScheduleWhereInput>
   payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
   testimonial?: Prisma.XOR<Prisma.TestimonialNullableScalarRelationFilter, Prisma.TestimonialWhereInput> | null
+  chatRooms?: Prisma.ChatRoomListRelationFilter
   expert?: Prisma.XOR<Prisma.ExpertNullableScalarRelationFilter, Prisma.ExpertWhereInput> | null
 }, "id" | "videoCallId" | "expertScheduleId">
 
@@ -274,6 +367,15 @@ export type ConsultationOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  rescheduledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rescheduleReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  rescheduledBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  sessionSummary?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertScheduleId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -293,6 +395,15 @@ export type ConsultationScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumConsultationStatusWithAggregatesFilter<"Consultation"> | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusWithAggregatesFilter<"Consultation"> | $Enums.PaymentStatus
   date?: Prisma.DateTimeWithAggregatesFilter<"Consultation"> | Date | string
+  startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Consultation"> | Date | string | null
+  endedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Consultation"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Consultation"> | Date | string | null
+  cancelReason?: Prisma.StringNullableWithAggregatesFilter<"Consultation"> | string | null
+  cancelledBy?: Prisma.EnumRoleNullableWithAggregatesFilter<"Consultation"> | $Enums.Role | null
+  rescheduledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Consultation"> | Date | string | null
+  rescheduleReason?: Prisma.StringNullableWithAggregatesFilter<"Consultation"> | string | null
+  rescheduledBy?: Prisma.EnumRoleNullableWithAggregatesFilter<"Consultation"> | $Enums.Role | null
+  sessionSummary?: Prisma.StringNullableWithAggregatesFilter<"Consultation"> | string | null
   clientId?: Prisma.UuidWithAggregatesFilter<"Consultation"> | string
   expertScheduleId?: Prisma.UuidWithAggregatesFilter<"Consultation"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Consultation"> | Date | string
@@ -306,12 +417,22 @@ export type ConsultationCreateInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutConsultationsInput
   expertSchedule: Prisma.ExpertScheduleCreateNestedOneWithoutConsultationInput
   payment?: Prisma.PaymentCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutConsultationInput
   expert?: Prisma.ExpertCreateNestedOneWithoutConsultationsInput
 }
 
@@ -321,6 +442,15 @@ export type ConsultationUncheckedCreateInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   clientId: string
   expertScheduleId: string
   createdAt?: Date | string
@@ -328,6 +458,7 @@ export type ConsultationUncheckedCreateInput = {
   expertId?: string | null
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialUncheckedCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutConsultationInput
 }
 
 export type ConsultationUpdateInput = {
@@ -336,12 +467,22 @@ export type ConsultationUpdateInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutConsultationsNestedInput
   expertSchedule?: Prisma.ExpertScheduleUpdateOneRequiredWithoutConsultationNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutConsultationNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutConsultationsNestedInput
 }
 
@@ -351,6 +492,15 @@ export type ConsultationUncheckedUpdateInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +508,7 @@ export type ConsultationUncheckedUpdateInput = {
   expertId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUncheckedUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutConsultationNestedInput
 }
 
 export type ConsultationCreateManyInput = {
@@ -366,6 +517,15 @@ export type ConsultationCreateManyInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   clientId: string
   expertScheduleId: string
   createdAt?: Date | string
@@ -379,6 +539,15 @@ export type ConsultationUpdateManyMutationInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -389,11 +558,25 @@ export type ConsultationUncheckedUpdateManyInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expertId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ConsultationNullableScalarRelationFilter = {
+  is?: Prisma.ConsultationWhereInput | null
+  isNot?: Prisma.ConsultationWhereInput | null
 }
 
 export type ConsultationListRelationFilter = {
@@ -412,6 +595,15 @@ export type ConsultationCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  endedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelReason?: Prisma.SortOrder
+  cancelledBy?: Prisma.SortOrder
+  rescheduledAt?: Prisma.SortOrder
+  rescheduleReason?: Prisma.SortOrder
+  rescheduledBy?: Prisma.SortOrder
+  sessionSummary?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertScheduleId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -425,6 +617,15 @@ export type ConsultationMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  endedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelReason?: Prisma.SortOrder
+  cancelledBy?: Prisma.SortOrder
+  rescheduledAt?: Prisma.SortOrder
+  rescheduleReason?: Prisma.SortOrder
+  rescheduledBy?: Prisma.SortOrder
+  sessionSummary?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertScheduleId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -438,6 +639,15 @@ export type ConsultationMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  endedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelReason?: Prisma.SortOrder
+  cancelledBy?: Prisma.SortOrder
+  rescheduledAt?: Prisma.SortOrder
+  rescheduleReason?: Prisma.SortOrder
+  rescheduledBy?: Prisma.SortOrder
+  sessionSummary?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertScheduleId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -445,14 +655,25 @@ export type ConsultationMinOrderByAggregateInput = {
   expertId?: Prisma.SortOrder
 }
 
-export type ConsultationNullableScalarRelationFilter = {
-  is?: Prisma.ConsultationWhereInput | null
-  isNot?: Prisma.ConsultationWhereInput | null
-}
-
 export type ConsultationScalarRelationFilter = {
   is?: Prisma.ConsultationWhereInput
   isNot?: Prisma.ConsultationWhereInput
+}
+
+export type ConsultationCreateNestedOneWithoutChatRoomsInput = {
+  create?: Prisma.XOR<Prisma.ConsultationCreateWithoutChatRoomsInput, Prisma.ConsultationUncheckedCreateWithoutChatRoomsInput>
+  connectOrCreate?: Prisma.ConsultationCreateOrConnectWithoutChatRoomsInput
+  connect?: Prisma.ConsultationWhereUniqueInput
+}
+
+export type ConsultationUpdateOneWithoutChatRoomsNestedInput = {
+  create?: Prisma.XOR<Prisma.ConsultationCreateWithoutChatRoomsInput, Prisma.ConsultationUncheckedCreateWithoutChatRoomsInput>
+  connectOrCreate?: Prisma.ConsultationCreateOrConnectWithoutChatRoomsInput
+  upsert?: Prisma.ConsultationUpsertWithoutChatRoomsInput
+  disconnect?: Prisma.ConsultationWhereInput | boolean
+  delete?: Prisma.ConsultationWhereInput | boolean
+  connect?: Prisma.ConsultationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ConsultationUpdateToOneWithWhereWithoutChatRoomsInput, Prisma.ConsultationUpdateWithoutChatRoomsInput>, Prisma.ConsultationUncheckedUpdateWithoutChatRoomsInput>
 }
 
 export type ConsultationCreateNestedManyWithoutClientInput = {
@@ -503,6 +724,10 @@ export type EnumConsultationStatusFieldUpdateOperationsInput = {
 
 export type EnumPaymentStatusFieldUpdateOperationsInput = {
   set?: $Enums.PaymentStatus
+}
+
+export type NullableEnumRoleFieldUpdateOperationsInput = {
+  set?: $Enums.Role | null
 }
 
 export type ConsultationCreateNestedManyWithoutExpertInput = {
@@ -609,17 +834,139 @@ export type ConsultationUpdateOneWithoutTestimonialNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ConsultationUpdateToOneWithWhereWithoutTestimonialInput, Prisma.ConsultationUpdateWithoutTestimonialInput>, Prisma.ConsultationUncheckedUpdateWithoutTestimonialInput>
 }
 
+export type ConsultationCreateWithoutChatRoomsInput = {
+  id?: string
+  videoCallId: string
+  status?: $Enums.ConsultationStatus
+  paymentStatus?: $Enums.PaymentStatus
+  date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  client: Prisma.ClientCreateNestedOneWithoutConsultationsInput
+  expertSchedule: Prisma.ExpertScheduleCreateNestedOneWithoutConsultationInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutConsultationInput
+  testimonial?: Prisma.TestimonialCreateNestedOneWithoutConsultationInput
+  expert?: Prisma.ExpertCreateNestedOneWithoutConsultationsInput
+}
+
+export type ConsultationUncheckedCreateWithoutChatRoomsInput = {
+  id?: string
+  videoCallId: string
+  status?: $Enums.ConsultationStatus
+  paymentStatus?: $Enums.PaymentStatus
+  date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
+  clientId: string
+  expertScheduleId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  expertId?: string | null
+  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutConsultationInput
+  testimonial?: Prisma.TestimonialUncheckedCreateNestedOneWithoutConsultationInput
+}
+
+export type ConsultationCreateOrConnectWithoutChatRoomsInput = {
+  where: Prisma.ConsultationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ConsultationCreateWithoutChatRoomsInput, Prisma.ConsultationUncheckedCreateWithoutChatRoomsInput>
+}
+
+export type ConsultationUpsertWithoutChatRoomsInput = {
+  update: Prisma.XOR<Prisma.ConsultationUpdateWithoutChatRoomsInput, Prisma.ConsultationUncheckedUpdateWithoutChatRoomsInput>
+  create: Prisma.XOR<Prisma.ConsultationCreateWithoutChatRoomsInput, Prisma.ConsultationUncheckedCreateWithoutChatRoomsInput>
+  where?: Prisma.ConsultationWhereInput
+}
+
+export type ConsultationUpdateToOneWithWhereWithoutChatRoomsInput = {
+  where?: Prisma.ConsultationWhereInput
+  data: Prisma.XOR<Prisma.ConsultationUpdateWithoutChatRoomsInput, Prisma.ConsultationUncheckedUpdateWithoutChatRoomsInput>
+}
+
+export type ConsultationUpdateWithoutChatRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  videoCallId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  client?: Prisma.ClientUpdateOneRequiredWithoutConsultationsNestedInput
+  expertSchedule?: Prisma.ExpertScheduleUpdateOneRequiredWithoutConsultationNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutConsultationNestedInput
+  testimonial?: Prisma.TestimonialUpdateOneWithoutConsultationNestedInput
+  expert?: Prisma.ExpertUpdateOneWithoutConsultationsNestedInput
+}
+
+export type ConsultationUncheckedUpdateWithoutChatRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  videoCallId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expertId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payment?: Prisma.PaymentUncheckedUpdateOneWithoutConsultationNestedInput
+  testimonial?: Prisma.TestimonialUncheckedUpdateOneWithoutConsultationNestedInput
+}
+
 export type ConsultationCreateWithoutClientInput = {
   id?: string
   videoCallId: string
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   expertSchedule: Prisma.ExpertScheduleCreateNestedOneWithoutConsultationInput
   payment?: Prisma.PaymentCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutConsultationInput
   expert?: Prisma.ExpertCreateNestedOneWithoutConsultationsInput
 }
 
@@ -629,12 +976,22 @@ export type ConsultationUncheckedCreateWithoutClientInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   expertScheduleId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   expertId?: string | null
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialUncheckedCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutConsultationInput
 }
 
 export type ConsultationCreateOrConnectWithoutClientInput = {
@@ -672,6 +1029,15 @@ export type ConsultationScalarWhereInput = {
   status?: Prisma.EnumConsultationStatusFilter<"Consultation"> | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFilter<"Consultation"> | $Enums.PaymentStatus
   date?: Prisma.DateTimeFilter<"Consultation"> | Date | string
+  startedAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  endedAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  cancelReason?: Prisma.StringNullableFilter<"Consultation"> | string | null
+  cancelledBy?: Prisma.EnumRoleNullableFilter<"Consultation"> | $Enums.Role | null
+  rescheduledAt?: Prisma.DateTimeNullableFilter<"Consultation"> | Date | string | null
+  rescheduleReason?: Prisma.StringNullableFilter<"Consultation"> | string | null
+  rescheduledBy?: Prisma.EnumRoleNullableFilter<"Consultation"> | $Enums.Role | null
+  sessionSummary?: Prisma.StringNullableFilter<"Consultation"> | string | null
   clientId?: Prisma.UuidFilter<"Consultation"> | string
   expertScheduleId?: Prisma.UuidFilter<"Consultation"> | string
   createdAt?: Prisma.DateTimeFilter<"Consultation"> | Date | string
@@ -685,12 +1051,22 @@ export type ConsultationCreateWithoutExpertInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutConsultationsInput
   expertSchedule: Prisma.ExpertScheduleCreateNestedOneWithoutConsultationInput
   payment?: Prisma.PaymentCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutConsultationInput
 }
 
 export type ConsultationUncheckedCreateWithoutExpertInput = {
@@ -699,12 +1075,22 @@ export type ConsultationUncheckedCreateWithoutExpertInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   clientId: string
   expertScheduleId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialUncheckedCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutConsultationInput
 }
 
 export type ConsultationCreateOrConnectWithoutExpertInput = {
@@ -739,11 +1125,21 @@ export type ConsultationCreateWithoutExpertScheduleInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutConsultationsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutConsultationInput
   expert?: Prisma.ExpertCreateNestedOneWithoutConsultationsInput
 }
 
@@ -753,12 +1149,22 @@ export type ConsultationUncheckedCreateWithoutExpertScheduleInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   expertId?: string | null
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialUncheckedCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutConsultationInput
 }
 
 export type ConsultationCreateOrConnectWithoutExpertScheduleInput = {
@@ -783,11 +1189,21 @@ export type ConsultationUpdateWithoutExpertScheduleInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutConsultationsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutConsultationNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutConsultationsNestedInput
 }
 
@@ -797,12 +1213,22 @@ export type ConsultationUncheckedUpdateWithoutExpertScheduleInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expertId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUncheckedUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutConsultationNestedInput
 }
 
 export type ConsultationCreateWithoutPaymentInput = {
@@ -811,11 +1237,21 @@ export type ConsultationCreateWithoutPaymentInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutConsultationsInput
   expertSchedule: Prisma.ExpertScheduleCreateNestedOneWithoutConsultationInput
   testimonial?: Prisma.TestimonialCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutConsultationInput
   expert?: Prisma.ExpertCreateNestedOneWithoutConsultationsInput
 }
 
@@ -825,12 +1261,22 @@ export type ConsultationUncheckedCreateWithoutPaymentInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   clientId: string
   expertScheduleId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   expertId?: string | null
   testimonial?: Prisma.TestimonialUncheckedCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutConsultationInput
 }
 
 export type ConsultationCreateOrConnectWithoutPaymentInput = {
@@ -855,11 +1301,21 @@ export type ConsultationUpdateWithoutPaymentInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutConsultationsNestedInput
   expertSchedule?: Prisma.ExpertScheduleUpdateOneRequiredWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutConsultationNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutConsultationsNestedInput
 }
 
@@ -869,12 +1325,22 @@ export type ConsultationUncheckedUpdateWithoutPaymentInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expertId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   testimonial?: Prisma.TestimonialUncheckedUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutConsultationNestedInput
 }
 
 export type ConsultationCreateWithoutTestimonialInput = {
@@ -883,11 +1349,21 @@ export type ConsultationCreateWithoutTestimonialInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutConsultationsInput
   expertSchedule: Prisma.ExpertScheduleCreateNestedOneWithoutConsultationInput
   payment?: Prisma.PaymentCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutConsultationInput
   expert?: Prisma.ExpertCreateNestedOneWithoutConsultationsInput
 }
 
@@ -897,12 +1373,22 @@ export type ConsultationUncheckedCreateWithoutTestimonialInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   clientId: string
   expertScheduleId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   expertId?: string | null
   payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutConsultationInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutConsultationInput
 }
 
 export type ConsultationCreateOrConnectWithoutTestimonialInput = {
@@ -927,11 +1413,21 @@ export type ConsultationUpdateWithoutTestimonialInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutConsultationsNestedInput
   expertSchedule?: Prisma.ExpertScheduleUpdateOneRequiredWithoutConsultationNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutConsultationNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutConsultationsNestedInput
 }
 
@@ -941,12 +1437,22 @@ export type ConsultationUncheckedUpdateWithoutTestimonialInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expertId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutConsultationNestedInput
 }
 
 export type ConsultationCreateManyClientInput = {
@@ -955,6 +1461,15 @@ export type ConsultationCreateManyClientInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   expertScheduleId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -967,11 +1482,21 @@ export type ConsultationUpdateWithoutClientInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expertSchedule?: Prisma.ExpertScheduleUpdateOneRequiredWithoutConsultationNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutConsultationNestedInput
   expert?: Prisma.ExpertUpdateOneWithoutConsultationsNestedInput
 }
 
@@ -981,12 +1506,22 @@ export type ConsultationUncheckedUpdateWithoutClientInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expertId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUncheckedUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutConsultationNestedInput
 }
 
 export type ConsultationUncheckedUpdateManyWithoutClientInput = {
@@ -995,6 +1530,15 @@ export type ConsultationUncheckedUpdateManyWithoutClientInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1007,6 +1551,15 @@ export type ConsultationCreateManyExpertInput = {
   status?: $Enums.ConsultationStatus
   paymentStatus?: $Enums.PaymentStatus
   date: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
+  cancelledBy?: $Enums.Role | null
+  rescheduledAt?: Date | string | null
+  rescheduleReason?: string | null
+  rescheduledBy?: $Enums.Role | null
+  sessionSummary?: string | null
   clientId: string
   expertScheduleId: string
   createdAt?: Date | string
@@ -1019,12 +1572,22 @@ export type ConsultationUpdateWithoutExpertInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutConsultationsNestedInput
   expertSchedule?: Prisma.ExpertScheduleUpdateOneRequiredWithoutConsultationNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutConsultationNestedInput
 }
 
 export type ConsultationUncheckedUpdateWithoutExpertInput = {
@@ -1033,12 +1596,22 @@ export type ConsultationUncheckedUpdateWithoutExpertInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payment?: Prisma.PaymentUncheckedUpdateOneWithoutConsultationNestedInput
   testimonial?: Prisma.TestimonialUncheckedUpdateOneWithoutConsultationNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutConsultationNestedInput
 }
 
 export type ConsultationUncheckedUpdateManyWithoutExpertInput = {
@@ -1047,12 +1620,50 @@ export type ConsultationUncheckedUpdateManyWithoutExpertInput = {
   status?: Prisma.EnumConsultationStatusFieldUpdateOperationsInput | $Enums.ConsultationStatus
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  rescheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rescheduleReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rescheduledBy?: Prisma.NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+  sessionSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type ConsultationCountOutputType
+ */
+
+export type ConsultationCountOutputType = {
+  chatRooms: number
+}
+
+export type ConsultationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  chatRooms?: boolean | ConsultationCountOutputTypeCountChatRoomsArgs
+}
+
+/**
+ * ConsultationCountOutputType without action
+ */
+export type ConsultationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ConsultationCountOutputType
+   */
+  select?: Prisma.ConsultationCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ConsultationCountOutputType without action
+ */
+export type ConsultationCountOutputTypeCountChatRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatRoomWhereInput
+}
 
 
 export type ConsultationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1061,6 +1672,15 @@ export type ConsultationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   status?: boolean
   paymentStatus?: boolean
   date?: boolean
+  startedAt?: boolean
+  endedAt?: boolean
+  cancelledAt?: boolean
+  cancelReason?: boolean
+  cancelledBy?: boolean
+  rescheduledAt?: boolean
+  rescheduleReason?: boolean
+  rescheduledBy?: boolean
+  sessionSummary?: boolean
   clientId?: boolean
   expertScheduleId?: boolean
   createdAt?: boolean
@@ -1070,7 +1690,9 @@ export type ConsultationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   expertSchedule?: boolean | Prisma.ExpertScheduleDefaultArgs<ExtArgs>
   payment?: boolean | Prisma.Consultation$paymentArgs<ExtArgs>
   testimonial?: boolean | Prisma.Consultation$testimonialArgs<ExtArgs>
+  chatRooms?: boolean | Prisma.Consultation$chatRoomsArgs<ExtArgs>
   expert?: boolean | Prisma.Consultation$expertArgs<ExtArgs>
+  _count?: boolean | Prisma.ConsultationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["consultation"]>
 
 export type ConsultationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1079,6 +1701,15 @@ export type ConsultationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   paymentStatus?: boolean
   date?: boolean
+  startedAt?: boolean
+  endedAt?: boolean
+  cancelledAt?: boolean
+  cancelReason?: boolean
+  cancelledBy?: boolean
+  rescheduledAt?: boolean
+  rescheduleReason?: boolean
+  rescheduledBy?: boolean
+  sessionSummary?: boolean
   clientId?: boolean
   expertScheduleId?: boolean
   createdAt?: boolean
@@ -1095,6 +1726,15 @@ export type ConsultationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   paymentStatus?: boolean
   date?: boolean
+  startedAt?: boolean
+  endedAt?: boolean
+  cancelledAt?: boolean
+  cancelReason?: boolean
+  cancelledBy?: boolean
+  rescheduledAt?: boolean
+  rescheduleReason?: boolean
+  rescheduledBy?: boolean
+  sessionSummary?: boolean
   clientId?: boolean
   expertScheduleId?: boolean
   createdAt?: boolean
@@ -1111,6 +1751,15 @@ export type ConsultationSelectScalar = {
   status?: boolean
   paymentStatus?: boolean
   date?: boolean
+  startedAt?: boolean
+  endedAt?: boolean
+  cancelledAt?: boolean
+  cancelReason?: boolean
+  cancelledBy?: boolean
+  rescheduledAt?: boolean
+  rescheduleReason?: boolean
+  rescheduledBy?: boolean
+  sessionSummary?: boolean
   clientId?: boolean
   expertScheduleId?: boolean
   createdAt?: boolean
@@ -1118,13 +1767,15 @@ export type ConsultationSelectScalar = {
   expertId?: boolean
 }
 
-export type ConsultationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "videoCallId" | "status" | "paymentStatus" | "date" | "clientId" | "expertScheduleId" | "createdAt" | "updatedAt" | "expertId", ExtArgs["result"]["consultation"]>
+export type ConsultationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "videoCallId" | "status" | "paymentStatus" | "date" | "startedAt" | "endedAt" | "cancelledAt" | "cancelReason" | "cancelledBy" | "rescheduledAt" | "rescheduleReason" | "rescheduledBy" | "sessionSummary" | "clientId" | "expertScheduleId" | "createdAt" | "updatedAt" | "expertId", ExtArgs["result"]["consultation"]>
 export type ConsultationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   expertSchedule?: boolean | Prisma.ExpertScheduleDefaultArgs<ExtArgs>
   payment?: boolean | Prisma.Consultation$paymentArgs<ExtArgs>
   testimonial?: boolean | Prisma.Consultation$testimonialArgs<ExtArgs>
+  chatRooms?: boolean | Prisma.Consultation$chatRoomsArgs<ExtArgs>
   expert?: boolean | Prisma.Consultation$expertArgs<ExtArgs>
+  _count?: boolean | Prisma.ConsultationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ConsultationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
@@ -1144,6 +1795,7 @@ export type $ConsultationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     expertSchedule: Prisma.$ExpertSchedulePayload<ExtArgs>
     payment: Prisma.$PaymentPayload<ExtArgs> | null
     testimonial: Prisma.$TestimonialPayload<ExtArgs> | null
+    chatRooms: Prisma.$ChatRoomPayload<ExtArgs>[]
     expert: Prisma.$ExpertPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1152,6 +1804,15 @@ export type $ConsultationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     status: $Enums.ConsultationStatus
     paymentStatus: $Enums.PaymentStatus
     date: Date
+    startedAt: Date | null
+    endedAt: Date | null
+    cancelledAt: Date | null
+    cancelReason: string | null
+    cancelledBy: $Enums.Role | null
+    rescheduledAt: Date | null
+    rescheduleReason: string | null
+    rescheduledBy: $Enums.Role | null
+    sessionSummary: string | null
     clientId: string
     expertScheduleId: string
     createdAt: Date
@@ -1555,6 +2216,7 @@ export interface Prisma__ConsultationClient<T, Null = never, ExtArgs extends run
   expertSchedule<T extends Prisma.ExpertScheduleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExpertScheduleDefaultArgs<ExtArgs>>): Prisma.Prisma__ExpertScheduleClient<runtime.Types.Result.GetResult<Prisma.$ExpertSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   payment<T extends Prisma.Consultation$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Consultation$paymentArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   testimonial<T extends Prisma.Consultation$testimonialArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Consultation$testimonialArgs<ExtArgs>>): Prisma.Prisma__TestimonialClient<runtime.Types.Result.GetResult<Prisma.$TestimonialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  chatRooms<T extends Prisma.Consultation$chatRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Consultation$chatRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatRoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   expert<T extends Prisma.Consultation$expertArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Consultation$expertArgs<ExtArgs>>): Prisma.Prisma__ExpertClient<runtime.Types.Result.GetResult<Prisma.$ExpertPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1590,6 +2252,15 @@ export interface ConsultationFieldRefs {
   readonly status: Prisma.FieldRef<"Consultation", 'ConsultationStatus'>
   readonly paymentStatus: Prisma.FieldRef<"Consultation", 'PaymentStatus'>
   readonly date: Prisma.FieldRef<"Consultation", 'DateTime'>
+  readonly startedAt: Prisma.FieldRef<"Consultation", 'DateTime'>
+  readonly endedAt: Prisma.FieldRef<"Consultation", 'DateTime'>
+  readonly cancelledAt: Prisma.FieldRef<"Consultation", 'DateTime'>
+  readonly cancelReason: Prisma.FieldRef<"Consultation", 'String'>
+  readonly cancelledBy: Prisma.FieldRef<"Consultation", 'Role'>
+  readonly rescheduledAt: Prisma.FieldRef<"Consultation", 'DateTime'>
+  readonly rescheduleReason: Prisma.FieldRef<"Consultation", 'String'>
+  readonly rescheduledBy: Prisma.FieldRef<"Consultation", 'Role'>
+  readonly sessionSummary: Prisma.FieldRef<"Consultation", 'String'>
   readonly clientId: Prisma.FieldRef<"Consultation", 'String'>
   readonly expertScheduleId: Prisma.FieldRef<"Consultation", 'String'>
   readonly createdAt: Prisma.FieldRef<"Consultation", 'DateTime'>
@@ -2031,6 +2702,30 @@ export type Consultation$testimonialArgs<ExtArgs extends runtime.Types.Extension
    */
   include?: Prisma.TestimonialInclude<ExtArgs> | null
   where?: Prisma.TestimonialWhereInput
+}
+
+/**
+ * Consultation.chatRooms
+ */
+export type Consultation$chatRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatRoom
+   */
+  select?: Prisma.ChatRoomSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatRoom
+   */
+  omit?: Prisma.ChatRoomOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatRoomInclude<ExtArgs> | null
+  where?: Prisma.ChatRoomWhereInput
+  orderBy?: Prisma.ChatRoomOrderByWithRelationInput | Prisma.ChatRoomOrderByWithRelationInput[]
+  cursor?: Prisma.ChatRoomWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatRoomScalarFieldEnum | Prisma.ChatRoomScalarFieldEnum[]
 }
 
 /**

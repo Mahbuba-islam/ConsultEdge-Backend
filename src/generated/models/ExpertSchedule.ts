@@ -30,6 +30,7 @@ export type ExpertScheduleMinAggregateOutputType = {
   scheduleId: string | null
   consultationId: string | null
   isBooked: boolean | null
+  isPublished: boolean | null
   isDeleted: boolean | null
   deletedAt: Date | null
   createdAt: Date | null
@@ -42,6 +43,7 @@ export type ExpertScheduleMaxAggregateOutputType = {
   scheduleId: string | null
   consultationId: string | null
   isBooked: boolean | null
+  isPublished: boolean | null
   isDeleted: boolean | null
   deletedAt: Date | null
   createdAt: Date | null
@@ -54,6 +56,7 @@ export type ExpertScheduleCountAggregateOutputType = {
   scheduleId: number
   consultationId: number
   isBooked: number
+  isPublished: number
   isDeleted: number
   deletedAt: number
   createdAt: number
@@ -68,6 +71,7 @@ export type ExpertScheduleMinAggregateInputType = {
   scheduleId?: true
   consultationId?: true
   isBooked?: true
+  isPublished?: true
   isDeleted?: true
   deletedAt?: true
   createdAt?: true
@@ -80,6 +84,7 @@ export type ExpertScheduleMaxAggregateInputType = {
   scheduleId?: true
   consultationId?: true
   isBooked?: true
+  isPublished?: true
   isDeleted?: true
   deletedAt?: true
   createdAt?: true
@@ -92,6 +97,7 @@ export type ExpertScheduleCountAggregateInputType = {
   scheduleId?: true
   consultationId?: true
   isBooked?: true
+  isPublished?: true
   isDeleted?: true
   deletedAt?: true
   createdAt?: true
@@ -177,6 +183,7 @@ export type ExpertScheduleGroupByOutputType = {
   scheduleId: string
   consultationId: string | null
   isBooked: boolean
+  isPublished: boolean
   isDeleted: boolean
   deletedAt: Date | null
   createdAt: Date
@@ -210,6 +217,7 @@ export type ExpertScheduleWhereInput = {
   scheduleId?: Prisma.UuidFilter<"ExpertSchedule"> | string
   consultationId?: Prisma.UuidNullableFilter<"ExpertSchedule"> | string | null
   isBooked?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
+  isPublished?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
   isDeleted?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ExpertSchedule"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ExpertSchedule"> | Date | string
@@ -225,6 +233,7 @@ export type ExpertScheduleOrderByWithRelationInput = {
   scheduleId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrderInput | Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -244,6 +253,7 @@ export type ExpertScheduleWhereUniqueInput = Prisma.AtLeast<{
   scheduleId?: Prisma.UuidFilter<"ExpertSchedule"> | string
   consultationId?: Prisma.UuidNullableFilter<"ExpertSchedule"> | string | null
   isBooked?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
+  isPublished?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
   isDeleted?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ExpertSchedule"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ExpertSchedule"> | Date | string
@@ -259,6 +269,7 @@ export type ExpertScheduleOrderByWithAggregationInput = {
   scheduleId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrderInput | Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -277,6 +288,7 @@ export type ExpertScheduleScalarWhereWithAggregatesInput = {
   scheduleId?: Prisma.UuidWithAggregatesFilter<"ExpertSchedule"> | string
   consultationId?: Prisma.UuidNullableWithAggregatesFilter<"ExpertSchedule"> | string | null
   isBooked?: Prisma.BoolWithAggregatesFilter<"ExpertSchedule"> | boolean
+  isPublished?: Prisma.BoolWithAggregatesFilter<"ExpertSchedule"> | boolean
   isDeleted?: Prisma.BoolWithAggregatesFilter<"ExpertSchedule"> | boolean
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ExpertSchedule"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ExpertSchedule"> | Date | string
@@ -287,6 +299,7 @@ export type ExpertScheduleCreateInput = {
   id?: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -302,6 +315,7 @@ export type ExpertScheduleUncheckedCreateInput = {
   scheduleId: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -313,6 +327,7 @@ export type ExpertScheduleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -328,6 +343,7 @@ export type ExpertScheduleUncheckedUpdateInput = {
   scheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -341,6 +357,7 @@ export type ExpertScheduleCreateManyInput = {
   scheduleId: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -351,6 +368,7 @@ export type ExpertScheduleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -363,6 +381,7 @@ export type ExpertScheduleUncheckedUpdateManyInput = {
   scheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -395,6 +414,7 @@ export type ExpertScheduleCountOrderByAggregateInput = {
   scheduleId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -407,6 +427,7 @@ export type ExpertScheduleMaxOrderByAggregateInput = {
   scheduleId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -419,6 +440,7 @@ export type ExpertScheduleMinOrderByAggregateInput = {
   scheduleId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrder
   isBooked?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -527,6 +549,7 @@ export type ExpertScheduleCreateWithoutConsultationInput = {
   id?: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -541,6 +564,7 @@ export type ExpertScheduleUncheckedCreateWithoutConsultationInput = {
   scheduleId: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -567,6 +591,7 @@ export type ExpertScheduleUpdateWithoutConsultationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -581,6 +606,7 @@ export type ExpertScheduleUncheckedUpdateWithoutConsultationInput = {
   scheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -591,6 +617,7 @@ export type ExpertScheduleCreateWithoutExpertInput = {
   id?: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -604,6 +631,7 @@ export type ExpertScheduleUncheckedCreateWithoutExpertInput = {
   scheduleId: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -646,6 +674,7 @@ export type ExpertScheduleScalarWhereInput = {
   scheduleId?: Prisma.UuidFilter<"ExpertSchedule"> | string
   consultationId?: Prisma.UuidNullableFilter<"ExpertSchedule"> | string | null
   isBooked?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
+  isPublished?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
   isDeleted?: Prisma.BoolFilter<"ExpertSchedule"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ExpertSchedule"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ExpertSchedule"> | Date | string
@@ -656,6 +685,7 @@ export type ExpertScheduleCreateWithoutScheduleInput = {
   id?: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -669,6 +699,7 @@ export type ExpertScheduleUncheckedCreateWithoutScheduleInput = {
   expertId: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -707,6 +738,7 @@ export type ExpertScheduleCreateManyExpertInput = {
   scheduleId: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -717,6 +749,7 @@ export type ExpertScheduleUpdateWithoutExpertInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -730,6 +763,7 @@ export type ExpertScheduleUncheckedUpdateWithoutExpertInput = {
   scheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -742,6 +776,7 @@ export type ExpertScheduleUncheckedUpdateManyWithoutExpertInput = {
   scheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -753,6 +788,7 @@ export type ExpertScheduleCreateManyScheduleInput = {
   expertId: string
   consultationId?: string | null
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -763,6 +799,7 @@ export type ExpertScheduleUpdateWithoutScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -776,6 +813,7 @@ export type ExpertScheduleUncheckedUpdateWithoutScheduleInput = {
   expertId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -788,6 +826,7 @@ export type ExpertScheduleUncheckedUpdateManyWithoutScheduleInput = {
   expertId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBooked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -802,6 +841,7 @@ export type ExpertScheduleSelect<ExtArgs extends runtime.Types.Extensions.Intern
   scheduleId?: boolean
   consultationId?: boolean
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -817,6 +857,7 @@ export type ExpertScheduleSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   scheduleId?: boolean
   consultationId?: boolean
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -831,6 +872,7 @@ export type ExpertScheduleSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   scheduleId?: boolean
   consultationId?: boolean
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -845,13 +887,14 @@ export type ExpertScheduleSelectScalar = {
   scheduleId?: boolean
   consultationId?: boolean
   isBooked?: boolean
+  isPublished?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ExpertScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "expertId" | "scheduleId" | "consultationId" | "isBooked" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["expertSchedule"]>
+export type ExpertScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "expertId" | "scheduleId" | "consultationId" | "isBooked" | "isPublished" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["expertSchedule"]>
 export type ExpertScheduleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   expert?: boolean | Prisma.ExpertDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.ScheduleDefaultArgs<ExtArgs>
@@ -879,6 +922,7 @@ export type $ExpertSchedulePayload<ExtArgs extends runtime.Types.Extensions.Inte
     scheduleId: string
     consultationId: string | null
     isBooked: boolean
+    isPublished: boolean
     isDeleted: boolean
     deletedAt: Date | null
     createdAt: Date
@@ -1314,6 +1358,7 @@ export interface ExpertScheduleFieldRefs {
   readonly scheduleId: Prisma.FieldRef<"ExpertSchedule", 'String'>
   readonly consultationId: Prisma.FieldRef<"ExpertSchedule", 'String'>
   readonly isBooked: Prisma.FieldRef<"ExpertSchedule", 'Boolean'>
+  readonly isPublished: Prisma.FieldRef<"ExpertSchedule", 'Boolean'>
   readonly isDeleted: Prisma.FieldRef<"ExpertSchedule", 'Boolean'>
   readonly deletedAt: Prisma.FieldRef<"ExpertSchedule", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ExpertSchedule", 'DateTime'>

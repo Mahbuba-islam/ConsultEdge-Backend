@@ -1,6 +1,7 @@
 enum ConsultationStatus {
     PENDING
     CONFIRMED
+    ONGOING
     COMPLETED
     CANCELLED
 }
@@ -12,10 +13,35 @@ enum PaymentStatus {
     UNPAID
 }
 
+enum MessageType {
+  TEXT
+  FILE
+  SYSTEM
+}
+
+enum UserRole {
+    CLIENT
+    EXPERT
+    ADMIN
+}
+
+
+enum CallStatus {
+  PENDING
+  ACTIVE
+  ENDED
+}
+
 enum VerificationStatus {
     PENDING
     APPROVED
     REJECTED
+}
+
+enum ReviewStatus {
+    PENDING
+    APPROVED
+    HIDDEN
 }
 
 enum Role {

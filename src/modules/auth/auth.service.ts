@@ -319,26 +319,79 @@ const getNewToken = async(refreshToken:string, sessionToken?:string)=> {
 
 const changePassword = async (
   payload: IChangePasswordPayload,
-  sessionToken: string
+  authContext: {
+    sessionToken?: string;
+    authorizationHeader?: string;
+    cookieHeader?: string;
+    userId?: string;
+  }
 ) => {
-  if (!sessionToken) {
+  const { sessionToken, authorizationHeader, cookieHeader, userId } = authContext;
+
+  const buildHeaders = (token?: string) => {
+    const headerInit: Record<string, string> = {};
+
+    if (authorizationHeader) {
+      headerInit.Authorization = authorizationHeader;
+    } else if (token) {
+      headerInit.Authorization = `Bearer ${token}`;
+    }
+
+    if (cookieHeader) {
+      headerInit.Cookie = cookieHeader;
+    } else if (token) {
+      headerInit.Cookie = `better-auth.session_token=${token}; __Secure-better-auth.session_token=${token}`;
+    }
+
+    return new Headers(headerInit);
+  };
+
+  if (!sessionToken && !authorizationHeader && !cookieHeader && !userId) {
     throw new AppError(status.UNAUTHORIZED, "Session expired. Please login again.");
   }
 
-  const authHeaders = new Headers({
-    Authorization: `Bearer ${sessionToken}`,
-    Cookie: `better-auth.session_token=${sessionToken}`,
-  });
+  let authHeaders = buildHeaders(sessionToken);
+  let session = await auth.api
+    .getSession({
+      headers: authHeaders,
+    })
+    .catch(() => null);
 
-  const session = await auth.api.getSession({
-    headers: authHeaders,
-  });
+  if (!session?.user && userId) {
+    const activeSession = await prisma.session.findFirst({
+      where: {
+        userId,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+
+    if (activeSession?.token) {
+      authHeaders = buildHeaders(activeSession.token);
+      session = await auth.api
+        .getSession({
+          headers: authHeaders,
+        })
+        .catch(() => null);
+    }
+  }
 
   if (!session?.user) {
-    throw new AppError(status.UNAUTHORIZED, "Invalid session token");
+    throw new AppError(status.UNAUTHORIZED, "Invalid session token. Please login again.");
   }
 
   const { currentPassword, newPassword } = payload;
+
+  if (currentPassword && currentPassword === newPassword) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "New password must be different from current password"
+    );
+  }
 
   const credentialAccount = await prisma.account.findFirst({
     where: {
@@ -369,6 +422,17 @@ const changePassword = async (
       },
       headers: authHeaders,
     });
+  }
+
+  const operationStatus = "status" in result ? result.status : true;
+
+  if (!operationStatus) {
+    const errorMessage =
+      typeof (result as any)?.message === "string"
+        ? (result as any).message
+        : "Password change failed. Please verify your current password and try again.";
+
+    throw new AppError(status.BAD_REQUEST, errorMessage);
   }
 
   if (session.user.needPasswordChange) {
@@ -407,7 +471,6 @@ const changePassword = async (
   });
 
   const betterAuthToken = "token" in result ? result.token : null;
-  const operationStatus = "status" in result ? result.status : true;
 
   return {
     status: operationStatus,
@@ -497,13 +560,51 @@ const resetPassword = async(email:string, otp:string, newPassword:string) => {
          throw new AppError(status.NOT_FOUND, "user not found")
     }
 
-    await auth.api.resetPasswordEmailOTP({
+    const previousCredentialAccount = await prisma.account.findFirst({
+      where: {
+        userId: isUserExists.id,
+        providerId: "credential",
+      },
+      select: {
+        password: true,
+        updatedAt: true,
+      },
+    })
+
+    const result = await auth.api.resetPasswordEmailOTP({
         body:{
             email,
             otp,
             password:newPassword
         }
     })
+
+    if (!result?.success) {
+      throw new AppError(status.BAD_REQUEST, "Password reset failed")
+    }
+
+    const updatedCredentialAccount = await prisma.account.findFirst({
+      where: {
+        userId: isUserExists.id,
+        providerId: "credential",
+      },
+      select: {
+        password: true,
+        updatedAt: true,
+      },
+    })
+
+    if (!updatedCredentialAccount?.password) {
+      throw new AppError(status.BAD_REQUEST, "New password was not saved")
+    }
+
+    if (
+      previousCredentialAccount &&
+      previousCredentialAccount.password === updatedCredentialAccount.password &&
+      previousCredentialAccount.updatedAt.getTime() === updatedCredentialAccount.updatedAt.getTime()
+    ) {
+      throw new AppError(status.BAD_REQUEST, "New password was not saved")
+    }
 
     //update need password change true
 

@@ -145,7 +145,12 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
 
   const result = await authService.changePassword(
     payload,
-    betterAuthSessionToken
+    {
+      sessionToken: betterAuthSessionToken,
+      authorizationHeader: req.headers.authorization,
+      cookieHeader: req.headers.cookie,
+      userId: req.user?.userId,
+    }
   );
 
   const { accessToken, refreshToken } = result;

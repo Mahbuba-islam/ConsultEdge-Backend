@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ConsultEdge AI Support Widget</title>
+    <style>
+      :root {
+        --bg: #081226;
+        --panel: rgba(9, 18, 40, 0.88);
+        --panel-2: #0f1b3d;
+        --border: rgba(148, 163, 184, 0.18);
+        --text: #eef4ff;
+        --muted: #a5b4d6;
+        --brand: #5b8cff;
+        --brand-2: #7c5cff;
+        --success: #22c55e;
+        --user-bubble: #2d6cff;
+        --assistant-bubble: rgba(255, 255, 255, 0.08);
+        --shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(91, 140, 255, 0.28), transparent 0 28%),
+          radial-gradient(circle at top right, rgba(124, 92, 255, 0.22), transparent 0 24%),
+          linear-gradient(135deg, #07101f 0%, #0d1731 55%, #0a1225 100%);
+        color: var(--text);
+      }
+
+      .hero {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 72px 20px 120px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(91, 140, 255, 0.12);
+        border: 1px solid rgba(91, 140, 255, 0.24);
+        color: #d9e6ff;
+        font-size: 13px;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0 0 14px;
+        font-size: clamp(2.2rem, 4vw, 4rem);
+        line-height: 1.06;
+        letter-spacing: -0.04em;
+      }
+
+      p.lead {
+        max-width: 760px;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: var(--muted);
+        margin: 0 0 28px;
+      }
+
+      .cta-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        color: white;
+        box-shadow: 0 10px 30px rgba(91, 140, 255, 0.35);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .widget-toggle {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 0;
+        cursor: pointer;
+        color: white;
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        box-shadow: 0 16px 45px rgba(91, 140, 255, 0.42);
+        z-index: 1000;
+        font-size: 25px;
+      }
+
+      .widget-toggle::after {
+        content: "";
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        border: 2px solid rgba(91, 140, 255, 0.35);
+        animation: pulse 1.8s infinite;
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(0.95); opacity: 0.7; }
+        70% { transform: scale(1.12); opacity: 0; }
+        100% { transform: scale(1.12); opacity: 0; }
+      }
+
+      .widget-panel {
+        position: fixed;
+        right: 22px;
+        bottom: 98px;
+        width: min(390px, calc(100vw - 24px));
+        height: min(640px, calc(100vh - 120px));
+        background: var(--panel);
+        backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1000;
+      }
+
+      .widget-panel.open { display: flex; }
+
+      .widget-header {
+        padding: 16px 16px 14px;
+        background: linear-gradient(135deg, rgba(91, 140, 255, 0.24), rgba(124, 92, 255, 0.16));
+        border-bottom: 1px solid var(--border);
+      }
+
+      .widget-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .widget-title h2 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .widget-title small {
+        display: block;
+        color: #d7e5ff;
+        margin-top: 4px;
+      }
+
+      .status-pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(34, 197, 94, 0.14);
+        color: #c9ffd8;
+        font-size: 12px;
+        border: 1px solid rgba(34, 197, 94, 0.22);
+      }
+
+      .quick-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 12px 14px 0;
+      }
+
+      .chip {
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .messages {
+        flex: 1;
+        padding: 14px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .msg {
+        max-width: 86%;
+        padding: 11px 12px;
+        border-radius: 16px;
+        line-height: 1.5;
+        font-size: 0.94rem;
+        white-space: pre-wrap;
+      }
+
+      .msg.assistant {
+        align-self: flex-start;
+        background: var(--assistant-bubble);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .msg.user {
+        align-self: flex-end;
+        background: var(--user-bubble);
+      }
+
+      .msg.system {
+        align-self: center;
+        max-width: 100%;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        color: #dbffe7;
+        font-size: 0.87rem;
+      }
+
+      .typing {
+        display: inline-flex;
+        gap: 5px;
+        align-items: center;
+      }
+
+      .typing span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #c6d6ff;
+        animation: blink 1.2s infinite ease-in-out;
+      }
+      .typing span:nth-child(2) { animation-delay: 0.15s; }
+      .typing span:nth-child(3) { animation-delay: 0.3s; }
+
+      @keyframes blink {
+        0%, 80%, 100% { opacity: 0.35; transform: translateY(0); }
+        40% { opacity: 1; transform: translateY(-2px); }
+      }
+
+      .suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .composer {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+        background: rgba(5, 10, 24, 0.4);
+      }
+
+      .composer textarea {
+        width: 100%;
+        resize: none;
+        height: 74px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        outline: none;
+      }
+
+      .composer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .helper-text {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .send-btn {
+        border: 0;
+        border-radius: 12px;
+        padding: 10px 16px;
+        cursor: pointer;
+        color: white;
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      }
+
+      @media (max-width: 640px) {
+        .widget-panel {
+          right: 12px;
+          bottom: 86px;
+          width: calc(100vw - 24px);
+          height: calc(100vh - 110px);
+        }
+        .widget-toggle {
+          right: 14px;
+          bottom: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="hero">
+      <div class="badge">✨ ConsultEdge • AI-powered support</div>
+      <h1>Floating homepage support chat, ready to connect.</h1>
+      <p class="lead">
+        This demo shows the same AI support widget style you can place on your homepage.
+        It already calls your backend endpoint at <code>/api/v1/ai/chat</code> and supports
+        quick guidance for experts, booking, payments, and technical issues.
+      </p>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="openDemoChat">Open support widget</button>
+        <button class="btn btn-secondary" onclick="window.location.href='/api/v1'">View API base</button>
+      </div>
+    </main>
+
+    <button class="widget-toggle" id="widgetToggle" aria-label="Open AI support">💬</button>
+
+    <section class="widget-panel" id="widgetPanel" aria-live="polite">
+      <div class="widget-header">
+        <div class="widget-title">
+          <div>
+            <h2>ConsultEdge AI Support</h2>
+            <small>Ask about booking, experts, payment, or platform help</small>
+          </div>
+          <span class="status-pill">Online</span>
+        </div>
+      </div>
+
+      <div class="quick-actions" id="quickActions">
+        <button class="chip" data-context="expert" data-message="Help me find the right expert">Find expert</button>
+        <button class="chip" data-context="booking" data-message="How do I book a consultation?">Book session</button>
+        <button class="chip" data-context="payment" data-message="I need help with payment or refund">Payment help</button>
+        <button class="chip" data-context="technical" data-message="I have a login or technical problem">Technical issue</button>
+      </div>
+
+      <div class="messages" id="messages"></div>
+
+      <div class="composer">
+        <textarea id="messageInput" placeholder="Type your question..."></textarea>
+        <div class="composer-row">
+          <span class="helper-text">Press Enter to send • Shift+Enter for new line</span>
+          <button class="send-btn" id="sendBtn">Send</button>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const panel = document.getElementById('widgetPanel');
+      const toggle = document.getElementById('widgetToggle');
+      const openDemoChat = document.getElementById('openDemoChat');
+      const messagesEl = document.getElementById('messages');
+      const inputEl = document.getElementById('messageInput');
+      const sendBtn = document.getElementById('sendBtn');
+      const quickActions = document.getElementById('quickActions');
+      const endpoint = `${window.location.origin}/api/v1/ai/chat`;
+
+      let currentContext = 'homepage';
+      const history = [];
+
+      function togglePanel(forceOpen) {
+        const willOpen = typeof forceOpen === 'boolean' ? forceOpen : !panel.classList.contains('open');
+        panel.classList.toggle('open', willOpen);
+        if (willOpen) inputEl.focus();
+      }
+
+      function addMessage(role, content, suggestions = []) {
+        const wrap = document.createElement('div');
+        wrap.className = `msg ${role}`;
+        wrap.textContent = content;
+
+        if (Array.isArray(suggestions) && suggestions.length) {
+          const suggestionsWrap = document.createElement('div');
+          suggestionsWrap.className = 'suggestions';
+          suggestions.forEach((text) => {
+            const btn = document.createElement('button');
+            btn.className = 'chip';
+            btn.textContent = text;
+            btn.addEventListener('click', () => {
+              inputEl.value = text;
+              sendMessage();
+            });
+            suggestionsWrap.appendChild(btn);
+          });
+          wrap.appendChild(suggestionsWrap);
+        }
+
+        messagesEl.appendChild(wrap);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function addTyping() {
+        const typing = document.createElement('div');
+        typing.className = 'msg assistant';
+        typing.id = 'typing-indicator';
+        typing.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+        messagesEl.appendChild(typing);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function removeTyping() {
+        document.getElementById('typing-indicator')?.remove();
+      }
+
+      async function sendMessage(prefilledMessage, contextOverride) {
+        const text = (prefilledMessage ?? inputEl.value).trim();
+        if (!text) return;
+
+        if (contextOverride) currentContext = contextOverride;
+
+        togglePanel(true);
+        addMessage('user', text);
+        history.push({ role: 'user', content: text });
+        inputEl.value = '';
+        addTyping();
+
+        try {
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message: text,
+              context: currentContext,
+              history: history.slice(-8),
+            }),
+          });
+
+          const payload = await response.json();
+          removeTyping();
+
+          if (!response.ok || !payload?.data?.reply) {
+            throw new Error(payload?.message || 'Failed to get AI response');
+          }
+
+          const result = payload.data;
+          addMessage('assistant', result.reply, result.suggestedActions || []);
+          history.push({ role: 'assistant', content: result.reply });
+
+          if (result.escalatedToHuman) {
+            addMessage('system', 'This issue may need admin or human support for a full resolution.');
+          }
+        } catch (error) {
+          removeTyping();
+          addMessage('assistant', 'Sorry — the support assistant is temporarily unavailable. Please try again in a moment.');
+          console.error(error);
+        }
+      }
+
+      toggle.addEventListener('click', () => togglePanel());
+      openDemoChat.addEventListener('click', () => togglePanel(true));
+      sendBtn.addEventListener('click', () => sendMessage());
+
+      inputEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          sendMessage();
+        }
+      });
+
+      quickActions.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-message]');
+        if (!button) return;
+        sendMessage(button.dataset.message, button.dataset.context || 'homepage');
+      });
+
+      addMessage(
+        'assistant',
+        'Hi! I’m your ConsultEdge AI assistant. I can help you find the right expert, explain booking steps, or guide you with payment and account questions.'
+      );
+    </script>
+  </body>
+</html>

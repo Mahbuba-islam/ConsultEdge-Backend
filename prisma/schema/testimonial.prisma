@@ -1,7 +1,11 @@
 model Testimonial {
-    id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    id      String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     rating  Int
     comment String?
+    status  ReviewStatus @default(PENDING)
+
+    expertReply     String?
+    expertRepliedAt DateTime?
 
     clientId String @db.Uuid
     client   Client @relation(fields: [clientId], references: [id])

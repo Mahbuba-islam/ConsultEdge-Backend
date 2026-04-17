@@ -10,7 +10,7 @@ import { sendResponse } from "../../shared/sendResponsr";
 
 const createSchedule = catchAsync( async (req : Request, res : Response) => {
     const payload = req.body;
-    const schedule = await schedulesService.createSchedules(payload);
+    const schedule = await schedulesService.createSchedules(payload, req.user);
     sendResponse(res, {
         success: true,
         httpStatusCode: status.CREATED,
@@ -22,7 +22,7 @@ const createSchedule = catchAsync( async (req : Request, res : Response) => {
 
 const getAllSchedules = catchAsync( async (req : Request, res : Response) => {
     const query = req.query;
-    const result = await schedulesService.getAllSchedules(query as IqueryParams);
+    const result = await schedulesService.getAllSchedules(query as IqueryParams, req.user);
     sendResponse(res, {
         success: true,
         httpStatusCode: status.OK,
@@ -42,6 +42,27 @@ const getScheduleById = catchAsync( async (req : Request, res : Response) => {
         httpStatusCode: status.OK,
         message: 'Schedule retrieved successfully',
         data: schedule
+    });
+});
+
+const getPublishedSchedulesByExpertId = catchAsync(async (req: Request, res: Response) => {
+    const expertId = (req.params.expertId || req.query.expertId) as string | undefined;
+
+    if (!expertId) {
+        return sendResponse(res, {
+            success: false,
+            httpStatusCode: status.BAD_REQUEST,
+            message: "expertId is required",
+        });
+    }
+
+    const result = await schedulesService.getPublishedSchedulesByExpertId(expertId);
+
+    sendResponse(res, {
+        success: true,
+        httpStatusCode: status.OK,
+        message: "Published schedules retrieved successfully",
+        data: result,
     });
 });
 
@@ -79,6 +100,7 @@ export const ScheduleController = {
     createSchedule,
     getAllSchedules,
     getScheduleById,
+    getPublishedSchedulesByExpertId,
     updateSchedule,
     deleteSchedule
 }

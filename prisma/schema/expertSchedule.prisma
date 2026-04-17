@@ -10,9 +10,10 @@ model ExpertSchedule {
     consultationId String?       @db.Uuid
     consultation   Consultation? @relation("ExpertScheduleToConsultation")
 
-    isBooked  Boolean   @default(false)
-    isDeleted Boolean   @default(false)
-    deletedAt DateTime?
+    isBooked    Boolean @default(false)
+    isPublished Boolean @default(false)
+    isDeleted   Boolean @default(false)
+    deletedAt   DateTime?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

@@ -15,6 +15,7 @@ import { notFound } from "./middleware/notFound";
 import { indexRoutes } from ".";
 import { consultationService } from "./modules/consultation/consultation.service";
 import { PaymentController } from "./modules/payment/payment.controler";
+import { authRoutes } from "./modules/auth/auth.router";
 
 const app: Application = express();
 
@@ -23,8 +24,19 @@ const app: Application = express();
 -------------------------------------------- */
 
 
-app.set("views", path.join(__dirname, "../templates"));
+// Request logging middleware for debugging
+// app.use((req, res, next) => {
+//    console.log(`[${req.method}] ${req.originalUrl} - Body:`, req.body);
+//    next();
+// });
+
+app.set("views", path.join(process.cwd(), "src", "templates"));
 app.set("view engine", "ejs");
+
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/demo", express.static(path.join(process.cwd(), "public")));
+
+
 /* -------------------------------------------
    Stripe Webhook (RAW BODY)
 -------------------------------------------- */
@@ -72,25 +84,24 @@ app.get("/", (req: Request, res: Response) => {
 /* -------------------------------------------
    Cron Job — Cancel Unpaid Consultations
 -------------------------------------------- */
-// cron.schedule("*/25 * * * *", async () => {
-//   try {
-//     console.log("Running cron job: cancel unpaid consultations");
-//     await consultationService.cancelUnpaidConsultations();
-//   } catch (error: any) {
-//     console.error(
-//       "Error occurred while canceling unpaid consultations:",
-//       error.message
-//     );
-//   }
-// });
-// cron.schedule("*/25 * * * *", async () => {
-//   await yourService.cleanup();
-// });
-
+if (envVars.NODE_ENV === "production") {
+  cron.schedule("*/25 * * * *", async () => {
+    try {
+      console.log("Running cron job: cancel unpaid consultations");
+      await consultationService.cancelUnpaidConsultations();
+    } catch (error: any) {
+      console.error(
+        "Error occurred while canceling unpaid consultations:",
+        error.message
+      );
+    }
+  });
+}
 
 /* -------------------------------------------
    API Routes
 -------------------------------------------- */
+app.use("/auth", authRoutes);
 app.use("/api/v1", indexRoutes);
 
 /* -------------------------------------------

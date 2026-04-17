@@ -38,6 +38,9 @@ export type TestimonialMinAggregateOutputType = {
   id: string | null
   rating: number | null
   comment: string | null
+  status: $Enums.ReviewStatus | null
+  expertReply: string | null
+  expertRepliedAt: Date | null
   clientId: string | null
   expertId: string | null
   consultationId: string | null
@@ -49,6 +52,9 @@ export type TestimonialMaxAggregateOutputType = {
   id: string | null
   rating: number | null
   comment: string | null
+  status: $Enums.ReviewStatus | null
+  expertReply: string | null
+  expertRepliedAt: Date | null
   clientId: string | null
   expertId: string | null
   consultationId: string | null
@@ -60,6 +66,9 @@ export type TestimonialCountAggregateOutputType = {
   id: number
   rating: number
   comment: number
+  status: number
+  expertReply: number
+  expertRepliedAt: number
   clientId: number
   expertId: number
   consultationId: number
@@ -81,6 +90,9 @@ export type TestimonialMinAggregateInputType = {
   id?: true
   rating?: true
   comment?: true
+  status?: true
+  expertReply?: true
+  expertRepliedAt?: true
   clientId?: true
   expertId?: true
   consultationId?: true
@@ -92,6 +104,9 @@ export type TestimonialMaxAggregateInputType = {
   id?: true
   rating?: true
   comment?: true
+  status?: true
+  expertReply?: true
+  expertRepliedAt?: true
   clientId?: true
   expertId?: true
   consultationId?: true
@@ -103,6 +118,9 @@ export type TestimonialCountAggregateInputType = {
   id?: true
   rating?: true
   comment?: true
+  status?: true
+  expertReply?: true
+  expertRepliedAt?: true
   clientId?: true
   expertId?: true
   consultationId?: true
@@ -201,6 +219,9 @@ export type TestimonialGroupByOutputType = {
   id: string
   rating: number
   comment: string | null
+  status: $Enums.ReviewStatus
+  expertReply: string | null
+  expertRepliedAt: Date | null
   clientId: string
   expertId: string
   consultationId: string | null
@@ -235,6 +256,9 @@ export type TestimonialWhereInput = {
   id?: Prisma.UuidFilter<"Testimonial"> | string
   rating?: Prisma.IntFilter<"Testimonial"> | number
   comment?: Prisma.StringNullableFilter<"Testimonial"> | string | null
+  status?: Prisma.EnumReviewStatusFilter<"Testimonial"> | $Enums.ReviewStatus
+  expertReply?: Prisma.StringNullableFilter<"Testimonial"> | string | null
+  expertRepliedAt?: Prisma.DateTimeNullableFilter<"Testimonial"> | Date | string | null
   clientId?: Prisma.UuidFilter<"Testimonial"> | string
   expertId?: Prisma.UuidFilter<"Testimonial"> | string
   consultationId?: Prisma.UuidNullableFilter<"Testimonial"> | string | null
@@ -249,6 +273,9 @@ export type TestimonialOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expertReply?: Prisma.SortOrderInput | Prisma.SortOrder
+  expertRepliedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -267,6 +294,9 @@ export type TestimonialWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TestimonialWhereInput | Prisma.TestimonialWhereInput[]
   rating?: Prisma.IntFilter<"Testimonial"> | number
   comment?: Prisma.StringNullableFilter<"Testimonial"> | string | null
+  status?: Prisma.EnumReviewStatusFilter<"Testimonial"> | $Enums.ReviewStatus
+  expertReply?: Prisma.StringNullableFilter<"Testimonial"> | string | null
+  expertRepliedAt?: Prisma.DateTimeNullableFilter<"Testimonial"> | Date | string | null
   clientId?: Prisma.UuidFilter<"Testimonial"> | string
   expertId?: Prisma.UuidFilter<"Testimonial"> | string
   createdAt?: Prisma.DateTimeFilter<"Testimonial"> | Date | string
@@ -280,6 +310,9 @@ export type TestimonialOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expertReply?: Prisma.SortOrderInput | Prisma.SortOrder
+  expertRepliedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -299,6 +332,9 @@ export type TestimonialScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"Testimonial"> | string
   rating?: Prisma.IntWithAggregatesFilter<"Testimonial"> | number
   comment?: Prisma.StringNullableWithAggregatesFilter<"Testimonial"> | string | null
+  status?: Prisma.EnumReviewStatusWithAggregatesFilter<"Testimonial"> | $Enums.ReviewStatus
+  expertReply?: Prisma.StringNullableWithAggregatesFilter<"Testimonial"> | string | null
+  expertRepliedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Testimonial"> | Date | string | null
   clientId?: Prisma.UuidWithAggregatesFilter<"Testimonial"> | string
   expertId?: Prisma.UuidWithAggregatesFilter<"Testimonial"> | string
   consultationId?: Prisma.UuidNullableWithAggregatesFilter<"Testimonial"> | string | null
@@ -310,6 +346,9 @@ export type TestimonialCreateInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutTestimonialsInput
@@ -321,6 +360,9 @@ export type TestimonialUncheckedCreateInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   clientId: string
   expertId: string
   consultationId?: string | null
@@ -332,6 +374,9 @@ export type TestimonialUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutTestimonialsNestedInput
@@ -343,6 +388,9 @@ export type TestimonialUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -354,6 +402,9 @@ export type TestimonialCreateManyInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   clientId: string
   expertId: string
   consultationId?: string | null
@@ -365,6 +416,9 @@ export type TestimonialUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -373,6 +427,9 @@ export type TestimonialUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -399,6 +456,9 @@ export type TestimonialCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expertReply?: Prisma.SortOrder
+  expertRepliedAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrder
@@ -414,6 +474,9 @@ export type TestimonialMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expertReply?: Prisma.SortOrder
+  expertRepliedAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrder
@@ -425,6 +488,9 @@ export type TestimonialMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   comment?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expertReply?: Prisma.SortOrder
+  expertRepliedAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   expertId?: Prisma.SortOrder
   consultationId?: Prisma.SortOrder
@@ -552,10 +618,17 @@ export type TestimonialUncheckedUpdateManyWithoutExpertNestedInput = {
   deleteMany?: Prisma.TestimonialScalarWhereInput | Prisma.TestimonialScalarWhereInput[]
 }
 
+export type EnumReviewStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ReviewStatus
+}
+
 export type TestimonialCreateWithoutClientInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   expert: Prisma.ExpertCreateNestedOneWithoutTestimonialsInput
@@ -566,6 +639,9 @@ export type TestimonialUncheckedCreateWithoutClientInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   expertId: string
   consultationId?: string | null
   createdAt?: Date | string
@@ -605,6 +681,9 @@ export type TestimonialScalarWhereInput = {
   id?: Prisma.UuidFilter<"Testimonial"> | string
   rating?: Prisma.IntFilter<"Testimonial"> | number
   comment?: Prisma.StringNullableFilter<"Testimonial"> | string | null
+  status?: Prisma.EnumReviewStatusFilter<"Testimonial"> | $Enums.ReviewStatus
+  expertReply?: Prisma.StringNullableFilter<"Testimonial"> | string | null
+  expertRepliedAt?: Prisma.DateTimeNullableFilter<"Testimonial"> | Date | string | null
   clientId?: Prisma.UuidFilter<"Testimonial"> | string
   expertId?: Prisma.UuidFilter<"Testimonial"> | string
   consultationId?: Prisma.UuidNullableFilter<"Testimonial"> | string | null
@@ -616,6 +695,9 @@ export type TestimonialCreateWithoutConsultationInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutTestimonialsInput
@@ -626,6 +708,9 @@ export type TestimonialUncheckedCreateWithoutConsultationInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   clientId: string
   expertId: string
   createdAt?: Date | string
@@ -652,6 +737,9 @@ export type TestimonialUpdateWithoutConsultationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutTestimonialsNestedInput
@@ -662,6 +750,9 @@ export type TestimonialUncheckedUpdateWithoutConsultationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   expertId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -672,6 +763,9 @@ export type TestimonialCreateWithoutExpertInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutTestimonialsInput
@@ -682,6 +776,9 @@ export type TestimonialUncheckedCreateWithoutExpertInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   clientId: string
   consultationId?: string | null
   createdAt?: Date | string
@@ -718,6 +815,9 @@ export type TestimonialCreateManyClientInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   expertId: string
   consultationId?: string | null
   createdAt?: Date | string
@@ -728,6 +828,9 @@ export type TestimonialUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expert?: Prisma.ExpertUpdateOneRequiredWithoutTestimonialsNestedInput
@@ -738,6 +841,9 @@ export type TestimonialUncheckedUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expertId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -748,6 +854,9 @@ export type TestimonialUncheckedUpdateManyWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expertId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -758,6 +867,9 @@ export type TestimonialCreateManyExpertInput = {
   id?: string
   rating: number
   comment?: string | null
+  status?: $Enums.ReviewStatus
+  expertReply?: string | null
+  expertRepliedAt?: Date | string | null
   clientId: string
   consultationId?: string | null
   createdAt?: Date | string
@@ -768,6 +880,9 @@ export type TestimonialUpdateWithoutExpertInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutTestimonialsNestedInput
@@ -778,6 +893,9 @@ export type TestimonialUncheckedUpdateWithoutExpertInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -788,6 +906,9 @@ export type TestimonialUncheckedUpdateManyWithoutExpertInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  expertReply?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertRepliedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   consultationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -800,6 +921,9 @@ export type TestimonialSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   rating?: boolean
   comment?: boolean
+  status?: boolean
+  expertReply?: boolean
+  expertRepliedAt?: boolean
   clientId?: boolean
   expertId?: boolean
   consultationId?: boolean
@@ -814,6 +938,9 @@ export type TestimonialSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   rating?: boolean
   comment?: boolean
+  status?: boolean
+  expertReply?: boolean
+  expertRepliedAt?: boolean
   clientId?: boolean
   expertId?: boolean
   consultationId?: boolean
@@ -828,6 +955,9 @@ export type TestimonialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   rating?: boolean
   comment?: boolean
+  status?: boolean
+  expertReply?: boolean
+  expertRepliedAt?: boolean
   clientId?: boolean
   expertId?: boolean
   consultationId?: boolean
@@ -842,6 +972,9 @@ export type TestimonialSelectScalar = {
   id?: boolean
   rating?: boolean
   comment?: boolean
+  status?: boolean
+  expertReply?: boolean
+  expertRepliedAt?: boolean
   clientId?: boolean
   expertId?: boolean
   consultationId?: boolean
@@ -849,7 +982,7 @@ export type TestimonialSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TestimonialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "rating" | "comment" | "clientId" | "expertId" | "consultationId" | "createdAt" | "updatedAt", ExtArgs["result"]["testimonial"]>
+export type TestimonialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "rating" | "comment" | "status" | "expertReply" | "expertRepliedAt" | "clientId" | "expertId" | "consultationId" | "createdAt" | "updatedAt", ExtArgs["result"]["testimonial"]>
 export type TestimonialInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   expert?: boolean | Prisma.ExpertDefaultArgs<ExtArgs>
@@ -877,6 +1010,9 @@ export type $TestimonialPayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: string
     rating: number
     comment: string | null
+    status: $Enums.ReviewStatus
+    expertReply: string | null
+    expertRepliedAt: Date | null
     clientId: string
     expertId: string
     consultationId: string | null
@@ -1311,6 +1447,9 @@ export interface TestimonialFieldRefs {
   readonly id: Prisma.FieldRef<"Testimonial", 'String'>
   readonly rating: Prisma.FieldRef<"Testimonial", 'Int'>
   readonly comment: Prisma.FieldRef<"Testimonial", 'String'>
+  readonly status: Prisma.FieldRef<"Testimonial", 'ReviewStatus'>
+  readonly expertReply: Prisma.FieldRef<"Testimonial", 'String'>
+  readonly expertRepliedAt: Prisma.FieldRef<"Testimonial", 'DateTime'>
   readonly clientId: Prisma.FieldRef<"Testimonial", 'String'>
   readonly expertId: Prisma.FieldRef<"Testimonial", 'String'>
   readonly consultationId: Prisma.FieldRef<"Testimonial", 'String'>

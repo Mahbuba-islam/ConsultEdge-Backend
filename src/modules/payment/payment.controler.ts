@@ -50,6 +50,35 @@ const handleStripeWebhookEvent = catchAsync(async (req: Request, res: Response) 
   }
 });
 
+const confirmConsultationPaymentSuccess = catchAsync(
+  async (req: Request, res: Response) => {
+    const source = req.method === "GET" ? req.query : req.body;
+
+    const consultationId = String(source?.consultationId ?? "").trim();
+    const paymentId = String(source?.paymentId ?? "").trim();
+    const transactionId = String(source?.transactionId ?? "").trim();
+    const sessionId = String(source?.sessionId ?? source?.session_id ?? "").trim();
+
+    const result = await PaymentService.confirmConsultationPaymentSuccess(
+      {
+        consultationId,
+        paymentId,
+        transactionId,
+        sessionId: sessionId || undefined,
+      },
+      req.user
+    );
+
+    return sendResponse(res, {
+      httpStatusCode: status.OK,
+      success: true,
+      message: "Consultation payment synced successfully",
+      data: result,
+    });
+  }
+);
+
 export const PaymentController = {
   handleStripeWebhookEvent,
+  confirmConsultationPaymentSuccess,
 };

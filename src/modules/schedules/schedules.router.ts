@@ -8,8 +8,10 @@ import { Role } from "../../generated/enums";
 
 const router = Router();
 
-router.post('/', checkAuth(Role.ADMIN), validateRequest(ScheduleValidation.createScheduleZodSchema) , ScheduleController.createSchedule);
-router.get('/', checkAuth(Role.ADMIN, Role.EXPERT), ScheduleController.getAllSchedules);
+router.post('/', checkAuth(Role.ADMIN, Role.EXPERT), validateRequest(ScheduleValidation.createScheduleZodSchema) , ScheduleController.createSchedule);
+router.get('/', checkAuth(Role.ADMIN, Role.EXPERT, Role.CLIENT), ScheduleController.getAllSchedules);
+router.get('/published', ScheduleController.getPublishedSchedulesByExpertId);
+router.get('/published/:expertId', ScheduleController.getPublishedSchedulesByExpertId);
 router.get('/:id', checkAuth(Role.ADMIN, Role.EXPERT), ScheduleController.getScheduleById);
 router.patch('/:id', checkAuth(Role.ADMIN),validateRequest(ScheduleValidation.updateScheduleZodSchema), ScheduleController.updateSchedule);
 router.delete('/:id', checkAuth(Role.ADMIN), ScheduleController.deleteSchedule);

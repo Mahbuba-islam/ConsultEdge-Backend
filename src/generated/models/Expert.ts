@@ -314,6 +314,7 @@ export type ExpertWhereInput = {
   consultations?: Prisma.ConsultationListRelationFilter
   testimonials?: Prisma.TestimonialListRelationFilter
   verification?: Prisma.XOR<Prisma.ExpertVerificationNullableScalarRelationFilter, Prisma.ExpertVerificationWhereInput> | null
+  chatRooms?: Prisma.ChatRoomListRelationFilter
 }
 
 export type ExpertOrderByWithRelationInput = {
@@ -339,6 +340,7 @@ export type ExpertOrderByWithRelationInput = {
   consultations?: Prisma.ConsultationOrderByRelationAggregateInput
   testimonials?: Prisma.TestimonialOrderByRelationAggregateInput
   verification?: Prisma.ExpertVerificationOrderByWithRelationInput
+  chatRooms?: Prisma.ChatRoomOrderByRelationAggregateInput
 }
 
 export type ExpertWhereUniqueInput = Prisma.AtLeast<{
@@ -367,6 +369,7 @@ export type ExpertWhereUniqueInput = Prisma.AtLeast<{
   consultations?: Prisma.ConsultationListRelationFilter
   testimonials?: Prisma.TestimonialListRelationFilter
   verification?: Prisma.XOR<Prisma.ExpertVerificationNullableScalarRelationFilter, Prisma.ExpertVerificationWhereInput> | null
+  chatRooms?: Prisma.ChatRoomListRelationFilter
 }, "id" | "email" | "userId">
 
 export type ExpertOrderByWithAggregationInput = {
@@ -436,6 +439,7 @@ export type ExpertCreateInput = {
   consultations?: Prisma.ConsultationCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertUncheckedCreateInput = {
@@ -459,6 +463,7 @@ export type ExpertUncheckedCreateInput = {
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationUncheckedCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertUpdateInput = {
@@ -482,6 +487,7 @@ export type ExpertUpdateInput = {
   consultations?: Prisma.ConsultationUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertUncheckedUpdateInput = {
@@ -505,6 +511,7 @@ export type ExpertUncheckedUpdateInput = {
   consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUncheckedUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertCreateManyInput = {
@@ -565,6 +572,11 @@ export type ExpertUncheckedUpdateManyInput = {
 export type ExpertNullableScalarRelationFilter = {
   is?: Prisma.ExpertWhereInput | null
   isNot?: Prisma.ExpertWhereInput | null
+}
+
+export type ExpertScalarRelationFilter = {
+  is?: Prisma.ExpertWhereInput
+  isNot?: Prisma.ExpertWhereInput
 }
 
 export type ExpertCountOrderByAggregateInput = {
@@ -634,11 +646,6 @@ export type ExpertSumOrderByAggregateInput = {
   consultationFee?: Prisma.SortOrder
 }
 
-export type ExpertScalarRelationFilter = {
-  is?: Prisma.ExpertWhereInput
-  isNot?: Prisma.ExpertWhereInput
-}
-
 export type ExpertListRelationFilter = {
   every?: Prisma.ExpertWhereInput
   some?: Prisma.ExpertWhereInput
@@ -681,6 +688,20 @@ export type ExpertUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExpertUpdateToOneWithWhereWithoutUserInput, Prisma.ExpertUpdateWithoutUserInput>, Prisma.ExpertUncheckedUpdateWithoutUserInput>
 }
 
+export type ExpertCreateNestedOneWithoutChatRoomsInput = {
+  create?: Prisma.XOR<Prisma.ExpertCreateWithoutChatRoomsInput, Prisma.ExpertUncheckedCreateWithoutChatRoomsInput>
+  connectOrCreate?: Prisma.ExpertCreateOrConnectWithoutChatRoomsInput
+  connect?: Prisma.ExpertWhereUniqueInput
+}
+
+export type ExpertUpdateOneRequiredWithoutChatRoomsNestedInput = {
+  create?: Prisma.XOR<Prisma.ExpertCreateWithoutChatRoomsInput, Prisma.ExpertUncheckedCreateWithoutChatRoomsInput>
+  connectOrCreate?: Prisma.ExpertCreateOrConnectWithoutChatRoomsInput
+  upsert?: Prisma.ExpertUpsertWithoutChatRoomsInput
+  connect?: Prisma.ExpertWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ExpertUpdateToOneWithWhereWithoutChatRoomsInput, Prisma.ExpertUpdateWithoutChatRoomsInput>, Prisma.ExpertUncheckedUpdateWithoutChatRoomsInput>
+}
+
 export type ExpertCreateNestedOneWithoutConsultationsInput = {
   create?: Prisma.XOR<Prisma.ExpertCreateWithoutConsultationsInput, Prisma.ExpertUncheckedCreateWithoutConsultationsInput>
   connectOrCreate?: Prisma.ExpertCreateOrConnectWithoutConsultationsInput
@@ -695,14 +716,6 @@ export type ExpertUpdateOneWithoutConsultationsNestedInput = {
   delete?: Prisma.ExpertWhereInput | boolean
   connect?: Prisma.ExpertWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExpertUpdateToOneWithWhereWithoutConsultationsInput, Prisma.ExpertUpdateWithoutConsultationsInput>, Prisma.ExpertUncheckedUpdateWithoutConsultationsInput>
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type ExpertCreateNestedOneWithoutSchedulesInput = {
@@ -809,6 +822,7 @@ export type ExpertCreateWithoutUserInput = {
   consultations?: Prisma.ConsultationCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertUncheckedCreateWithoutUserInput = {
@@ -831,6 +845,7 @@ export type ExpertUncheckedCreateWithoutUserInput = {
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationUncheckedCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertCreateOrConnectWithoutUserInput = {
@@ -869,6 +884,7 @@ export type ExpertUpdateWithoutUserInput = {
   consultations?: Prisma.ConsultationUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertUncheckedUpdateWithoutUserInput = {
@@ -884,6 +900,115 @@ export type ExpertUncheckedUpdateWithoutUserInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  industryId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schedules?: Prisma.ExpertScheduleUncheckedUpdateManyWithoutExpertNestedInput
+  consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutExpertNestedInput
+  testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutExpertNestedInput
+  verification?: Prisma.ExpertVerificationUncheckedUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutExpertNestedInput
+}
+
+export type ExpertCreateWithoutChatRoomsInput = {
+  id?: string
+  fullName: string
+  email: string
+  profilePhoto?: string | null
+  phone?: string | null
+  bio?: string | null
+  title?: string | null
+  experience?: number
+  consultationFee: number
+  isVerified?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutExpertInput
+  industry: Prisma.IndustryCreateNestedOneWithoutExpertsInput
+  schedules?: Prisma.ExpertScheduleCreateNestedManyWithoutExpertInput
+  consultations?: Prisma.ConsultationCreateNestedManyWithoutExpertInput
+  testimonials?: Prisma.TestimonialCreateNestedManyWithoutExpertInput
+  verification?: Prisma.ExpertVerificationCreateNestedOneWithoutExpertInput
+}
+
+export type ExpertUncheckedCreateWithoutChatRoomsInput = {
+  id?: string
+  fullName: string
+  email: string
+  profilePhoto?: string | null
+  phone?: string | null
+  bio?: string | null
+  title?: string | null
+  experience?: number
+  consultationFee: number
+  isVerified?: boolean
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  userId: string
+  industryId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schedules?: Prisma.ExpertScheduleUncheckedCreateNestedManyWithoutExpertInput
+  consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutExpertInput
+  testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutExpertInput
+  verification?: Prisma.ExpertVerificationUncheckedCreateNestedOneWithoutExpertInput
+}
+
+export type ExpertCreateOrConnectWithoutChatRoomsInput = {
+  where: Prisma.ExpertWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExpertCreateWithoutChatRoomsInput, Prisma.ExpertUncheckedCreateWithoutChatRoomsInput>
+}
+
+export type ExpertUpsertWithoutChatRoomsInput = {
+  update: Prisma.XOR<Prisma.ExpertUpdateWithoutChatRoomsInput, Prisma.ExpertUncheckedUpdateWithoutChatRoomsInput>
+  create: Prisma.XOR<Prisma.ExpertCreateWithoutChatRoomsInput, Prisma.ExpertUncheckedCreateWithoutChatRoomsInput>
+  where?: Prisma.ExpertWhereInput
+}
+
+export type ExpertUpdateToOneWithWhereWithoutChatRoomsInput = {
+  where?: Prisma.ExpertWhereInput
+  data: Prisma.XOR<Prisma.ExpertUpdateWithoutChatRoomsInput, Prisma.ExpertUncheckedUpdateWithoutChatRoomsInput>
+}
+
+export type ExpertUpdateWithoutChatRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutExpertNestedInput
+  industry?: Prisma.IndustryUpdateOneRequiredWithoutExpertsNestedInput
+  schedules?: Prisma.ExpertScheduleUpdateManyWithoutExpertNestedInput
+  consultations?: Prisma.ConsultationUpdateManyWithoutExpertNestedInput
+  testimonials?: Prisma.TestimonialUpdateManyWithoutExpertNestedInput
+  verification?: Prisma.ExpertVerificationUpdateOneWithoutExpertNestedInput
+}
+
+export type ExpertUncheckedUpdateWithoutChatRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.IntFieldUpdateOperationsInput | number
+  consultationFee?: Prisma.IntFieldUpdateOperationsInput | number
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   industryId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -913,6 +1038,7 @@ export type ExpertCreateWithoutConsultationsInput = {
   schedules?: Prisma.ExpertScheduleCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertUncheckedCreateWithoutConsultationsInput = {
@@ -935,6 +1061,7 @@ export type ExpertUncheckedCreateWithoutConsultationsInput = {
   schedules?: Prisma.ExpertScheduleUncheckedCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationUncheckedCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertCreateOrConnectWithoutConsultationsInput = {
@@ -973,6 +1100,7 @@ export type ExpertUpdateWithoutConsultationsInput = {
   schedules?: Prisma.ExpertScheduleUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertUncheckedUpdateWithoutConsultationsInput = {
@@ -995,6 +1123,7 @@ export type ExpertUncheckedUpdateWithoutConsultationsInput = {
   schedules?: Prisma.ExpertScheduleUncheckedUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUncheckedUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertCreateWithoutSchedulesInput = {
@@ -1017,6 +1146,7 @@ export type ExpertCreateWithoutSchedulesInput = {
   consultations?: Prisma.ConsultationCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertUncheckedCreateWithoutSchedulesInput = {
@@ -1039,6 +1169,7 @@ export type ExpertUncheckedCreateWithoutSchedulesInput = {
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationUncheckedCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertCreateOrConnectWithoutSchedulesInput = {
@@ -1077,6 +1208,7 @@ export type ExpertUpdateWithoutSchedulesInput = {
   consultations?: Prisma.ConsultationUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertUncheckedUpdateWithoutSchedulesInput = {
@@ -1099,6 +1231,7 @@ export type ExpertUncheckedUpdateWithoutSchedulesInput = {
   consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUncheckedUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertCreateWithoutVerificationInput = {
@@ -1121,6 +1254,7 @@ export type ExpertCreateWithoutVerificationInput = {
   schedules?: Prisma.ExpertScheduleCreateNestedManyWithoutExpertInput
   consultations?: Prisma.ConsultationCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertUncheckedCreateWithoutVerificationInput = {
@@ -1143,6 +1277,7 @@ export type ExpertUncheckedCreateWithoutVerificationInput = {
   schedules?: Prisma.ExpertScheduleUncheckedCreateNestedManyWithoutExpertInput
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertCreateOrConnectWithoutVerificationInput = {
@@ -1181,6 +1316,7 @@ export type ExpertUpdateWithoutVerificationInput = {
   schedules?: Prisma.ExpertScheduleUpdateManyWithoutExpertNestedInput
   consultations?: Prisma.ConsultationUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertUncheckedUpdateWithoutVerificationInput = {
@@ -1203,6 +1339,7 @@ export type ExpertUncheckedUpdateWithoutVerificationInput = {
   schedules?: Prisma.ExpertScheduleUncheckedUpdateManyWithoutExpertNestedInput
   consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertCreateWithoutIndustryInput = {
@@ -1225,6 +1362,7 @@ export type ExpertCreateWithoutIndustryInput = {
   consultations?: Prisma.ConsultationCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertUncheckedCreateWithoutIndustryInput = {
@@ -1247,6 +1385,7 @@ export type ExpertUncheckedCreateWithoutIndustryInput = {
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutExpertInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationUncheckedCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertCreateOrConnectWithoutIndustryInput = {
@@ -1317,6 +1456,7 @@ export type ExpertCreateWithoutTestimonialsInput = {
   schedules?: Prisma.ExpertScheduleCreateNestedManyWithoutExpertInput
   consultations?: Prisma.ConsultationCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertUncheckedCreateWithoutTestimonialsInput = {
@@ -1339,6 +1479,7 @@ export type ExpertUncheckedCreateWithoutTestimonialsInput = {
   schedules?: Prisma.ExpertScheduleUncheckedCreateNestedManyWithoutExpertInput
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutExpertInput
   verification?: Prisma.ExpertVerificationUncheckedCreateNestedOneWithoutExpertInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutExpertInput
 }
 
 export type ExpertCreateOrConnectWithoutTestimonialsInput = {
@@ -1377,6 +1518,7 @@ export type ExpertUpdateWithoutTestimonialsInput = {
   schedules?: Prisma.ExpertScheduleUpdateManyWithoutExpertNestedInput
   consultations?: Prisma.ConsultationUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertUncheckedUpdateWithoutTestimonialsInput = {
@@ -1399,6 +1541,7 @@ export type ExpertUncheckedUpdateWithoutTestimonialsInput = {
   schedules?: Prisma.ExpertScheduleUncheckedUpdateManyWithoutExpertNestedInput
   consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUncheckedUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertCreateManyIndustryInput = {
@@ -1439,6 +1582,7 @@ export type ExpertUpdateWithoutIndustryInput = {
   consultations?: Prisma.ConsultationUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertUncheckedUpdateWithoutIndustryInput = {
@@ -1461,6 +1605,7 @@ export type ExpertUncheckedUpdateWithoutIndustryInput = {
   consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutExpertNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutExpertNestedInput
   verification?: Prisma.ExpertVerificationUncheckedUpdateOneWithoutExpertNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutExpertNestedInput
 }
 
 export type ExpertUncheckedUpdateManyWithoutIndustryInput = {
@@ -1490,12 +1635,14 @@ export type ExpertCountOutputType = {
   schedules: number
   consultations: number
   testimonials: number
+  chatRooms: number
 }
 
 export type ExpertCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   schedules?: boolean | ExpertCountOutputTypeCountSchedulesArgs
   consultations?: boolean | ExpertCountOutputTypeCountConsultationsArgs
   testimonials?: boolean | ExpertCountOutputTypeCountTestimonialsArgs
+  chatRooms?: boolean | ExpertCountOutputTypeCountChatRoomsArgs
 }
 
 /**
@@ -1529,6 +1676,13 @@ export type ExpertCountOutputTypeCountTestimonialsArgs<ExtArgs extends runtime.T
   where?: Prisma.TestimonialWhereInput
 }
 
+/**
+ * ExpertCountOutputType without action
+ */
+export type ExpertCountOutputTypeCountChatRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatRoomWhereInput
+}
+
 
 export type ExpertSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1553,6 +1707,7 @@ export type ExpertSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   consultations?: boolean | Prisma.Expert$consultationsArgs<ExtArgs>
   testimonials?: boolean | Prisma.Expert$testimonialsArgs<ExtArgs>
   verification?: boolean | Prisma.Expert$verificationArgs<ExtArgs>
+  chatRooms?: boolean | Prisma.Expert$chatRoomsArgs<ExtArgs>
   _count?: boolean | Prisma.ExpertCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["expert"]>
 
@@ -1625,6 +1780,7 @@ export type ExpertInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   consultations?: boolean | Prisma.Expert$consultationsArgs<ExtArgs>
   testimonials?: boolean | Prisma.Expert$testimonialsArgs<ExtArgs>
   verification?: boolean | Prisma.Expert$verificationArgs<ExtArgs>
+  chatRooms?: boolean | Prisma.Expert$chatRoomsArgs<ExtArgs>
   _count?: boolean | Prisma.ExpertCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ExpertIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1645,6 +1801,7 @@ export type $ExpertPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     consultations: Prisma.$ConsultationPayload<ExtArgs>[]
     testimonials: Prisma.$TestimonialPayload<ExtArgs>[]
     verification: Prisma.$ExpertVerificationPayload<ExtArgs> | null
+    chatRooms: Prisma.$ChatRoomPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2063,6 +2220,7 @@ export interface Prisma__ExpertClient<T, Null = never, ExtArgs extends runtime.T
   consultations<T extends Prisma.Expert$consultationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expert$consultationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsultationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   testimonials<T extends Prisma.Expert$testimonialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expert$testimonialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestimonialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   verification<T extends Prisma.Expert$verificationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expert$verificationArgs<ExtArgs>>): Prisma.Prisma__ExpertVerificationClient<runtime.Types.Result.GetResult<Prisma.$ExpertVerificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  chatRooms<T extends Prisma.Expert$chatRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Expert$chatRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatRoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2597,6 +2755,30 @@ export type Expert$verificationArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   include?: Prisma.ExpertVerificationInclude<ExtArgs> | null
   where?: Prisma.ExpertVerificationWhereInput
+}
+
+/**
+ * Expert.chatRooms
+ */
+export type Expert$chatRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatRoom
+   */
+  select?: Prisma.ChatRoomSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatRoom
+   */
+  omit?: Prisma.ChatRoomOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatRoomInclude<ExtArgs> | null
+  where?: Prisma.ChatRoomWhereInput
+  orderBy?: Prisma.ChatRoomOrderByWithRelationInput | Prisma.ChatRoomOrderByWithRelationInput[]
+  cursor?: Prisma.ChatRoomWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatRoomScalarFieldEnum | Prisma.ChatRoomScalarFieldEnum[]
 }
 
 /**

@@ -11,13 +11,20 @@ import { IRequestUser } from "../../interfaces/requestUser.interface";
 // CREATE TESTIMONIAL
 // ------------------------------
 const createTestimonial = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user as IRequestUser // after fixing IRequestUser
+  console.log("USER:", req.user);
+console.log("PAYLOAD:", req.body);
+  const user = req.user as IRequestUser;
   const payload = req.body;
 
   const testimonial = await testimonialService.createTestimonial(
     user.userId,
     payload
   );
+  console.log("USER:", req.user);
+console.log("PAYLOAD:", req.body);
+  console.log("PAYLOAD:", payload);
+console.log("USER:", user.userId);
+console.log("CONSULTATION:", payload.consultationId);
 
   sendResponse(res, {
     success: true,
@@ -28,7 +35,7 @@ const createTestimonial = catchAsync(async (req: Request, res: Response) => {
 });
 
 // ------------------------------
-// GET ALL TESTIMONIALS
+// GET ALL APPROVED TESTIMONIALS (PUBLIC)
 // ------------------------------
 const getAllTestimonials = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
@@ -45,6 +52,28 @@ const getAllTestimonials = catchAsync(async (req: Request, res: Response) => {
     meta: result.meta,
   });
 });
+
+// ------------------------------
+// GET ALL TESTIMONIALS FOR ADMIN
+// ------------------------------
+const getAllTestimonialsForAdmin = catchAsync(
+  async (req: Request, res: Response) => {
+    const query = req.query;
+
+    const result = await testimonialService.getAllTestimonials(
+      query as IqueryParams,
+      true
+    );
+
+    sendResponse(res, {
+      success: true,
+      httpStatusCode: status.OK,
+      message: "All testimonials retrieved successfully",
+      data: result.data,
+      meta: result.meta,
+    });
+  }
+);
 
 // ------------------------------
 // GET TESTIMONIALS BY EXPERT
@@ -92,6 +121,47 @@ const updateTestimonial = catchAsync(async (req: Request, res: Response) => {
 });
 
 // ------------------------------
+// EXPERT REPLY TO TESTIMONIAL
+// ------------------------------
+const replyToTestimonial = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const expertUserId = req.user.userId;
+
+  const result = await testimonialService.replyToTestimonial(
+    id as string,
+    expertUserId,
+    req.body
+  );
+
+  sendResponse(res, {
+    success: true,
+    httpStatusCode: status.OK,
+    message: "Reply added successfully",
+    data: result,
+  });
+});
+
+// ------------------------------
+// ADMIN UPDATE REVIEW STATUS
+// ------------------------------
+const updateReviewStatus = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await testimonialService.updateTestimonial(
+    id as string,
+    req.user.userId,
+    req.body
+  );
+
+  sendResponse(res, {
+    success: true,
+    httpStatusCode: status.OK,
+    message: "Review status updated successfully",
+    data: result,
+  });
+});
+
+// ------------------------------
 // DELETE TESTIMONIAL
 // ------------------------------
 const deleteTestimonial = catchAsync(async (req: Request, res: Response) => {
@@ -113,7 +183,10 @@ const deleteTestimonial = catchAsync(async (req: Request, res: Response) => {
 export const TestimonialController = {
   createTestimonial,
   getAllTestimonials,
+  getAllTestimonialsForAdmin,
   getTestimonialsByExpert,
   updateTestimonial,
+  replyToTestimonial,
+  updateReviewStatus,
   deleteTestimonial,
 };

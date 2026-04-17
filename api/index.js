@@ -1,6 +1,6 @@
 import {
-  index_default
-} from "./chunk-7BKPH2BP.js";
+  indexRoutes
+} from "./chunk-NVDDLXFU.js";
 export {
-  index_default as default
+  indexRoutes
 };

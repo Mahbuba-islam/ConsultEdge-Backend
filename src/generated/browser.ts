@@ -23,6 +23,11 @@ export * from './enums.js';
  */
 export type Admin = Prisma.AdminModel
 /**
+ * Model Attachment
+ * 
+ */
+export type Attachment = Prisma.AttachmentModel
+/**
  * Model User
  * 
  */
@@ -42,6 +47,21 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model Call
+ * 
+ */
+export type Call = Prisma.CallModel
+/**
+ * Model CallParticipant
+ * 
+ */
+export type CallParticipant = Prisma.CallParticipantModel
+/**
+ * Model ChatRoom
+ * 
+ */
+export type ChatRoom = Prisma.ChatRoomModel
 /**
  * Model Client
  * 
@@ -73,6 +93,11 @@ export type ExpertVerification = Prisma.ExpertVerificationModel
  */
 export type Industry = Prisma.IndustryModel
 /**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
+/**
  * Model Notification
  * 
  */
@@ -92,3 +117,13 @@ export type Schedule = Prisma.ScheduleModel
  * 
  */
 export type Testimonial = Prisma.TestimonialModel
+/**
+ * Model TypingState
+ * 
+ */
+export type TypingState = Prisma.TypingStateModel
+/**
+ * Model UserPresence
+ * 
+ */
+export type UserPresence = Prisma.UserPresenceModel

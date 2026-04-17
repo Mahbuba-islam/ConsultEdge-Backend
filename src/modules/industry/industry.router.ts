@@ -3,7 +3,7 @@ import { Router } from "express";
 
 import { validateRequest } from "../../middleware/validateRequest";
 
-import { createIndustryValidation } from "./industry.validation";
+import { createIndustryValidation, updateIndustryValidation } from "./industry.validation";
 import { industryController } from "./industry.controler";
 import { multerUpload } from "../../config/multer.config";
 import { checkAuth } from "../../middleware/cheackAuth";
@@ -17,7 +17,7 @@ router.get("/", industryController.getAllIndustries)
 router.get("/:id", industryController.getIndustryById);
 
 router.delete("/:id", checkAuth(Role.ADMIN), industryController.deleteIndustry)
-router.put("/:id", checkAuth(Role.ADMIN), industryController.updateIndustry)
+router.put("/:id", checkAuth(Role.ADMIN), multerUpload.single("file"), validateRequest(updateIndustryValidation), industryController.updateIndustry)
 
 
 export const industryRouter = router

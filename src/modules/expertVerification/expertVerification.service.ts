@@ -16,6 +16,15 @@ const verifyExpert = async (
     throw new AppError(status.NOT_FOUND, "Expert not found");
   }
 
+  const verificationMessage =
+    payload.status === VerificationStatus.APPROVED
+      ? "Your expert profile has been approved by the admin."
+      : payload.status === VerificationStatus.REJECTED
+      ? `Your expert verification request has been rejected${
+          payload.notes ? `: ${payload.notes}` : "."
+        }`
+      : "Your expert verification status is now pending review.";
+
   // Create or update verification record
   const verification = await prisma.$transaction(async (tx) => {
     const record = await tx.expertVerification.upsert({
@@ -39,7 +48,15 @@ const verifyExpert = async (
     await tx.expert.update({
       where: { id: expertId },
       data: {
-        isVerified: payload.status === "APPROVED",
+        isVerified: payload.status === VerificationStatus.APPROVED,
+      },
+    });
+
+    await tx.notification.create({
+      data: {
+        type: "EXPERT_VERIFICATION_UPDATE",
+        message: verificationMessage,
+        userId: expert.userId,
       },
     });
 

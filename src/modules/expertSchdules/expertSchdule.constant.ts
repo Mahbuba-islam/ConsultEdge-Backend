@@ -4,6 +4,7 @@ export const expertScheduleFilterableFields = [
   "expertId",
   "scheduleId",
   "isBooked",
+  "isPublished",
   "isDeleted",
 ];
 

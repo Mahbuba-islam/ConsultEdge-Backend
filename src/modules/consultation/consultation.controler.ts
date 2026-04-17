@@ -55,6 +55,106 @@ const initiateConsultationPayment = catchAsync(async (req, res) => {
   });
 });
 
+const getSessionAccess = catchAsync(async (req, res) => {
+  const { consultationId } = req.params;
+
+  const result = await consultationService.getSessionAccess(
+    consultationId as string,
+    req.user
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Session access details retrieved successfully",
+    data: result,
+  });
+});
+
+const startSession = catchAsync(async (req, res) => {
+  const { consultationId } = req.params;
+
+  const result = await consultationService.startSession(
+    consultationId as string,
+    req.user
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Session started successfully",
+    data: result,
+  });
+});
+
+const completeSession = catchAsync(async (req, res) => {
+  const { consultationId } = req.params;
+
+  const result = await consultationService.completeSession(
+    consultationId as string,
+    req.user,
+    req.body
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Session completed successfully",
+    data: result,
+  });
+});
+
+const cancelConsultation = catchAsync(async (req, res) => {
+  const { consultationId } = req.params;
+
+  const result = await consultationService.cancelConsultation(
+    consultationId as string,
+    req.user,
+    req.body
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Consultation cancelled successfully",
+    data: result,
+  });
+});
+
+const rescheduleConsultation = catchAsync(async (req, res) => {
+  const { consultationId } = req.params;
+
+  const result = await consultationService.rescheduleConsultation(
+    consultationId as string,
+    req.user,
+    req.body
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Consultation rescheduled successfully",
+    data: result,
+  });
+});
+
+const updateConsultationStatus = catchAsync(async (req, res) => {
+  const { consultationId } = req.params;
+
+  const result = await consultationService.updateConsultationStatus(
+    consultationId as string,
+    req.user,
+    req.body
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Consultation status updated successfully",
+    data: result,
+  });
+});
+
 // For cron / admin trigger
 const cancelUnpaidConsultations = catchAsync(async (_req, res) => {
   await consultationService.cancelUnpaidConsultations();
@@ -72,5 +172,11 @@ export const consultationController = {
   bookConsultationWithPayLater,
   getMyBookings,
   initiateConsultationPayment,
+  getSessionAccess,
+  startSession,
+  completeSession,
+  cancelConsultation,
+  rescheduleConsultation,
+  updateConsultationStatus,
   cancelUnpaidConsultations,
 };

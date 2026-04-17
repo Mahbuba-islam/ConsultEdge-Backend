@@ -4,7 +4,11 @@ import { validateRequest } from "../../middleware/validateRequest";
 
 import { checkAuth } from "../../middleware/cheackAuth";
 import { Role } from "../../generated/enums";
-import { assignExpertScheduleValidation, updateExpertScheduleValidation } from "./expertSchdule.validation";
+import {
+  assignExpertScheduleValidation,
+  publishExpertScheduleValidation,
+  updateExpertScheduleValidation,
+} from "./expertSchdule.validation";
 import { expertScheduleController } from "./expertSchdules.controler";
 
 const router = Router();
@@ -13,7 +17,7 @@ const router = Router();
 router.post(
   "/assign",
   validateRequest(assignExpertScheduleValidation),
-  checkAuth(),
+  checkAuth(Role.EXPERT),
   expertScheduleController.assignExpertSchedules
 );
 
@@ -24,19 +28,19 @@ router.get(
   expertScheduleController.getMyExpertSchedules
 );
 
-// Admin: get all expert schedules
+// Public/client published schedules by expert
 router.get(
-  "/",
-  checkAuth(Role.ADMIN),
-  expertScheduleController.getAllExpertSchedules
+  "/published",
+  expertScheduleController.getPublishedExpertSchedules
 );
 
-// Get expert schedule by composite key
 router.get(
-  "/:expertId/:scheduleId",
-  checkAuth(Role.ADMIN),
-  expertScheduleController.getExpertScheduleById
+  "/published/:expertId",
+  expertScheduleController.getPublishedExpertSchedules
 );
+
+
+
 
 // Update my schedules
 router.put(
@@ -45,6 +49,15 @@ router.put(
   checkAuth(Role.EXPERT),
   expertScheduleController.updateMyExpertSchedules
 );
+
+// Publish / unpublish my schedules
+router.patch(
+  "/my/publish",
+  validateRequest(publishExpertScheduleValidation),
+  checkAuth(Role.EXPERT),
+  expertScheduleController.publishMyExpertSchedules
+);
+
 
 // Delete my schedule
 router.delete(

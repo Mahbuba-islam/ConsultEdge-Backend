@@ -42,6 +42,8 @@ interface EnvConfig {
   }
 ADMIN_EMAIL:string
 ADMIN_PASSWORD:string
+OPENAI_API_KEY?: string
+OPENAI_MODEL?: string
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -117,7 +119,9 @@ const loadEnvVariables = (): EnvConfig => {
      
     },
     ADMIN_EMAIL:process.env.ADMIN_EMAIL as string,
-   ADMIN_PASSWORD:process.env.ADMIN_PASSWORD as string
+   ADMIN_PASSWORD:process.env.ADMIN_PASSWORD as string,
+   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+   OPENAI_MODEL: process.env.OPENAI_MODEL || "gpt-4o-mini"
 
 
     // BETTER_AUTH_SESSION_TOKEN_EXPIRY: process.env.BETTER_AUTH_SESSION_TOKEN_EXPIRY as string,

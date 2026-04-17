@@ -233,6 +233,7 @@ export type ClientWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   consultations?: Prisma.ConsultationListRelationFilter
   testimonials?: Prisma.TestimonialListRelationFilter
+  chatRooms?: Prisma.ChatRoomListRelationFilter
 }
 
 export type ClientOrderByWithRelationInput = {
@@ -250,6 +251,7 @@ export type ClientOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   consultations?: Prisma.ConsultationOrderByRelationAggregateInput
   testimonials?: Prisma.TestimonialOrderByRelationAggregateInput
+  chatRooms?: Prisma.ChatRoomOrderByRelationAggregateInput
 }
 
 export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -270,6 +272,7 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   consultations?: Prisma.ConsultationListRelationFilter
   testimonials?: Prisma.TestimonialListRelationFilter
+  chatRooms?: Prisma.ChatRoomListRelationFilter
 }, "id" | "email" | "userId">
 
 export type ClientOrderByWithAggregationInput = {
@@ -320,6 +323,7 @@ export type ClientCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutClientInput
   consultations?: Prisma.ConsultationCreateNestedManyWithoutClientInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutClientInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateInput = {
@@ -336,6 +340,7 @@ export type ClientUncheckedCreateInput = {
   updatedAt?: Date | string
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutClientInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutClientInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientUpdateInput = {
@@ -352,6 +357,7 @@ export type ClientUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutClientNestedInput
   consultations?: Prisma.ConsultationUpdateManyWithoutClientNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutClientNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateInput = {
@@ -368,6 +374,7 @@ export type ClientUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutClientNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutClientNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateManyInput = {
@@ -416,6 +423,11 @@ export type ClientNullableScalarRelationFilter = {
   isNot?: Prisma.ClientWhereInput | null
 }
 
+export type ClientScalarRelationFilter = {
+  is?: Prisma.ClientWhereInput
+  isNot?: Prisma.ClientWhereInput
+}
+
 export type ClientCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
@@ -458,11 +470,6 @@ export type ClientMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type ClientScalarRelationFilter = {
-  is?: Prisma.ClientWhereInput
-  isNot?: Prisma.ClientWhereInput
-}
-
 export type ClientCreateNestedOneWithoutUserInput = {
   create?: Prisma.XOR<Prisma.ClientCreateWithoutUserInput, Prisma.ClientUncheckedCreateWithoutUserInput>
   connectOrCreate?: Prisma.ClientCreateOrConnectWithoutUserInput
@@ -493,6 +500,20 @@ export type ClientUncheckedUpdateOneWithoutUserNestedInput = {
   delete?: Prisma.ClientWhereInput | boolean
   connect?: Prisma.ClientWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutUserInput, Prisma.ClientUpdateWithoutUserInput>, Prisma.ClientUncheckedUpdateWithoutUserInput>
+}
+
+export type ClientCreateNestedOneWithoutChatRoomsInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutChatRoomsInput, Prisma.ClientUncheckedCreateWithoutChatRoomsInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutChatRoomsInput
+  connect?: Prisma.ClientWhereUniqueInput
+}
+
+export type ClientUpdateOneRequiredWithoutChatRoomsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutChatRoomsInput, Prisma.ClientUncheckedCreateWithoutChatRoomsInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutChatRoomsInput
+  upsert?: Prisma.ClientUpsertWithoutChatRoomsInput
+  connect?: Prisma.ClientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutChatRoomsInput, Prisma.ClientUpdateWithoutChatRoomsInput>, Prisma.ClientUncheckedUpdateWithoutChatRoomsInput>
 }
 
 export type ClientCreateNestedOneWithoutConsultationsInput = {
@@ -536,6 +557,7 @@ export type ClientCreateWithoutUserInput = {
   updatedAt?: Date | string
   consultations?: Prisma.ConsultationCreateNestedManyWithoutClientInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutClientInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutUserInput = {
@@ -551,6 +573,7 @@ export type ClientUncheckedCreateWithoutUserInput = {
   updatedAt?: Date | string
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutClientInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutClientInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutUserInput = {
@@ -582,6 +605,7 @@ export type ClientUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   consultations?: Prisma.ConsultationUpdateManyWithoutClientNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutClientNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutUserInput = {
@@ -593,6 +617,87 @@ export type ClientUncheckedUpdateWithoutUserInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutClientNestedInput
+  testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutClientNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutClientNestedInput
+}
+
+export type ClientCreateWithoutChatRoomsInput = {
+  id?: string
+  fullName: string
+  email: string
+  profilePhoto?: string | null
+  phone?: string | null
+  address?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutClientInput
+  consultations?: Prisma.ConsultationCreateNestedManyWithoutClientInput
+  testimonials?: Prisma.TestimonialCreateNestedManyWithoutClientInput
+}
+
+export type ClientUncheckedCreateWithoutChatRoomsInput = {
+  id?: string
+  fullName: string
+  email: string
+  profilePhoto?: string | null
+  phone?: string | null
+  address?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutClientInput
+  testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutClientInput
+}
+
+export type ClientCreateOrConnectWithoutChatRoomsInput = {
+  where: Prisma.ClientWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientCreateWithoutChatRoomsInput, Prisma.ClientUncheckedCreateWithoutChatRoomsInput>
+}
+
+export type ClientUpsertWithoutChatRoomsInput = {
+  update: Prisma.XOR<Prisma.ClientUpdateWithoutChatRoomsInput, Prisma.ClientUncheckedUpdateWithoutChatRoomsInput>
+  create: Prisma.XOR<Prisma.ClientCreateWithoutChatRoomsInput, Prisma.ClientUncheckedCreateWithoutChatRoomsInput>
+  where?: Prisma.ClientWhereInput
+}
+
+export type ClientUpdateToOneWithWhereWithoutChatRoomsInput = {
+  where?: Prisma.ClientWhereInput
+  data: Prisma.XOR<Prisma.ClientUpdateWithoutChatRoomsInput, Prisma.ClientUncheckedUpdateWithoutChatRoomsInput>
+}
+
+export type ClientUpdateWithoutChatRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutClientNestedInput
+  consultations?: Prisma.ConsultationUpdateManyWithoutClientNestedInput
+  testimonials?: Prisma.TestimonialUpdateManyWithoutClientNestedInput
+}
+
+export type ClientUncheckedUpdateWithoutChatRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutClientNestedInput
@@ -612,6 +717,7 @@ export type ClientCreateWithoutConsultationsInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutClientInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutClientInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutConsultationsInput = {
@@ -627,6 +733,7 @@ export type ClientUncheckedCreateWithoutConsultationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutClientInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutConsultationsInput = {
@@ -658,6 +765,7 @@ export type ClientUpdateWithoutConsultationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutClientNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutClientNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutConsultationsInput = {
@@ -673,6 +781,7 @@ export type ClientUncheckedUpdateWithoutConsultationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutClientNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateWithoutTestimonialsInput = {
@@ -688,6 +797,7 @@ export type ClientCreateWithoutTestimonialsInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutClientInput
   consultations?: Prisma.ConsultationCreateNestedManyWithoutClientInput
+  chatRooms?: Prisma.ChatRoomCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutTestimonialsInput = {
@@ -703,6 +813,7 @@ export type ClientUncheckedCreateWithoutTestimonialsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   consultations?: Prisma.ConsultationUncheckedCreateNestedManyWithoutClientInput
+  chatRooms?: Prisma.ChatRoomUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutTestimonialsInput = {
@@ -734,6 +845,7 @@ export type ClientUpdateWithoutTestimonialsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutClientNestedInput
   consultations?: Prisma.ConsultationUpdateManyWithoutClientNestedInput
+  chatRooms?: Prisma.ChatRoomUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutTestimonialsInput = {
@@ -749,6 +861,7 @@ export type ClientUncheckedUpdateWithoutTestimonialsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   consultations?: Prisma.ConsultationUncheckedUpdateManyWithoutClientNestedInput
+  chatRooms?: Prisma.ChatRoomUncheckedUpdateManyWithoutClientNestedInput
 }
 
 
@@ -759,11 +872,13 @@ export type ClientUncheckedUpdateWithoutTestimonialsInput = {
 export type ClientCountOutputType = {
   consultations: number
   testimonials: number
+  chatRooms: number
 }
 
 export type ClientCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   consultations?: boolean | ClientCountOutputTypeCountConsultationsArgs
   testimonials?: boolean | ClientCountOutputTypeCountTestimonialsArgs
+  chatRooms?: boolean | ClientCountOutputTypeCountChatRoomsArgs
 }
 
 /**
@@ -790,6 +905,13 @@ export type ClientCountOutputTypeCountTestimonialsArgs<ExtArgs extends runtime.T
   where?: Prisma.TestimonialWhereInput
 }
 
+/**
+ * ClientCountOutputType without action
+ */
+export type ClientCountOutputTypeCountChatRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatRoomWhereInput
+}
+
 
 export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -806,6 +928,7 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   consultations?: boolean | Prisma.Client$consultationsArgs<ExtArgs>
   testimonials?: boolean | Prisma.Client$testimonialsArgs<ExtArgs>
+  chatRooms?: boolean | Prisma.Client$chatRoomsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["client"]>
 
@@ -858,6 +981,7 @@ export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   consultations?: boolean | Prisma.Client$consultationsArgs<ExtArgs>
   testimonials?: boolean | Prisma.Client$testimonialsArgs<ExtArgs>
+  chatRooms?: boolean | Prisma.Client$chatRoomsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClientIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -873,6 +997,7 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     user: Prisma.$UserPayload<ExtArgs>
     consultations: Prisma.$ConsultationPayload<ExtArgs>[]
     testimonials: Prisma.$TestimonialPayload<ExtArgs>[]
+    chatRooms: Prisma.$ChatRoomPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1283,6 +1408,7 @@ export interface Prisma__ClientClient<T, Null = never, ExtArgs extends runtime.T
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   consultations<T extends Prisma.Client$consultationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$consultationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsultationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   testimonials<T extends Prisma.Client$testimonialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$testimonialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestimonialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatRooms<T extends Prisma.Client$chatRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$chatRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatRoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1769,6 +1895,30 @@ export type Client$testimonialsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.TestimonialScalarFieldEnum | Prisma.TestimonialScalarFieldEnum[]
+}
+
+/**
+ * Client.chatRooms
+ */
+export type Client$chatRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatRoom
+   */
+  select?: Prisma.ChatRoomSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatRoom
+   */
+  omit?: Prisma.ChatRoomOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatRoomInclude<ExtArgs> | null
+  where?: Prisma.ChatRoomWhereInput
+  orderBy?: Prisma.ChatRoomOrderByWithRelationInput | Prisma.ChatRoomOrderByWithRelationInput[]
+  cursor?: Prisma.ChatRoomWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatRoomScalarFieldEnum | Prisma.ChatRoomScalarFieldEnum[]
 }
 
 /**

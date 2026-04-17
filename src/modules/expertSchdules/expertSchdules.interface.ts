@@ -9,4 +9,9 @@ export interface IUpdateExpertSchedulePayload {
   }[];
 }
 
+export interface IPublishExpertSchedulePayload {
+  scheduleIds: string[];
+  isPublished: boolean;
+}
+
 

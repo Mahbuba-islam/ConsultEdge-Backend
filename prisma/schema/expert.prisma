@@ -23,6 +23,7 @@ model Expert {
     consultations Consultation[]
     testimonials  Testimonial[]
     verification  ExpertVerification?
+    chatRooms     ChatRoom[]          @relation("ExpertChatRooms")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

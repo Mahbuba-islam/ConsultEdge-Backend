@@ -16,3 +16,10 @@ export const updateExpertScheduleValidation = z.object({
     ),
   }),
 });
+
+export const publishExpertScheduleValidation = z.object({
+  body: z.object({
+    scheduleIds: z.array(z.string().uuid("Invalid schedule ID")).min(1),
+    isPublished: z.boolean(),
+  }),
+});

@@ -115,27 +115,73 @@ import { Role, UserStatus } from "../generated/enums";
 import { envVars } from "../config/env";
 import { CookieUtils } from "../utilis/cookie";
 import { jwtUtils } from "../utilis/jwt";
+import { tokenUtils } from "../utilis/token";
 
 export const checkAuth =
   (...authRoles: Role[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log('Cookies:', req.headers.cookie);
+
     try {
-      // 1️⃣ Verify access token first
-      const accessToken = CookieUtils.getCookie(req, "accessToken");
+      const authHeader = req.headers.authorization;
+      const bearerToken = authHeader?.startsWith("Bearer ")
+        ? authHeader.slice(7).trim()
+        : undefined;
+      const cookieToken = CookieUtils.getCookie(req, "accessToken");
+      const accessToken = cookieToken || bearerToken;
 
-      if (!accessToken) {
-        throw new AppError(status.UNAUTHORIZED, "Unauthorized! No access token.");
+      const betterAuthSessionToken =
+        CookieUtils.getCookie(req, "better-auth.session_token") ||
+        CookieUtils.getCookie(req, "__Secure-better-auth.session_token");
+
+      let userId: string | null = null;
+      let betterAuthSession:
+        | Awaited<ReturnType<typeof auth.api.getSession>>
+        | null = null;
+
+      if (accessToken) {
+        const verified = jwtUtils.verifyToken(accessToken, envVars.ACCESS_TOKEN_SECRET);
+
+        if (verified.success && verified.data?.userId) {
+          userId = String(verified.data.userId);
+        }
       }
 
-      const verified = jwtUtils.verifyToken(accessToken, envVars.ACCESS_TOKEN_SECRET);
+      if (!userId && (betterAuthSessionToken || authHeader)) {
+        const fallbackCookieHeader = req.headers.cookie || [
+          betterAuthSessionToken
+            ? `better-auth.session_token=${betterAuthSessionToken}`
+            : "",
+          betterAuthSessionToken
+            ? `__Secure-better-auth.session_token=${betterAuthSessionToken}`
+            : "",
+        ]
+          .filter(Boolean)
+          .join("; ");
 
-      if (!verified.success || !verified.data?.userId) {
-        throw new AppError(status.UNAUTHORIZED, "Unauthorized! Invalid token.");
+        betterAuthSession = await auth.api
+          .getSession({
+            headers: {
+              ...(fallbackCookieHeader ? { cookie: fallbackCookieHeader } : {}),
+              ...(authHeader ? { authorization: authHeader } : {}),
+            },
+          })
+          .catch(() => null);
+
+        if (betterAuthSession?.user?.id) {
+          userId = betterAuthSession.user.id;
+        }
       }
 
-      // 2️⃣ Load fresh user data from DB
+      if (!userId) {
+        throw new AppError(
+          status.UNAUTHORIZED,
+          `Unauthorized! No access token. Route: ${req.method} ${req.originalUrl}. Send cookie or Bearer token.`
+        );
+      }
+
       const user = await prisma.user.findUnique({
-        where: { id: String(verified.data.userId) },
+        where: { id: userId },
       });
 
       if (!user) {
@@ -153,47 +199,50 @@ export const checkAuth =
       }
 
       if (authRoles.length > 0 && !authRoles.includes(userRole)) {
-        throw new AppError(status.FORBIDDEN, "Forbidden! No permission.");
+        throw new AppError(
+          status.FORBIDDEN,
+          `Forbidden! No permission. Current role: ${userRole}. Allowed roles: ${authRoles.join(", ")}. Route: ${req.method} ${req.originalUrl}`
+        );
       }
 
-      // 3️⃣ Attach authenticated user
+      if (!cookieToken && betterAuthSession?.user?.id === user.id) {
+        const refreshedAccessToken = tokenUtils.getAccessToken({
+          userId: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          status: user.status,
+          isDeleted: user.isDeleted,
+          emailVerified: user.emailVerified,
+        });
+
+        tokenUtils.setAccessTokenCookie(res, refreshedAccessToken);
+      }
+
       req.user = {
         userId: user.id,
         role: userRole,
         email: user.email,
       };
 
-      // 4️⃣ Optionally inspect BetterAuth session if cookie exists, but do not fail request
-      const cookieHeader = req.headers.cookie;
-      if (cookieHeader?.includes("better-auth.session_token")) {
-        const betterAuthSession = await auth.api.getSession({
-          headers: {
-            cookie: cookieHeader,
-          },
-        }).catch(() => null);
+      if (betterAuthSession?.session && betterAuthSession.user?.id === user.id) {
+        const now = new Date();
+        const expiresAt = new Date(betterAuthSession.session.expiresAt);
+        const createdAt = new Date(betterAuthSession.session.createdAt);
+        const sessionLifetime = expiresAt.getTime() - createdAt.getTime();
+        const timeRemaining = expiresAt.getTime() - now.getTime();
 
-        if (
-          betterAuthSession?.session &&
-          betterAuthSession.user?.id === user.id
-        ) {
-          const now = new Date();
-          const expiresAt = new Date(betterAuthSession.session.expiresAt);
-          const createdAt = new Date(betterAuthSession.session.createdAt);
-          const sessionLifetime = expiresAt.getTime() - createdAt.getTime();
-          const timeRemaining = expiresAt.getTime() - now.getTime();
+        if (sessionLifetime > 0) {
+          const percentRemaining = (timeRemaining / sessionLifetime) * 100;
 
-          if (sessionLifetime > 0) {
-            const percentRemaining = (timeRemaining / sessionLifetime) * 100;
-
-            if (percentRemaining < 20) {
-              res.setHeader("X-Session-Refresh", "true");
-              res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
-              res.setHeader("X-Time-Remaining", timeRemaining.toString());
-            }
+          if (percentRemaining < 20) {
+            res.setHeader("X-Session-Refresh", "true");
+            res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
+            res.setHeader("X-Time-Remaining", timeRemaining.toString());
           }
         }
       }
-
+console.log('Authorization:', req.headers.authorization);
       next();
     } catch (error) {
       next(error);

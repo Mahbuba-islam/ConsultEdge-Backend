@@ -2,7 +2,6 @@ import status from "http-status";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponsr";
 import { expertScheduleService } from "./expertSchdules.service";
-import { boolean } from "zod";
 import { IqueryParams } from "../../interfaces/query.interface";
 
 const assignExpertSchedules = catchAsync(async (req, res) => {
@@ -33,32 +32,7 @@ const getMyExpertSchedules = catchAsync(async (req, res) => {
   });
 });
 
-const getAllExpertSchedules = catchAsync(async (req, res) => {
-    const result = await expertScheduleService.getAllExpertSchedules(req.query as IqueryParams);
 
-  sendResponse(res, {
-    httpStatusCode: status.OK,
-    success: true,
-    message: "All expert schedules fetched successfully",
-    data: result,
-  });
-});
-
-const getExpertScheduleById = catchAsync(async (req, res) => {
-  const { expertId, scheduleId } = req.params;
-
-  const result = await expertScheduleService.getExpertScheduleById(
-    expertId as string,
-    scheduleId as string
-  );
-
-  sendResponse(res, {
-    httpStatusCode: status.OK,
-    success: true,
-    message: "Expert schedule retrieved successfully",
-    data: result,
-  });
-});
 
 const updateMyExpertSchedules = catchAsync(async (req, res) => {
   const result = await expertScheduleService.updateMyExpertSchedules(
@@ -74,6 +48,7 @@ const updateMyExpertSchedules = catchAsync(async (req, res) => {
   });
 });
 
+
 const deleteMyExpertSchedule = catchAsync(async (req, res) => {
   const result = await expertScheduleService.deleteMyExpertSchedule(
     req.user.userId,
@@ -88,11 +63,48 @@ const deleteMyExpertSchedule = catchAsync(async (req, res) => {
   });
 });
 
+const publishMyExpertSchedules = catchAsync(async (req, res) => {
+  const result = await expertScheduleService.publishMyExpertSchedules(
+    req.user.userId,
+    req.body
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Expert schedules publish status updated successfully",
+    data: result,
+  });
+});
+
+const getPublishedExpertSchedules = catchAsync(async (req, res) => {
+  const expertId = (req.params.expertId || req.query.expertId) as string | undefined;
+
+  if (!expertId) {
+    return sendResponse(res, {
+      httpStatusCode: status.BAD_REQUEST,
+      success: false,
+      message: "expertId is required",
+    });
+  }
+
+  const result = await expertScheduleService.getPublishedExpertSchedules(
+    expertId
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "Published expert schedules fetched successfully",
+    data: result,
+  });
+});
+
 export const expertScheduleController = {
   assignExpertSchedules,
   getMyExpertSchedules,
-  getAllExpertSchedules,
-  getExpertScheduleById,
   updateMyExpertSchedules,
   deleteMyExpertSchedule,
+  publishMyExpertSchedules,
+  getPublishedExpertSchedules,
 };

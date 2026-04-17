@@ -2,9 +2,10 @@ import express from "express";
 
 import {
   createTestimonialSchema,
+  replyToTestimonialSchema,
+  updateReviewStatusSchema,
   updateTestimonialSchema,
 } from "./testimonial.validation";
-import { auth } from "../../lib/auth";
 import { validateRequest } from "../../middleware/validateRequest";
 import { TestimonialController } from "./testimonial.controler";
 import { checkAuth } from "../../middleware/cheackAuth";
@@ -15,12 +16,27 @@ const router = express.Router();
 router.post(
   "/",
   checkAuth(Role.CLIENT),
-  validateRequest(createTestimonialSchema),
-  TestimonialController.createTestimonial)
+    validateRequest(createTestimonialSchema),
+  TestimonialController.createTestimonial
+);
 
 router.get("/", TestimonialController.getAllTestimonials);
-
+router.get("/admin", checkAuth(Role.ADMIN), TestimonialController.getAllTestimonialsForAdmin);
 router.get("/expert/:expertId", TestimonialController.getTestimonialsByExpert);
+
+router.patch(
+  "/:id/reply",
+  checkAuth(Role.EXPERT),
+  validateRequest(replyToTestimonialSchema),
+  TestimonialController.replyToTestimonial
+);
+
+router.patch(
+  "/:id/status",
+  checkAuth(Role.ADMIN),
+  validateRequest(updateReviewStatusSchema),
+  TestimonialController.updateReviewStatus
+);
 
 router.put(
   "/:id",
@@ -29,6 +45,10 @@ router.put(
   TestimonialController.updateTestimonial
 );
 
-router.delete("/:id", checkAuth(Role.CLIENT), TestimonialController.deleteTestimonial);
+router.delete(
+  "/:id",
+  checkAuth(Role.CLIENT),
+  TestimonialController.deleteTestimonial
+);
 
 export const testimonialRoutes = router;

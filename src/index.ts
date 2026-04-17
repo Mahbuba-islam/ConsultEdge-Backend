@@ -17,6 +17,8 @@ import { StatsRoutes } from "./modules/stats/stats.router";
 import { PaymentRoutes } from "./modules/payment/payment.router";
 import { notificationRouter } from "./modules/notification/notification.route";
 import { clientRouter } from "./modules/client/client.router";
+import { chatRoutes } from "./modules/chat/chat.routes";
+import { aiRoutes } from "./modules/ai/ai.router";
 
 
 const router = Router();
@@ -43,8 +45,10 @@ router.use("/admin", adminRouter);
 router.use("/stats", StatsRoutes)
 router.use("/payments", PaymentRoutes)
 router.use("/notifications", notificationRouter)
+router.use("/chat", chatRoutes)
+router.use("/ai", aiRoutes)
 // Industry / Category
 router.use("/industries", industryRouter);
 router.use("/expert-verification", expertVerificationRouter)
-router.use("/testimonial", testimonialRoutes)
+router.use("/testimonials", testimonialRoutes)
 export const indexRoutes = router;
