@@ -6,14 +6,13 @@ import { sendResponse } from "../../shared/sendResponsr";
 
 
 const createIndustry = catchAsync(async (req, res) => {
-  const { name, description } = req.body;
-
-  const icon = req.file?.path || undefined;
+  const { name, description, icon: iconUrl } = req.body;
+  const icon = req.file?.path ?? iconUrl;
 
   const result = await industryService.createIndustry({
     name,
     description,
-    icon
+    icon,
   });
 
   sendResponse(res, {
@@ -47,16 +46,19 @@ const getIndustryById = catchAsync(async (req, res) => {
 });
 
 const updateIndustry = catchAsync(async (req, res) => {
-  const { name, description } = req.body;
-  const icon = req.file?.path;
+  const { name, description, icon: iconUrl } = req.body;
+  const icon = req.file?.path ?? iconUrl;
 
   const payload = {
     ...(name !== undefined ? { name } : {}),
     ...(description !== undefined ? { description } : {}),
-    ...(icon ? { icon } : {}),
+    ...(icon !== undefined ? { icon } : {}),
   };
 
-  const result = await industryService.updateIndustry(req.params.id as string, payload);
+  const result = await industryService.updateIndustry(
+    req.params.id as string,
+    payload
+  );
 
   sendResponse(res, {
     httpStatusCode: status.OK,

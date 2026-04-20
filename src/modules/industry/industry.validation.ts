@@ -1,14 +1,24 @@
 import z from "zod";
 
-export const createIndustryValidation = z.object({
-  name: z.string().min(2, "Industry name is too short"),
-  description: z.string().optional(),
-  icon: z.string().url("Invalid icon URL").optional(),
+const industryBodySchema = z.object({
+  name: z.string().trim().min(2, "Industry name is too short"),
+  description: z.string().trim().optional(),
+  icon: z.string().trim().url("Invalid icon URL").optional(),
 });
 
+const industryIdParamsSchema = z.object({
+  id: z.string().uuid("Invalid industry id"),
+});
+
+export const createIndustryValidation = z.object({
+  body: industryBodySchema,
+});
 
 export const updateIndustryValidation = z.object({
-  name: z.string().optional(),
-  description: z.string().optional(),
-  icon: z.string().url("Invalid icon URL").optional(),
+  params: industryIdParamsSchema,
+  body: industryBodySchema.partial(),
+});
+
+export const industryIdValidation = z.object({
+  params: industryIdParamsSchema,
 });

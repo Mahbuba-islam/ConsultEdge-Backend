@@ -3,25 +3,68 @@ import { IIndustry } from "./industry.interface";
 import AppError from "../../errorHelpers/AppError";
 import status from "http-status";
 import { prisma } from "../../lib/prisma";
-import { Industry } from "../../generated/client";
+import { Industry, Prisma } from "../../generated/client";
+
+type IndustryWithExperts = Prisma.IndustryGetPayload<{
+  include: { experts: true };
+}>;
+
+const findActiveIndustryById = async (id: string): Promise<Industry> => {
+  const industry = await prisma.industry.findFirst({
+    where: { id, isDeleted: false },
+  });
+
+  if (!industry) {
+    throw new AppError(status.NOT_FOUND, "Industry not found");
+  }
+
+  return industry;
+};
+
+const ensureIndustryNameAvailable = async (
+  name: string,
+  excludeIndustryId?: string
+): Promise<void> => {
+  const existingIndustry = await prisma.industry.findUnique({
+    where: { name },
+  });
+
+  if (existingIndustry && existingIndustry.id !== excludeIndustryId) {
+    throw new AppError(status.CONFLICT, "Industry already exists");
+  }
+};
+
+const buildIndustryPayload = (payload: Partial<IIndustry>) => {
+  const data: Partial<IIndustry> = {};
+
+  if (payload.name !== undefined) {
+    data.name = payload.name.trim();
+  }
+
+  if (payload.description !== undefined) {
+    data.description = payload.description.trim();
+  }
+
+  if (payload.icon !== undefined) {
+    data.icon = payload.icon.trim();
+  }
+
+  return data;
+};
 
 // ===============================
 // CREATE INDUSTRY
 // ===============================
 const createIndustry = async (payload: IIndustry) => {
-  const exists = await prisma.industry.findUnique({
-    where: { id: payload.name },
-  });
+  const data = buildIndustryPayload(payload);
 
-  if (exists) {
-    throw new AppError(status.CONFLICT, "Industry already exists");
-  }
+  await ensureIndustryNameAvailable(data.name as string);
 
   const industry = await prisma.industry.create({
     data: {
-      name: payload.name,
-      description: payload.description,
-      icon: payload.icon,
+      name: data.name as string,
+      description: data.description,
+      icon: data.icon,
     },
   });
 
@@ -43,7 +86,7 @@ const getAllIndustries = async (): Promise<Industry[]> => {
 // ===============================
 // GET INDUSTRY BY ID
 // ===============================
-const getIndustryById = async (id: string): Promise<Industry> => {
+const getIndustryById = async (id: string): Promise<IndustryWithExperts> => {
   const industry = await prisma.industry.findFirst({
     where: { id, isDeleted: false },
     include: { experts: true },
@@ -63,17 +106,23 @@ const updateIndustry = async (
   id: string,
   data: Partial<IIndustry>
 ): Promise<Industry> => {
-  const exists = await prisma.industry.findFirst({
-    where: { id, isDeleted: false },
-  });
+  const existingIndustry = await findActiveIndustryById(id);
+  const updateData = buildIndustryPayload(data);
 
-  if (!exists) {
-    throw new AppError(status.NOT_FOUND, "Industry not found");
+  if (Object.keys(updateData).length === 0) {
+    throw new AppError(status.BAD_REQUEST, "No valid industry fields provided for update");
+  }
+
+  if (
+    updateData.name !== undefined &&
+    updateData.name !== existingIndustry.name
+  ) {
+    await ensureIndustryNameAvailable(updateData.name, id);
   }
 
   const updated = await prisma.industry.update({
     where: { id },
-    data,
+    data: updateData,
   });
 
   return updated;
@@ -83,13 +132,7 @@ const updateIndustry = async (
 // SOFT DELETE INDUSTRY
 // ===============================
 const deleteIndustry = async (id: string): Promise<Industry> => {
-  const exists = await prisma.industry.findUnique({
-    where: { id },
-  });
-
-  if (!exists) {
-    throw new AppError(status.NOT_FOUND, "Industry not found");
-  }
+  await findActiveIndustryById(id);
 
   const deleted = await prisma.industry.update({
     where: { id },
