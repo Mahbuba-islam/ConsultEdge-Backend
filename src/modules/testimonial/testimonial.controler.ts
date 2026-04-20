@@ -147,11 +147,7 @@ const replyToTestimonial = catchAsync(async (req: Request, res: Response) => {
 const updateReviewStatus = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const result = await testimonialService.updateTestimonial(
-    id as string,
-    req.user.userId,
-    req.body
-  );
+  const result = await testimonialService.updateReviewStatus(id as string, req.body);
 
   sendResponse(res, {
     success: true,
@@ -161,21 +157,7 @@ const updateReviewStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// ------------------------------
-// DELETE TESTIMONIAL
-// ------------------------------
-const deleteTestimonial = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const clientId = req.user.userId;
 
-  await testimonialService.deleteTestimonial(id as string, clientId);
-
-  sendResponse(res, {
-    success: true,
-    httpStatusCode: status.OK,
-    message: "Testimonial deleted successfully",
-  });
-});
 
 // ------------------------------
 // EXPORT CONTROLLER
@@ -187,6 +169,6 @@ export const TestimonialController = {
   getTestimonialsByExpert,
   updateTestimonial,
   replyToTestimonial,
-  updateReviewStatus,
-  deleteTestimonial,
+  updateReviewStatus
+  
 };

@@ -19,6 +19,7 @@ import { notificationRouter } from "./modules/notification/notification.route";
 import { clientRouter } from "./modules/client/client.router";
 import { chatRoutes } from "./modules/chat/chat.routes";
 import { aiRoutes } from "./modules/ai/ai.router";
+import { conversationsRoutes } from "./modules/conversations/conservations.router";
 
 
 const router = Router();
@@ -46,6 +47,7 @@ router.use("/stats", StatsRoutes)
 router.use("/payments", PaymentRoutes)
 router.use("/notifications", notificationRouter)
 router.use("/chat", chatRoutes)
+router.use("/conversations", conversationsRoutes)
 router.use("/ai", aiRoutes)
 // Industry / Category
 router.use("/industries", industryRouter);

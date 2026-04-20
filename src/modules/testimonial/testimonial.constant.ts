@@ -8,7 +8,12 @@ export const testimonialFilterableFields = [
 ];
 
 export const testimonialIncludeConfig = {
-  client: true,
+  client: {
+    include: {
+      user: true,
+    },
+  },
+
   expert: true,
   consultation: true,
 };

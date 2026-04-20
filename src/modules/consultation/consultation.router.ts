@@ -17,6 +17,13 @@ import { consultationController } from "./consultation.controler";
 
 const router = Router();
 
+router.get(
+  "/admin/bookings",
+  checkAuth(Role.ADMIN),
+ consultationController.getAllConsultationsAdmin
+);
+
+
 // Client: book consultation with immediate payment
 router.post(
   "/book",
@@ -24,6 +31,9 @@ router.post(
   validateRequest(bookConsultationValidation),
   consultationController.bookConsultation
 );
+
+
+
 
 // Client: book consultation with pay later
 router.post(
@@ -88,7 +98,7 @@ router.patch(
   consultationController.cancelConsultation
 );
 router.patch(
-  "/:consultationId/reschedule",
+  "/reschedule/:consultationId",
   checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
   validateRequest(rescheduleConsultationValidation),
   consultationController.rescheduleConsultation

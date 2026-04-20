@@ -16,6 +16,15 @@ import { prisma } from "../../lib/prisma";
 import AppError from "../../errorHelpers/AppError";
 import { stripe } from "../../config/stripe.config";
 
+
+import { Consultation, Prisma } from "../../generated/client";
+import {
+  bookingSearchableFields,
+  bookingFilterableFields,
+  bookingIncludeConfig,
+} from "./consultation.constant";
+import { QueryBuilder } from "../../utilis/queryBuilder";
+
 const SESSION_JOIN_LEAD_MINUTES = 15;
 const SESSION_JOIN_GRACE_MINUTES = 30;
 
@@ -1231,6 +1240,34 @@ const cancelUnpaidConsultations = async () => {
   return { count: consultationIds.length };
 };
 
+
+
+
+
+
+export const getAllConsultationsAdmin = async (query: any) => {
+  const queryBuilder = new QueryBuilder<
+    Consultation,
+    Prisma.ConsultationWhereInput,
+    Prisma.ConsultationInclude
+  >(prisma.consultation, query, {
+    searchableFields: bookingSearchableFields,
+    filterableFields: bookingFilterableFields,
+  });
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .include(bookingIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .excute();
+
+  return result;
+};
+
+
 export const consultationService = {
   bookConsultation,
   bookConsultationWithPayLater,
@@ -1243,4 +1280,5 @@ export const consultationService = {
   rescheduleConsultation,
   updateConsultationStatus,
   cancelUnpaidConsultations,
+  getAllConsultationsAdmin,
 };

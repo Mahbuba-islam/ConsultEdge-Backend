@@ -45,10 +45,6 @@ router.put(
   TestimonialController.updateTestimonial
 );
 
-router.delete(
-  "/:id",
-  checkAuth(Role.CLIENT),
-  TestimonialController.deleteTestimonial
-);
+
 
 export const testimonialRoutes = router;

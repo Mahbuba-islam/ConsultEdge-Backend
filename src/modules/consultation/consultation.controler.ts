@@ -167,6 +167,23 @@ const cancelUnpaidConsultations = catchAsync(async (_req, res) => {
   });
 });
 
+
+
+const getAllConsultationsAdmin = catchAsync(async (req, res) => {
+  const result = await consultationService.getAllConsultationsAdmin(req.query);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "All consultations retrieved successfully",
+    data: result,
+  });
+});
+
+
+
+
+
 export const consultationController = {
   bookConsultation,
   bookConsultationWithPayLater,
@@ -179,4 +196,5 @@ export const consultationController = {
   rescheduleConsultation,
   updateConsultationStatus,
   cancelUnpaidConsultations,
+  getAllConsultationsAdmin,
 };

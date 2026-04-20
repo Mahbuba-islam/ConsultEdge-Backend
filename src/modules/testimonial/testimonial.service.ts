@@ -263,21 +263,10 @@ const updateTestimonial = async (
   });
 };
 
-
-
-// ------------------------------
-// DELETE TESTIMONIAL
-// ------------------------------
-const deleteTestimonial = async (id: string, userId: string) => {
-  // ✅ get client
-  const client = await prisma.client.findUnique({
-    where: { userId },
-  });
-
-  if (!client) {
-    throw new AppError(status.NOT_FOUND, "Client not found");
-  }
-
+const updateReviewStatus = async (
+  id: string,
+  payload: IUpdateReviewStatusPayload
+) => {
   const testimonial = await prisma.testimonial.findUnique({
     where: { id },
   });
@@ -286,15 +275,16 @@ const deleteTestimonial = async (id: string, userId: string) => {
     throw new AppError(status.NOT_FOUND, "Testimonial not found");
   }
 
-  // ✅ FIXED comparison
-  if (testimonial.clientId !== client.id) {
-    throw new AppError(status.FORBIDDEN, "Not your testimonial");
-  }
-
-  await prisma.testimonial.delete({ where: { id } });
-
-  return { message: "Testimonial deleted successfully" };
+  return prisma.testimonial.update({
+  where: { id },
+  data: {
+    status: payload.status,
+  },
+  include: testimonialIncludeConfig,
+});
 };
+
+
 
 
 export const testimonialService = {
@@ -302,7 +292,8 @@ export const testimonialService = {
   getAllTestimonials,
   getTestimonialsByExpert,
   updateTestimonial,
+  updateReviewStatus,
   replyToTestimonial,
-  ReviewStatus,
-  deleteTestimonial,
+  
+  
 };
