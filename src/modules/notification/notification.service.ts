@@ -11,11 +11,34 @@ type CreateNotificationPayload = {
   role?: Role;
 };
 
+const getNotificationById = async (id: string) => {
+  const notification = await prisma.notification.findUnique({
+    where: { id },
+  });
+
+  if (!notification) {
+    throw new AppError(status.NOT_FOUND, "Notification not found");
+  }
+
+  return notification;
+};
+
+const normalizeNotificationPayload = (payload: CreateNotificationPayload) => ({
+  type: payload.type.trim(),
+  message: payload.message.trim(),
+  userId: payload.userId,
+  role: payload.role,
+});
+
 const createNotification = async (payload: CreateNotificationPayload) => {
-  const { type, message, userId, role } = payload;
+  const { type, message, userId, role } = normalizeNotificationPayload(payload);
 
   if (!type || !message) {
     throw new AppError(status.BAD_REQUEST, "Type and message are required");
+  }
+
+  if ((userId && role) || (!userId && !role)) {
+    throw new AppError(status.BAD_REQUEST, "Provide exactly one target: userId or role");
   }
 
   if (userId) {
@@ -93,13 +116,7 @@ const getUnreadCount = async (user: IRequestUser) => {
 };
 
 const markAsRead = async (id: string, user: IRequestUser) => {
-  const notification = await prisma.notification.findUnique({
-    where: { id },
-  });
-
-  if (!notification) {
-    throw new AppError(status.NOT_FOUND, "Notification not found");
-  }
+  const notification = await getNotificationById(id);
 
   if (user.role !== Role.ADMIN && notification.userId !== user.userId) {
     throw new AppError(status.FORBIDDEN, "Forbidden access to this notification");
@@ -124,13 +141,7 @@ const markAllAsRead = async (user: IRequestUser) => {
 };
 
 const deleteNotification = async (id: string, user: IRequestUser) => {
-  const notification = await prisma.notification.findUnique({
-    where: { id },
-  });
-
-  if (!notification) {
-    throw new AppError(status.NOT_FOUND, "Notification not found");
-  }
+  const notification = await getNotificationById(id);
 
   if (user.role !== Role.ADMIN && notification.userId !== user.userId) {
     throw new AppError(status.FORBIDDEN, "Forbidden access to this notification");

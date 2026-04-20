@@ -8,6 +8,33 @@ import { QueryBuilder } from "../../utilis/queryBuilder"
 import { adminFilterableFields, adminIncludeConfig, adminSearchableFields } from "./admin.constant"
 import { Admin, Prisma } from "../../generated/client"
 
+const findActiveAdminById = async (id: string) => {
+  const admin = await prisma.admin.findFirst({
+    where: { id, isDeleted: false },
+    include: { user: true },
+  });
+
+  if (!admin) {
+    throw new AppError(status.NOT_FOUND, "Admin not found");
+  }
+
+  return admin;
+};
+
+const buildAdminUpdatePayload = (payload: IupdateAdmin) => {
+  const data: IupdateAdmin = {};
+
+  if (payload.contactNumber !== undefined) {
+    data.contactNumber = payload.contactNumber.trim();
+  }
+
+  if (payload.profilePhoto !== undefined) {
+    data.profilePhoto = payload.profilePhoto.trim();
+  }
+
+  return data;
+};
+
 ///get all admin service
 
 const getAllAdmin = async (query: any) => {
@@ -40,16 +67,7 @@ const getAllAdmin = async (query: any) => {
 
 
 const getAdminById = async (id: string) => {
-  const admin = await prisma.admin.findUnique({
-    where: { id, isDeleted: false },
-    include: { user: true },
-  });
-
-  if (!admin) {
-    throw new AppError(status.NOT_FOUND, "Admin not found");
-  }
-
-  return admin;
+  return findActiveAdminById(id);
 };
 
 
@@ -58,22 +76,17 @@ const getAdminById = async (id: string) => {
 //update admin by id
 
 const updateAdmin = async(id:string, payload:IupdateAdmin)=>{
-    //cheack if admin exists
-    const admin = await prisma.admin.findUnique({
-    where:{
-        id,
-        isDeleted:false
-    }
- })
+ const admin = await findActiveAdminById(id);
+ const updatePayload = buildAdminUpdatePayload(payload);
 
- if(!admin){
-    throw new AppError(status.NOT_FOUND, "admin in this id not found")
+ if (Object.keys(updatePayload).length === 0) {
+   throw new AppError(status.BAD_REQUEST, "No valid admin fields provided for update")
  }
 
  //update admin
     const updatedAdmin = await prisma.admin.update({
         where:{id},
-          data:payload,
+       data:updatePayload,
          
          include:{
           user:true
@@ -88,13 +101,7 @@ const updateAdmin = async(id:string, payload:IupdateAdmin)=>{
 
 //soft delete admin 
 const markDeleteAdmin = async (id: string, user: IRequestUser) => {
-  const admin = await prisma.admin.findUnique({
-    where: { id, isDeleted: false },
-  });
-
-  if (!admin) {
-    throw new AppError(status.NOT_FOUND, "Admin not found");
-  }
+  const admin = await findActiveAdminById(id);
 
   if (admin.userId === user.userId) {
     throw new AppError(status.BAD_REQUEST, "You cannot delete yourself");

@@ -2,6 +2,11 @@ import { Router } from "express";
 import { checkAuth } from "../../middleware/cheackAuth";
 import { Role } from "../../generated/enums";
 import { notificationController } from "./notification.controler";
+import { validateRequest } from "../../middleware/validateRequest";
+import {
+  createNotificationValidation,
+  notificationIdValidation,
+} from "./notification.validation";
 
 const router = Router();
 
@@ -26,16 +31,18 @@ router.patch(
 router.patch(
   "/:id/read",
   checkAuth(Role.ADMIN, Role.EXPERT, Role.CLIENT),
+  validateRequest(notificationIdValidation),
   notificationController.markAsRead
 );
 
 router.delete(
   "/:id",
   checkAuth(Role.ADMIN, Role.EXPERT, Role.CLIENT),
+  validateRequest(notificationIdValidation),
   notificationController.deleteNotification
 );
 
-router.post("/", checkAuth(Role.ADMIN), notificationController.createNotification);
+router.post("/", checkAuth(Role.ADMIN), validateRequest(createNotificationValidation), notificationController.createNotification);
 router.get("/", checkAuth(Role.ADMIN), notificationController.getAllNotifications);
 
 export const notificationRouter = router;
