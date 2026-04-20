@@ -10,7 +10,7 @@ import { Industry } from "../../generated/client";
 // ===============================
 const createIndustry = async (payload: IIndustry) => {
   const exists = await prisma.industry.findUnique({
-    where: { name: payload.name },
+    where: { id: payload.name },
   });
 
   if (exists) {
