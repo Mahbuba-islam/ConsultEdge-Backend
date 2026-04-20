@@ -8,9 +8,40 @@ import { Role, UserStatus } from "../generated/enums";
 import { sendEmail } from "../utilis/email";
 // If your Prisma file is located elsewhere, you can change the path
 
+const ignoredBetterAuthMessages = new Set([
+    "User not found",
+    "Invalid password",
+    "Credential account not found",
+    "Password not found",
+]);
+
+const shouldIgnoreBetterAuthLog = (level: string, message: string) => {
+    return level === "error" && ignoredBetterAuthMessages.has(message);
+};
+
 export const auth = betterAuth({
     baseURL: envVars.BETTER_AUTH_URL,
     secret: envVars.BETTER_AUTH_SECRET,
+    logger: {
+        level: "warn",
+        log(level, message, ...args) {
+            if (shouldIgnoreBetterAuthLog(level, message)) {
+                return;
+            }
+
+            if (level === "error") {
+                console.error(message, ...args);
+                return;
+            }
+
+            if (level === "warn") {
+                console.warn(message, ...args);
+                return;
+            }
+
+            console.log(message, ...args);
+        }
+    },
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
