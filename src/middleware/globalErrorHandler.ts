@@ -10,12 +10,38 @@ import { handleZodError } from "../errorHelpers/handleZodError";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 import { Prisma } from "../generated/client";
 
+const isBetterAuthHandledError = (err: unknown): err is {
+    status?: string;
+    statusCode?: number;
+    body?: { message?: string };
+    message?: string;
+} => {
+    if (!err || typeof err !== "object") {
+        return false;
+    }
+
+    const candidate = err as {
+        status?: string;
+        statusCode?: number;
+        body?: { message?: string };
+        message?: string;
+    };
+
+    return (
+        typeof candidate.statusCode === "number" ||
+        typeof candidate.status === "string" ||
+        typeof candidate.body?.message === "string"
+    );
+}
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
     if (envVars.NODE_ENV === 'development') {
         if (err instanceof AppError && err.statusCode < 500) {
             console.warn(`[Handled AppError ${err.statusCode}] ${req.method} ${req.originalUrl} -> ${err.message}`);
+        } else if (isBetterAuthHandledError(err) && ((err.statusCode ?? 500) < 500 || err.status === "UNAUTHORIZED" || err.status === "BAD_REQUEST" || err.status === "FORBIDDEN")) {
+            console.warn(`[Handled Auth Error ${err.statusCode ?? err.status ?? 400}] ${req.method} ${req.originalUrl} -> ${err.body?.message ?? err.message ?? 'Authentication error'}`);
         } else {
             console.error("Error from Global Error Handler", err);
         }
@@ -99,6 +125,24 @@ export const globalErrorHandler = async (err: any, req: Request, res: Response, 
             {
                 path: '',
                 message: err.message
+            }
+        ]
+    } else if (isBetterAuthHandledError(err)) {
+        statusCode = typeof err.statusCode === 'number'
+            ? err.statusCode
+            : err.status === 'UNAUTHORIZED'
+                ? status.UNAUTHORIZED
+                : err.status === 'FORBIDDEN'
+                    ? status.FORBIDDEN
+                    : err.status === 'BAD_REQUEST'
+                        ? status.BAD_REQUEST
+                        : status.INTERNAL_SERVER_ERROR;
+        message = err.body?.message || err.message || message;
+        stack = err instanceof Error ? err.stack : undefined;
+        errorSources = [
+            {
+                path: '',
+                message
             }
         ]
     }

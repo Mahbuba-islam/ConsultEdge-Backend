@@ -12,6 +12,46 @@ import { prisma } from "../../lib/prisma";
 import { envVars } from "../../config/env";
 import { jwtUtils } from "../../utilis/jwt";
 
+type BetterAuthLikeError = {
+  status?: string;
+  statusCode?: number;
+  body?: {
+    message?: string;
+    code?: string;
+  };
+  message?: string;
+};
+
+const isBetterAuthLikeError = (error: unknown): error is BetterAuthLikeError => {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const candidate = error as BetterAuthLikeError;
+
+  return (
+    typeof candidate.statusCode === "number" ||
+    typeof candidate.status === "string" ||
+    typeof candidate.body?.message === "string"
+  );
+};
+
+const mapBetterAuthError = (error: unknown, fallbackMessage: string) => {
+  if (!isBetterAuthLikeError(error)) {
+    return null;
+  }
+
+  const message = error.body?.message || error.message || fallbackMessage;
+  const statusCode =
+    typeof error.statusCode === "number"
+      ? error.statusCode
+      : error.status === "UNAUTHORIZED"
+        ? status.UNAUTHORIZED
+        : status.BAD_REQUEST;
+
+  return new AppError(statusCode, message);
+};
+
 
 const registerClient = async (payload: IRegisterClientPayload) => {
   const { fullName, email, password } = payload;
@@ -88,9 +128,22 @@ console.log(data, accessToken, refreshToken, client);
 const loginUser = async (payload: ILoginUserPayload) => {
   const { email, password } = payload;
 
-  const data = await auth.api.signInEmail({
-    body: { email, password }
-  });
+  const data = await auth.api
+    .signInEmail({
+      body: { email, password }
+    })
+    .catch((error) => {
+      const mappedError = mapBetterAuthError(
+        error,
+        "Invalid email or password"
+      );
+
+      if (mappedError) {
+        throw mappedError;
+      }
+
+      throw error;
+    });
 
   if (data.user.status === UserStatus.BLOCKED) {
     throw new AppError(status.FORBIDDEN, "User is Blocked");
