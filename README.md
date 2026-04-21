@@ -89,7 +89,7 @@ ConsultEdge is a full-featured **expert consultation platform** REST API. Client
 ### Dev & Build
 - **tsx** — TypeScript execution for dev
 - **tsup** — ESM bundle output
-- **Prisma Studio** — visual DB explorer
+- **Prisma Studio** — visual DB explorer.
 
 ---
 
@@ -391,7 +391,7 @@ npm run stripe:webhook  # Forward Stripe events to localhost (requires Stripe CL
 
 ---
 
-## 🚢 Deployment
+## 🚢 
 
 ### Build
 
