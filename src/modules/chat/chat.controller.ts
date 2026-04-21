@@ -189,6 +189,39 @@ const postAttachmentMessage = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
+const toggleMessageReaction = catchAsync(async (req: Request, res: Response) => {
+  const roomId = getSingleString(req.params.roomId);
+  const messageId = getSingleString(req.params.messageId);
+  const emoji = getSingleString(req.body?.emoji);
+
+  if (!roomId || !messageId) {
+    throw new AppError(httpStatus.BAD_REQUEST, "roomId and messageId are required");
+  }
+
+  const result = await chatService.toggleMessageReaction(
+    roomId,
+    messageId,
+    req.user.userId,
+    req.user.role as Role,
+    emoji
+  );
+
+  await emitChatEvent(
+    result.roomId,
+    "message_reaction_updated",
+    result,
+    req.user.role as Role,
+    req.user.userId
+  );
+
+  sendResponse(res, {
+    httpStatusCode: httpStatus.OK,
+    success: true,
+    message: `Message reaction ${result.action} successfully`,
+    data: result,
+  });
+});
+
 const createCall = catchAsync(async (req: Request, res: Response) => {
   const roomId = getSingleString(req.params.roomId);
 
@@ -271,6 +304,7 @@ export const chatController = {
   getRoomMessages,
   postTextMessage,
   postAttachmentMessage,
+  toggleMessageReaction,
   createCall,
   updateCallStatus,
   deleteMessage,

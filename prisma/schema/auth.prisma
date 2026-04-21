@@ -17,6 +17,7 @@ model User {
     expert             Expert?
     admin              Admin?
     notifications Notification[]
+    messageReactions MessageReaction[]
 
     @@unique([email])
     @@map("user")

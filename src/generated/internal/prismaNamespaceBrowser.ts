@@ -67,6 +67,7 @@ export const ModelName = {
   ExpertVerification: 'ExpertVerification',
   Industry: 'Industry',
   Message: 'Message',
+  MessageReaction: 'MessageReaction',
   Notification: 'Notification',
   Payment: 'Payment',
   Schedule: 'Schedule',
@@ -338,6 +339,17 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const MessageReactionScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  userId: 'userId',
+  emoji: 'emoji',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageReactionScalarFieldEnum = (typeof MessageReactionScalarFieldEnum)[keyof typeof MessageReactionScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

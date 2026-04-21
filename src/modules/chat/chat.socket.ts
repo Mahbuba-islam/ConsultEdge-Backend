@@ -21,6 +21,12 @@ type SendMessagePayload = {
   };
 };
 
+type ToggleReactionPayload = {
+  roomId: string;
+  messageId: string;
+  emoji: string;
+};
+
 const upsertPresence = async (userId: string, isOnline: boolean) => {
   await prisma.userPresence.upsert({
     where: { userId },
@@ -112,6 +118,40 @@ export const registerChatSocket = (io: Server) => {
         userId,
         isTyping: payload.isTyping,
       });
+    });
+
+    socket.on("toggle_reaction", async (payload: ToggleReactionPayload) => {
+      try {
+        const reactionUpdate = await chatService.toggleMessageReaction(
+          payload.roomId,
+          payload.messageId,
+          userId,
+          role,
+          payload.emoji
+        );
+
+        const targets = await chatService.getRoomRealtimeTargets(
+          reactionUpdate.roomId,
+          role,
+          userId
+        );
+
+        io.to(reactionUpdate.roomId).emit(
+          "message_reaction_updated",
+          reactionUpdate
+        );
+
+        if (targets.recipientUserId) {
+          io.to(`user:${targets.recipientUserId}`).emit(
+            "message_reaction_updated",
+            reactionUpdate
+          );
+        }
+      } catch (error) {
+        socket.emit("chat_error", {
+          message: error instanceof Error ? error.message : "Failed to update reaction",
+        });
+      }
     });
 
     socket.on("start_call", async (payload: { roomId: string }) => {

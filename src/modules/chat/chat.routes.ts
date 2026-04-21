@@ -4,6 +4,8 @@ import { checkAuth } from "../../middleware/cheackAuth";
 import { Role } from "../../generated/enums";
 import { chatController } from "./chat.controller";
 import { chatUpload } from "./chat.upload";
+import { validateRequest } from "../../middleware/validateRequest";
+import { toggleMessageReactionValidation } from "./chat.validation";
 
 const router = Router();
 
@@ -24,6 +26,12 @@ router.post(
   checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
   chatUpload.single("file"),
   chatController.postAttachmentMessage
+);
+router.post(
+  "/rooms/:roomId/messages/:messageId/reactions",
+  checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
+  validateRequest(toggleMessageReactionValidation),
+  chatController.toggleMessageReaction
 );
 router.post(
   "/rooms/:roomId/calls",

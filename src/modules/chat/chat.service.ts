@@ -5,6 +5,7 @@ import { prisma } from "../../lib/prisma";
 import {
   CallStatus,
   MessageType,
+  Prisma,
   Role,
   UserRole,
   type Attachment,
@@ -14,6 +15,32 @@ type AttachmentInput = Pick<
   Attachment,
   "fileUrl" | "fileName" | "fileType" | "fileSize"
 >;
+
+const reactionUserSelect = {
+  id: true,
+  name: true,
+  email: true,
+  image: true,
+} as const;
+
+const messageReactionInclude = {
+  user: {
+    select: reactionUserSelect,
+  },
+} as const;
+
+type MessageReactionWithUser = Prisma.MessageReactionGetPayload<{
+  include: typeof messageReactionInclude;
+}>;
+
+type MessageWithRelations = Prisma.MessageGetPayload<{
+  include: {
+    attachment: true;
+    reactions: {
+      include: typeof messageReactionInclude;
+    };
+  };
+}>;
 
 const roomInclude = {
   client: {
@@ -42,9 +69,21 @@ const roomInclude = {
   messages: {
     take: 1,
     orderBy: { createdAt: "desc" as const },
-    include: { attachment: true },
+    include: {
+      attachment: true,
+      reactions: {
+        include: messageReactionInclude,
+      },
+    },
   },
 };
+
+const messageInclude = {
+  attachment: true,
+  reactions: {
+    include: messageReactionInclude,
+  },
+} as const;
 
 const mapRoleToUserRole = (role: Role): UserRole => {
   if (role === Role.CLIENT) return UserRole.CLIENT;
@@ -294,29 +333,79 @@ const formatAttachment = (attachment: Attachment | null) => {
   };
 };
 
+const formatReactions = (
+  reactions: MessageReactionWithUser[],
+  currentUserId?: string
+) => {
+  const grouped = new Map<
+    string,
+    {
+      emoji: string;
+      count: number;
+      reactedByCurrentUser: boolean;
+      users: Array<{
+        userId: string;
+        name: string;
+        email: string;
+        image: string | null;
+      }>;
+    }
+  >();
+
+  for (const reaction of reactions) {
+    const existing = grouped.get(reaction.emoji);
+
+    if (existing) {
+      existing.count += 1;
+      existing.reactedByCurrentUser ||= reaction.userId === currentUserId;
+      existing.users.push({
+        userId: reaction.userId,
+        name: reaction.user.name,
+        email: reaction.user.email,
+        image: reaction.user.image,
+      });
+      continue;
+    }
+
+    grouped.set(reaction.emoji, {
+      emoji: reaction.emoji,
+      count: 1,
+      reactedByCurrentUser: reaction.userId === currentUserId,
+      users: [
+        {
+          userId: reaction.userId,
+          name: reaction.user.name,
+          email: reaction.user.email,
+          image: reaction.user.image,
+        },
+      ],
+    });
+  }
+
+  return Array.from(grouped.values());
+};
+
 const formatMessage = (
-  message: {
-    id: string;
-    roomId: string;
-    senderId: string;
-    senderRole: UserRole;
-    type: MessageType;
-    text: string | null;
-    createdAt: Date;
-    attachment: Attachment | null;
-  },
-  participants: Awaited<ReturnType<typeof buildParticipants>> = []
+  message: MessageWithRelations,
+  participants: Awaited<ReturnType<typeof buildParticipants>> = [],
+  currentUserId?: string
 ) => ({
   ...message,
   sender: participants.find(
     (participant) => participant.userId === message.senderId || participant.id === message.senderId
   ) ?? null,
   attachment: formatAttachment(message.attachment),
+  reactions: formatReactions(message.reactions, currentUserId),
 });
 
-const formatRoom = async (room: Awaited<ReturnType<typeof getRoomWithParticipants>>) => {
+const formatRoom = async (
+  room: Awaited<ReturnType<typeof getRoomWithParticipants>>,
+  currentUserId?: string
+) => {
   const participants = await buildParticipants(room);
-  const latestMessage = room.messages[0] ? formatMessage(room.messages[0], participants) : null;
+  const latestMessage = room.messages[0]
+    ? formatMessage(room.messages[0], participants, currentUserId)
+    : null;
 
   return {
     ...room,
@@ -357,6 +446,19 @@ const getRoomRealtimeTargets = async (
     expertUserId: room.expert.userId,
     recipientUserId: senderRole ? getRecipientUserIdForRoom(room, senderRole) : null,
   };
+};
+
+const getMessageForRoom = async (roomId: string, messageId: string) => {
+  const message = await prisma.message.findFirst({
+    where: { id: messageId, roomId },
+    include: messageInclude,
+  });
+
+  if (!message) {
+    throw new AppError(httpStatus.NOT_FOUND, "Message not found");
+  }
+
+  return message;
 };
 
 const notifyRecipient = async (
@@ -402,7 +504,7 @@ const getUserRooms = async (userId: string, role: Role, expertId?: string) => {
       orderBy: { updatedAt: "desc" },
     });
 
-    return Promise.all(rooms.map((room) => formatRoom(room)));
+    return Promise.all(rooms.map((room) => formatRoom(room, userId)));
   }
 
   if (role === Role.CLIENT) {
@@ -414,7 +516,7 @@ const getUserRooms = async (userId: string, role: Role, expertId?: string) => {
       orderBy: { updatedAt: "desc" },
     });
 
-    return Promise.all(rooms.map((room) => formatRoom(room)));
+    return Promise.all(rooms.map((room) => formatRoom(room, userId)));
   }
 
   const expert = await getCurrentExpertByUserId(userId);
@@ -425,7 +527,7 @@ const getUserRooms = async (userId: string, role: Role, expertId?: string) => {
     orderBy: { updatedAt: "desc" },
   });
 
-  return Promise.all(rooms.map((room) => formatRoom(room)));
+  return Promise.all(rooms.map((room) => formatRoom(room, userId)));
 };
 
 const createOrGetRoom = async (
@@ -450,7 +552,7 @@ const createOrGetRoom = async (
     );
   }
 
-  return formatRoom(room);
+  return formatRoom(room, userId);
 };
 
 const getRoomMessages = async (roomId: string, userId: string, role: Role) => {
@@ -459,14 +561,14 @@ const getRoomMessages = async (roomId: string, userId: string, role: Role) => {
 
   const messages = await prisma.message.findMany({
     where: { roomId: room.id },
-    include: { attachment: true },
+    include: messageInclude,
     orderBy: { createdAt: "asc" },
   });
 
   return {
     roomId: room.id,
     resolvedFromStaleId: room.id !== roomId,
-    messages: messages.map((message) => formatMessage(message, participants)),
+    messages: messages.map((message) => formatMessage(message, participants, userId)),
   };
 };
 
@@ -497,7 +599,7 @@ const createTextMessage = async (
       type: MessageType.TEXT,
       text: text.trim(),
     },
-    include: { attachment: true },
+    include: messageInclude,
   });
 
   await updateRoomTimestamp(room.id);
@@ -507,7 +609,7 @@ const createTextMessage = async (
   return {
     roomId: room.id,
     resolvedFromStaleId: room.id !== roomId,
-    message: formatMessage(message, participants),
+    message: formatMessage(message, participants, senderId),
   };
 };
 
@@ -535,7 +637,7 @@ const createFileMessage = async (
         },
       },
     },
-    include: { attachment: true },
+    include: messageInclude,
   });
 
   await updateRoomTimestamp(room.id);
@@ -545,7 +647,65 @@ const createFileMessage = async (
   return {
     roomId: room.id,
     resolvedFromStaleId: room.id !== roomId,
-    message: formatMessage(message, participants),
+    message: formatMessage(message, participants, senderId),
+  };
+};
+
+const toggleMessageReaction = async (
+  roomId: string,
+  messageId: string,
+  userId: string,
+  role: Role,
+  emoji: string
+) => {
+  const normalizedEmoji = emoji.trim();
+
+  if (!normalizedEmoji) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Emoji is required");
+  }
+
+  if (normalizedEmoji.length > 32) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Emoji is too long");
+  }
+
+  const room = await ensureRoomAccess(roomId, userId, role);
+  const message = await getMessageForRoom(room.id, messageId);
+
+  const existingReaction = await prisma.messageReaction.findUnique({
+    where: {
+      messageId_userId_emoji: {
+        messageId: message.id,
+        userId,
+        emoji: normalizedEmoji,
+      },
+    },
+  });
+
+  if (existingReaction) {
+    await prisma.messageReaction.delete({
+      where: { id: existingReaction.id },
+    });
+  } else {
+    await prisma.messageReaction.create({
+      data: {
+        messageId: message.id,
+        userId,
+        emoji: normalizedEmoji,
+      },
+    });
+  }
+
+  const updatedMessage = await getMessageForRoom(room.id, message.id);
+  const participants = await buildParticipants(room);
+
+  return {
+    roomId: room.id,
+    resolvedFromStaleId: room.id !== roomId,
+    messageId: message.id,
+    emoji: normalizedEmoji,
+    action: existingReaction ? "removed" : "added",
+    reactions: formatReactions(updatedMessage.reactions, userId),
+    message: formatMessage(updatedMessage, participants, userId),
   };
 };
 
@@ -636,6 +796,7 @@ export const chatService = {
   getRoomMessages,
   createTextMessage,
   createFileMessage,
+  toggleMessageReaction,
   updateRoomTimestamp,
   createCall,
   endCall,

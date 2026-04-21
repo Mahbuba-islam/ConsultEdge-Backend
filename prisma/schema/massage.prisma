@@ -9,6 +9,7 @@ model Message {
 	type       MessageType @default(TEXT)
 	text       String?
 	attachment Attachment?
+	reactions  MessageReaction[]
 
 	createdAt DateTime @default(now())
 
