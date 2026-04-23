@@ -5,9 +5,10 @@ import { checkAuth } from "../../middleware/cheackAuth";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponsr";
 import status from "http-status";
+import AppError from "../../errorHelpers/AppError";
+import { envVars } from "../../config/env";
 import {
   createAblyTokenRequest,
-  roomChannel,
   userChannel,
 } from "../../lib/ably";
 
@@ -17,13 +18,22 @@ router.get(
   "/token",
   checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
   catchAsync(async (req: Request, res: Response) => {
+    if (!envVars.ABLY_API_KEY) {
+      throw new AppError(
+        status.SERVICE_UNAVAILABLE,
+        "Realtime service is not configured. Set ABLY_API_KEY on the server."
+      );
+    }
+
     const userId = req.user.userId;
 
-    // Allow user to subscribe to their own channel and any room channel.
-    const capability = {
-      [userChannel(userId)]: ["subscribe", "presence"],
-      [`${roomChannel("*")}`.replace("*", "*")]: ["subscribe", "publish", "presence"],
-    } as Record<string, string[]>;
+    // Capability map:
+    //  - private-room-*       → full chat access (subscribe/publish/presence/history)
+    //  - private-user-<id>    → user's own fan-out channel (subscribe only)
+    const capability: Record<string, string[]> = {
+      "private-room-*": ["subscribe", "publish", "presence", "history"],
+      [userChannel(userId)]: ["subscribe"],
+    };
 
     const tokenRequest = await createAblyTokenRequest(userId, capability);
 
