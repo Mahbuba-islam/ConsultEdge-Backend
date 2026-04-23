@@ -1,13 +1,7 @@
-import fs from "node:fs";
-import path from "node:path";
-
 import multer from "multer";
-import type { Request } from "express";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
-const uploadRoot = path.join(process.cwd(), "uploads", "chat");
-if (!fs.existsSync(uploadRoot)) {
-  fs.mkdirSync(uploadRoot, { recursive: true });
-}
+import { cloudinaryUpload } from "../../config/cloudinary.config";
 
 const allowedMimeTypes = new Set([
   "application/pdf",
@@ -16,13 +10,27 @@ const allowedMimeTypes = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, uploadRoot);
-  },
-  filename: (_req, file, cb) => {
-    const safeName = file.originalname.replace(/\s+/g, "-").replace(/[^a-zA-Z0-9._-]/g, "");
-    cb(null, `${Date.now()}-${safeName}`);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinaryUpload,
+  params: async (_req, file) => {
+    const originalName = file.originalname;
+    const extension = originalName.split(".").pop()?.toLowerCase();
+    const fileNameWithoutExtension = originalName
+      .split(".")
+      .slice(0, -1)
+      .join(".")
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9/-]/g, "");
+
+    const uniqueName = `${Math.random().toString(36).substring(2)}-${Date.now()}-${fileNameWithoutExtension}`;
+    const folder = extension === "pdf" ? "pdfs" : "chat";
+
+    return {
+      folder: `consultedge/${folder}`,
+      public_id: uniqueName,
+      resource_type: "auto",
+    };
   },
 });
 
@@ -43,9 +51,18 @@ export const chatUpload = multer({
   },
 });
 
-export const mapUploadedFileToAttachmentData = (req: Request, file: Express.Multer.File) => {
-  const baseUrl = `${req.protocol}://${req.get("host")}`;
-  const fileUrl = `${baseUrl}/uploads/chat/${file.filename}`;
+type CloudinaryMulterFile = Express.Multer.File & {
+  path?: string;
+  secure_url?: string;
+};
+
+export const mapUploadedFileToAttachmentData = (file: Express.Multer.File) => {
+  const cloudinaryFile = file as CloudinaryMulterFile;
+  const fileUrl = cloudinaryFile.path ?? cloudinaryFile.secure_url;
+
+  if (!fileUrl) {
+    throw new Error("Failed to resolve uploaded file URL from Cloudinary");
+  }
 
   return {
     fileUrl,

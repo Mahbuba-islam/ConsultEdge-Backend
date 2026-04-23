@@ -20,6 +20,7 @@ import { clientRouter } from "./modules/client/client.router";
 import { chatRoutes } from "./modules/chat/chat.routes";
 import { aiRoutes } from "./modules/ai/ai.router";
 import { conversationsRoutes } from "./modules/conversations/conservations.router";
+import { realtimeRoutes } from "./modules/realtime/realtime.routes";
 
 
 const router = Router();
@@ -49,6 +50,7 @@ router.use("/notifications", notificationRouter)
 router.use("/chat", chatRoutes)
 router.use("/conversations", conversationsRoutes)
 router.use("/ai", aiRoutes)
+router.use("/realtime", realtimeRoutes)
 // Industry / Category
 router.use("/industries", industryRouter);
 router.use("/expert-verification", expertVerificationRouter)

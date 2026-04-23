@@ -249,11 +249,41 @@ const googleLogin = catchAsync((req: Request, res: Response) => {
     const encodedRedirectPath = encodeURIComponent(redirectPath as string);
 
     const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
+    const betterAuthUrl = envVars.BETTER_AUTH_URL;
 
-    res.render("googleRedirect", {
-        callbackURL : callbackURL,
-        betterAuthUrl : envVars.BETTER_AUTH_URL,
-    })
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login</title>
+</head>
+<body>
+    <div><p>Redirecting to Google...</p></div>
+    <script>
+    (async () => {
+        try {
+            const response = await fetch(${JSON.stringify(betterAuthUrl)} + "/api/auth/sign-in/social", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ provider: "google", callbackURL: ${JSON.stringify(callbackURL)} })
+            });
+            const data = await response.json();
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                document.body.innerHTML = '<div><p>Error redirecting to Google. Please try again later.</p></div>';
+            }
+        } catch (error) {
+            document.body.innerHTML = '<div><p>Error redirecting to Google: ' + (error && error.message ? error.message : 'Unknown error') + '</p></div>';
+        }
+    })();
+    </script>
+</body>
+</html>`;
+
+    res.set("Content-Type", "text/html").send(html);
 })
 
 const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {

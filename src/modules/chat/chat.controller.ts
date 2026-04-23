@@ -7,7 +7,7 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponsr";
 import { chatService } from "./chat.service";
 import { mapUploadedFileToAttachmentData } from "./chat.upload";
-import { getChatWsHub, getSocketIO } from "../../lib/socket";
+import { publishToRoom, publishToUser } from "../../lib/ably";
 
 const emitChatEvent = async (
   roomId: string,
@@ -16,42 +16,21 @@ const emitChatEvent = async (
   senderRole?: Role,
   senderUserId?: string
 ) => {
-  const io = getSocketIO();
-  const wsHub = getChatWsHub();
-
-  if (!io) {
-    if (!wsHub) {
-      return;
-    }
-  }
-
   const targets = await chatService.getRoomRealtimeTargets(
     roomId,
     senderRole,
     senderUserId
   );
-  if (io) {
-    io.to(targets.roomId).emit(eventName, payload);
 
-    if (senderRole && targets.recipientUserId) {
-      io.to(`user:${targets.recipientUserId}`).emit(eventName, payload);
-    } else {
-      io.to(`user:${targets.clientUserId}`).emit(eventName, payload);
-      io.to(`user:${targets.expertUserId}`).emit(eventName, payload);
-    }
+  await publishToRoom(targets.roomId, eventName, payload);
+
+  if (senderRole && targets.recipientUserId) {
+    await publishToUser(targets.recipientUserId, eventName, payload);
+    return;
   }
-  
-  if (wsHub) {
-    wsHub.emitToRoom(targets.roomId, eventName, payload);
 
-    if (senderRole && targets.recipientUserId) {
-      wsHub.emitToUser(targets.recipientUserId, eventName, payload);
-      return;
-    }
-
-    wsHub.emitToUser(targets.clientUserId, eventName, payload);
-    wsHub.emitToUser(targets.expertUserId, eventName, payload);
-  }
+  await publishToUser(targets.clientUserId, eventName, payload);
+  await publishToUser(targets.expertUserId, eventName, payload);
 };
 
 const getSingleString = (value: unknown): string => {
@@ -165,7 +144,7 @@ const postAttachmentMessage = catchAsync(async (req: Request, res: Response) => 
     });
   }
 
-  const attachment = mapUploadedFileToAttachmentData(req, req.file);
+  const attachment = mapUploadedFileToAttachmentData(req.file);
   const result = await chatService.createFileMessage(
     roomId,
     req.user.userId,

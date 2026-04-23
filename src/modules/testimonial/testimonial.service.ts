@@ -133,6 +133,13 @@ const getAllTestimonials = async (
   return result;
 };
 
+const getAllTestimonialsForAdmin = async (
+  query: IqueryParams,
+  includeAll = true
+) => {
+  return getAllTestimonials(query, includeAll);
+};
+
 
 
 
@@ -290,6 +297,7 @@ const updateReviewStatus = async (
 export const testimonialService = {
   createTestimonial,
   getAllTestimonials,
+  getAllTestimonialsForAdmin,
   getTestimonialsByExpert,
   updateTestimonial,
   updateReviewStatus,

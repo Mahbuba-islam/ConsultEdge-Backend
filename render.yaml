@@ -1,0 +1,73 @@
+# Render.com blueprint
+# Deploy via: https://render.com/docs/blueprint-spec
+# In Render: New + Blueprint -> connect repo. All env vars marked sync:false
+# must be filled in the Render dashboard before first deploy.
+
+services:
+  - type: web
+    name: consultedge-backend
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /healthz
+    buildCommand: npm ci && npm run build && npx prisma migrate deploy
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: BETTER_AUTH_URL
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        sync: false
+      - key: ACCESS_TOKEN_SECRET
+        sync: false
+      - key: REFRESH_TOKEN_SECRET
+        sync: false
+      - key: ACCESS_TOKEN_EXPIRY
+        value: 1d
+      - key: REFRESH_TOKEN_EXPIRY
+        value: 7d
+      - key: EMAIL_SENDER_SMTP_USER
+        sync: false
+      - key: EMAIL_SENDER_SMTP_PASSWORD
+        sync: false
+      - key: EMAIL_SENDER_SMTP_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_SENDER_SMTP_PORT
+        value: "465"
+      - key: EMAIL_SENDER_SMTP_FROM
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: ABLY_API_KEY
+        sync: false

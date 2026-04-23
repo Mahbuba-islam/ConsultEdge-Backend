@@ -1,28 +1,21 @@
 import {
   AppError_default,
-  MessageType,
   PaymentController,
   Role,
-  UserStatus,
   auth,
   authRoutes,
-  chatService,
-  consultationService,
+  connectPrismaWithRetry,
   envVars,
   indexRoutes,
-  jwtUtils,
   prisma,
-  prismaNamespace_exports,
-  setChatWsHub,
-  setSocketIO
-} from "./chunk-NVDDLXFU.js";
+  prismaNamespace_exports
+} from "./chunk-QKN4WXZG.js";
 
 // src/app.ts
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
-import cron from "node-cron";
 import { toNodeHandler } from "better-auth/node";
 
 // src/middleware/globalErrorHandler.ts
@@ -214,10 +207,19 @@ var handleZodError = (err) => {
 };
 
 // src/middleware/globalErrorHandler.ts
+var isBetterAuthHandledError = (err) => {
+  if (!err || typeof err !== "object") {
+    return false;
+  }
+  const candidate = err;
+  return typeof candidate.statusCode === "number" || typeof candidate.status === "string" || typeof candidate.body?.message === "string";
+};
 var globalErrorHandler = async (err, req, res, next) => {
   if (envVars.NODE_ENV === "development") {
     if (err instanceof AppError_default && err.statusCode < 500) {
       console.warn(`[Handled AppError ${err.statusCode}] ${req.method} ${req.originalUrl} -> ${err.message}`);
+    } else if (isBetterAuthHandledError(err) && ((err.statusCode ?? 500) < 500 || err.status === "UNAUTHORIZED" || err.status === "BAD_REQUEST" || err.status === "FORBIDDEN")) {
+      console.warn(`[Handled Auth Error ${err.statusCode ?? err.status ?? 400}] ${req.method} ${req.originalUrl} -> ${err.body?.message ?? err.message ?? "Authentication error"}`);
     } else {
       console.error("Error from Global Error Handler", err);
     }
@@ -272,6 +274,16 @@ var globalErrorHandler = async (err, req, res, next) => {
         message: err.message
       }
     ];
+  } else if (isBetterAuthHandledError(err)) {
+    statusCode = typeof err.statusCode === "number" ? err.statusCode : err.status === "UNAUTHORIZED" ? status3.UNAUTHORIZED : err.status === "FORBIDDEN" ? status3.FORBIDDEN : err.status === "BAD_REQUEST" ? status3.BAD_REQUEST : status3.INTERNAL_SERVER_ERROR;
+    message = err.body?.message || err.message || message;
+    stack = err instanceof Error ? err.stack : void 0;
+    errorSources = [
+      {
+        path: "",
+        message
+      }
+    ];
   } else if (err instanceof Error) {
     statusCode = status3.INTERNAL_SERVER_ERROR;
     message = err.message;
@@ -304,8 +316,7 @@ var notFound = (req, res) => {
 
 // src/app.ts
 var app = express();
-app.set("views", path.join(process.cwd(), "src", "templates"));
-app.set("view engine", "ejs");
+app.set("trust proxy", 1);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/demo", express.static(path.join(process.cwd(), "public")));
 app.post(
@@ -328,19 +339,9 @@ app.use("/api/auth", toNodeHandler(auth));
 app.get("/", (req, res) => {
   res.send("ConsultEdge Backend Running Successfully!");
 });
-if (envVars.NODE_ENV === "production") {
-  cron.schedule("*/25 * * * *", async () => {
-    try {
-      console.log("Running cron job: cancel unpaid consultations");
-      await consultationService.cancelUnpaidConsultations();
-    } catch (error) {
-      console.error(
-        "Error occurred while canceling unpaid consultations:",
-        error.message
-      );
-    }
-  });
-}
+app.get("/healthz", (_req, res) => {
+  res.status(200).json({ status: "ok", uptime: process.uptime() });
+});
 app.use("/auth", authRoutes);
 app.use("/api/v1", indexRoutes);
 app.use(globalErrorHandler);
@@ -349,7 +350,6 @@ var app_default = app;
 
 // src/server.ts
 import { createServer } from "http";
-import { Server } from "socket.io";
 
 // src/utilis/seed.ts
 var seedAdmin = async () => {
@@ -408,341 +408,64 @@ var seedAdmin = async () => {
   }
 };
 
-// src/modules/chat/chat.socket.ts
-var upsertPresence = async (userId, isOnline) => {
-  await prisma.userPresence.upsert({
-    where: { userId },
-    create: {
-      userId,
-      isOnline,
-      lastSeen: /* @__PURE__ */ new Date()
-    },
-    update: {
-      isOnline,
-      lastSeen: /* @__PURE__ */ new Date()
-    }
-  });
-};
-var registerChatSocket = (io) => {
-  io.on("connection", async (socket) => {
-    const auth2 = socket.handshake.auth ?? {};
-    const userId = auth2.userId;
-    const role = auth2.role;
-    if (!userId || !role) {
-      socket.disconnect(true);
-      return;
-    }
-    socket.join(`user:${userId}`);
-    await upsertPresence(userId, true);
-    io.emit("presence_update", { userId, isOnline: true });
-    socket.on("join_room", async (roomId) => {
-      socket.join(roomId);
-    });
-    socket.on("send_message", async (payload) => {
-      try {
-        let message;
-        if (payload.type === MessageType.FILE) {
-          if (!payload.attachment) return;
-          message = await chatService.createFileMessage(
-            payload.roomId,
-            userId,
-            role,
-            payload.attachment
-          );
-        } else {
-          message = await chatService.createTextMessage(
-            payload.roomId,
-            userId,
-            role,
-            payload.text ?? ""
-          );
-        }
-        const targets = await chatService.getRoomRealtimeTargets(payload.roomId, role);
-        io.to(payload.roomId).emit("receive_message", message);
-        if (targets.recipientUserId) {
-          io.to(`user:${targets.recipientUserId}`).emit("receive_message", message);
-        }
-      } catch (error) {
-        socket.emit("chat_error", {
-          message: error instanceof Error ? error.message : "Failed to send message"
-        });
-      }
-    });
-    socket.on("typing", async (payload) => {
-      await prisma.typingState.upsert({
-        where: {
-          roomId_userId: {
-            roomId: payload.roomId,
-            userId
-          }
-        },
-        create: {
-          roomId: payload.roomId,
-          userId,
-          isTyping: payload.isTyping
-        },
-        update: {
-          isTyping: payload.isTyping
-        }
-      });
-      socket.to(payload.roomId).emit("typing", {
-        roomId: payload.roomId,
-        userId,
-        isTyping: payload.isTyping
-      });
-    });
-    socket.on("start_call", async (payload) => {
-      try {
-        const call = await chatService.createCall(payload.roomId, userId, role);
-        const targets = await chatService.getRoomRealtimeTargets(payload.roomId, role);
-        io.to(payload.roomId).emit("call_started", call);
-        if (targets.recipientUserId) {
-          io.to(`user:${targets.recipientUserId}`).emit("call_started", call);
-        }
-      } catch (error) {
-        socket.emit("chat_error", {
-          message: error instanceof Error ? error.message : "Failed to start call"
-        });
-      }
-    });
-    socket.on("signal", (payload) => {
-      socket.to(payload.roomId).emit("signal", {
-        userId,
-        signalData: payload.signalData
-      });
-    });
-    socket.on("end_call", async (payload) => {
-      try {
-        const call = await chatService.endCall(payload.callId);
-        const targets = await chatService.getRoomRealtimeTargets(payload.roomId);
-        io.to(payload.roomId).emit("call_ended", call);
-        io.to(`user:${targets.clientUserId}`).emit("call_ended", call);
-        io.to(`user:${targets.expertUserId}`).emit("call_ended", call);
-      } catch (error) {
-        socket.emit("chat_error", {
-          message: error instanceof Error ? error.message : "Failed to end call"
-        });
-      }
-    });
-    socket.on("disconnect", async () => {
-      await upsertPresence(userId, false);
-      io.emit("presence_update", { userId, isOnline: false });
-    });
-  });
-};
-
-// src/lib/chatWs.ts
-import { WebSocketServer, WebSocket } from "ws";
-var safeSend = (ws, payload) => {
-  if (ws.readyState !== WebSocket.OPEN) {
+// src/server.ts
+var httpServer = createServer(app_default);
+var isShuttingDown = false;
+var shutdown = async (signal, exitCode = 0) => {
+  if (isShuttingDown) {
     return;
   }
-  ws.send(JSON.stringify(payload));
-};
-var parseCookies = (cookieHeader) => {
-  if (!cookieHeader) {
-    return {};
-  }
-  return cookieHeader.split(";").map((item) => item.trim()).filter(Boolean).reduce((acc, item) => {
-    const separatorIndex = item.indexOf("=");
-    if (separatorIndex <= 0) {
-      return acc;
-    }
-    const key = item.slice(0, separatorIndex).trim();
-    const value = item.slice(separatorIndex + 1).trim();
-    if (key) {
-      acc[key] = decodeURIComponent(value);
-    }
-    return acc;
-  }, {});
-};
-var getBearerToken = (authorizationHeader) => {
-  if (!authorizationHeader?.startsWith("Bearer ")) {
-    return null;
-  }
-  const token = authorizationHeader.slice(7).trim();
-  return token || null;
-};
-var resolveSocketIdentity = async (req) => {
-  const url = new URL(req.url ?? "", "http://localhost");
-  const cookies = parseCookies(req.headers.cookie);
-  const authorization = Array.isArray(req.headers.authorization) ? req.headers.authorization[0] : req.headers.authorization;
-  const tokenFromQuery = url.searchParams.get("token")?.trim() || url.searchParams.get("accessToken")?.trim() || null;
-  const tokenFromCookie = cookies.accessToken || null;
-  const tokenFromBearer = getBearerToken(authorization);
-  const accessToken = tokenFromCookie || tokenFromBearer || tokenFromQuery;
-  if (accessToken) {
-    const verified = jwtUtils.verifyToken(accessToken, envVars.ACCESS_TOKEN_SECRET);
-    if (verified.success && verified.data?.userId) {
-      const user2 = await prisma.user.findUnique({
-        where: { id: String(verified.data.userId) }
-      });
-      if (user2 && !user2.isDeleted && user2.status !== UserStatus.BLOCKED && user2.status !== UserStatus.DELETED) {
-        return {
-          userId: user2.id,
-          role: user2.role
-        };
-      }
-    }
-  }
-  const sessionCookie = cookies["better-auth.session_token"] || cookies["__Secure-better-auth.session_token"] || null;
-  if (!sessionCookie && !authorization) {
-    return null;
-  }
-  const fallbackCookieHeader = [
-    sessionCookie ? `better-auth.session_token=${sessionCookie}` : "",
-    sessionCookie ? `__Secure-better-auth.session_token=${sessionCookie}` : ""
-  ].filter(Boolean).join("; ");
-  const session = await auth.api.getSession({
-    headers: {
-      ...fallbackCookieHeader ? { cookie: fallbackCookieHeader } : {},
-      ...authorization ? { authorization } : {}
-    }
-  }).catch(() => null);
-  const sessionUserId = session?.user?.id;
-  if (!sessionUserId) {
-    return null;
-  }
-  const user = await prisma.user.findUnique({
-    where: { id: sessionUserId }
-  });
-  if (!user || user.isDeleted || user.status === UserStatus.BLOCKED || user.status === UserStatus.DELETED) {
-    return null;
-  }
-  return {
-    userId: user.id,
-    role: user.role
-  };
-};
-var upsertPresence2 = async (userId, isOnline) => {
-  await prisma.userPresence.upsert({
-    where: { userId },
-    create: {
-      userId,
-      isOnline,
-      lastSeen: /* @__PURE__ */ new Date()
-    },
-    update: {
-      isOnline,
-      lastSeen: /* @__PURE__ */ new Date()
-    }
-  });
-};
-var ChatWsHub = class {
-  constructor(httpServer) {
-    this.socketsByUser = /* @__PURE__ */ new Map();
-    this.wss = new WebSocketServer({ server: httpServer, path: "/ws/chat" });
-    this.register();
-  }
-  register() {
-    this.wss.on("connection", async (socket, req) => {
-      const identity = await resolveSocketIdentity(req);
-      const userId = identity?.userId;
-      const role = identity?.role;
-      if (!userId || !role) {
-        safeSend(socket, {
-          type: "error",
-          message: "Unauthorized websocket connection"
-        });
-        socket.close();
-        return;
-      }
-      socket.userId = userId;
-      socket.role = role;
-      socket.rooms = /* @__PURE__ */ new Set();
-      const userSockets = this.socketsByUser.get(userId) ?? /* @__PURE__ */ new Set();
-      userSockets.add(socket);
-      this.socketsByUser.set(userId, userSockets);
-      await upsertPresence2(userId, true);
-      safeSend(socket, {
-        type: "connected",
-        userId
-      });
-      socket.on("message", (raw) => {
-        try {
-          const event = JSON.parse(raw.toString());
-          if (event.type === "subscribe" && event.roomId?.trim()) {
-            socket.rooms?.add(event.roomId.trim());
-            safeSend(socket, { type: "subscribed", roomId: event.roomId.trim() });
-            return;
-          }
-          if (event.type === "unsubscribe" && event.roomId?.trim()) {
-            socket.rooms?.delete(event.roomId.trim());
-            safeSend(socket, { type: "unsubscribed", roomId: event.roomId.trim() });
-            return;
-          }
-          if (event.type === "ping") {
-            safeSend(socket, { type: "pong" });
-          }
-        } catch {
-          safeSend(socket, {
-            type: "error",
-            message: "Invalid websocket message"
-          });
+  isShuttingDown = true;
+  console.log(`${signal} received. Shutting down gracefully...`);
+  try {
+    await new Promise((resolve, reject) => {
+      httpServer.close((error) => {
+        if (error) {
+          reject(error);
+          return;
         }
-      });
-      socket.on("close", async () => {
-        const userSocketsSet = this.socketsByUser.get(userId);
-        if (userSocketsSet) {
-          userSocketsSet.delete(socket);
-          if (!userSocketsSet.size) {
-            this.socketsByUser.delete(userId);
-            await upsertPresence2(userId, false);
-          }
-        }
+        resolve();
       });
     });
+  } catch (error) {
+    console.error("Failed to close HTTP server cleanly:", error);
+    exitCode = 1;
   }
-  emitToRoom(roomId, eventName, payload) {
-    for (const userSockets of this.socketsByUser.values()) {
-      for (const socket of userSockets) {
-        if (!socket.rooms?.has(roomId)) {
-          continue;
-        }
-        safeSend(socket, {
-          type: "event",
-          event: eventName,
-          roomId,
-          payload
-        });
-      }
-    }
+  try {
+    await prisma.$disconnect();
+  } catch (error) {
+    console.error("Failed to disconnect Prisma cleanly:", error);
+    exitCode = 1;
   }
-  emitToUser(userId, eventName, payload) {
-    const userSockets = this.socketsByUser.get(userId);
-    if (!userSockets?.size) {
-      return;
-    }
-    for (const socket of userSockets) {
-      safeSend(socket, {
-        type: "event",
-        event: eventName,
-        payload
-      });
-    }
-  }
+  process.exit(exitCode);
 };
-
-// src/server.ts
+process.on("SIGINT", () => {
+  void shutdown("SIGINT");
+});
+process.on("SIGTERM", () => {
+  void shutdown("SIGTERM");
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled promise rejection:", reason);
+  if (envVars.NODE_ENV === "development") {
+    return;
+  }
+  void shutdown("unhandledRejection", 1);
+});
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught exception:", error);
+  void shutdown("uncaughtException", 1);
+});
 var bootstrap = async () => {
   try {
+    await connectPrismaWithRetry({ retries: 5, retryDelayMs: 2e3 });
     await seedAdmin();
-    const httpServer = createServer(app_default);
-    const io = new Server(httpServer, {
-      cors: {
-        origin: [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL],
-        credentials: true
-      }
-    });
-    setSocketIO(io);
-    const wsHub = new ChatWsHub(httpServer);
-    setChatWsHub(wsHub);
-    registerChatSocket(io);
     httpServer.listen(envVars.PORT, () => {
       console.log(`Server is running on http://localhost:${envVars.PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);
+    await prisma.$disconnect().catch(() => null);
   }
 };
 bootstrap();

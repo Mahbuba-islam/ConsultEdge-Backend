@@ -1,0 +1,30 @@
+# Render.com blueprint for a Next.js frontend paired with this backend.
+# Place this file at the ROOT of your Next.js repo (rename to render.yaml)
+# and connect the repo to Render as a Blueprint.
+#
+# Env vars marked sync:false must be filled in the Render dashboard.
+
+services:
+  - type: web
+    name: consultedge-frontend
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Public backend API base URL (from the backend Render service)
+      - key: NEXT_PUBLIC_API_BASE_URL
+        sync: false
+      # Public Ably key for client-side realtime (optional if using token auth)
+      - key: NEXT_PUBLIC_ABLY_ENABLE
+        value: "true"
+      # Any other NEXT_PUBLIC_* values
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false

@@ -89,7 +89,7 @@ ConsultEdge is a full-featured **expert consultation platform** REST API. Client
 ### Dev & Build
 - **tsx** — TypeScript execution for dev
 - **tsup** — ESM bundle output
-- **Prisma Studio** — visual DB explorer.
+- **Prisma Studio** — visual DB explorer
 
 ---
 
@@ -380,6 +380,9 @@ Testimonial         — Client reviews
 npm run dev          # Start dev server with hot reload (tsx watch)
 npm run build        # Compile to api/ with tsup (ESM, Node 20 target)
 npm run start        # Run production build
+npm run service:up   # Build + migrate deploy + start PM2 service
+npm run service:restart # Restart PM2 service with updated env
+npm run service:logs # Tail PM2 logs
 
 npm run migrate      # Run pending Prisma migrations (dev)
 npm run generate     # Regenerate Prisma client after schema changes
@@ -391,7 +394,7 @@ npm run stripe:webhook  # Forward Stripe events to localhost (requires Stripe CL
 
 ---
 
-## 🚢 
+## 🚢 Deployment
 
 ### Build
 
@@ -410,9 +413,15 @@ node api/server.js
 
 - **Database URL**: Use the **direct** PostgreSQL connection URL (not a pooler endpoint) for the long-running Express server to avoid dropped idle connections.
 - **Stripe Webhooks**: Point your Stripe dashboard webhook to `https://yourdomain.com/webhook`. The endpoint reads raw body before JSON middleware — do not reorder.
-- **File Uploads**: `uploads/` is a local staging directory. For production, all files are pushed to Cloudinary. You can safely add `uploads/` to `.gitignore`.
+- **File Uploads**: Chat attachments and media uploads are Cloudinary-backed for production-safe storage.
 - **Prisma**: Always run `npx prisma migrate deploy` (not `migrate dev`) in production.
 - **Environment**: Set `NODE_ENV=production` to enable graceful shutdown on unhandled errors.
+
+### Free Deploy (WebSocket-safe)
+
+For a fully free deployment path that supports Socket.IO + Multer + EJS, follow:
+
+`docs/FREE_DEPLOY_ORACLE_VM.md`
 
 ---
 

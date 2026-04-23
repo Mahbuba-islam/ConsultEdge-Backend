@@ -3,7 +3,6 @@ import express, { Application, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "node:path";
-import cron from "node-cron";
 
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
@@ -13,25 +12,13 @@ import { envVars } from "./config/env";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
 import { indexRoutes } from ".";
-import { consultationService } from "./modules/consultation/consultation.service";
 import { PaymentController } from "./modules/payment/payment.controler";
 import { authRoutes } from "./modules/auth/auth.router";
 
 const app: Application = express();
 
-/* -------------------------------------------
-   View Engine (EJS)
--------------------------------------------- */
-
-
-// Request logging middleware for debugging
-// app.use((req, res, next) => {
-//    console.log(`[${req.method}] ${req.originalUrl} - Body:`, req.body);
-//    next();
-// });
-
-app.set("views", path.join(process.cwd(), "src", "templates"));
-app.set("view engine", "ejs");
+// Trust reverse proxy (Nginx) so req.protocol, req.ip, secure cookies work in production
+app.set("trust proxy", 1);
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/demo", express.static(path.join(process.cwd(), "public")));
@@ -82,21 +69,11 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 /* -------------------------------------------
-   Cron Job — Cancel Unpaid Consultations
+   Health Check (for uptime monitoring / load balancer)
 -------------------------------------------- */
-if (envVars.NODE_ENV === "production") {
-  cron.schedule("*/25 * * * *", async () => {
-    try {
-      console.log("Running cron job: cancel unpaid consultations");
-      await consultationService.cancelUnpaidConsultations();
-    } catch (error: any) {
-      console.error(
-        "Error occurred while canceling unpaid consultations:",
-        error.message
-      );
-    }
-  });
-}
+app.get("/healthz", (_req: Request, res: Response) => {
+  res.status(200).json({ status: "ok", uptime: process.uptime() });
+});
 
 /* -------------------------------------------
    API Routes

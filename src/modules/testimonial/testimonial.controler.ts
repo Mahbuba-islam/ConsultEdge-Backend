@@ -60,7 +60,7 @@ const getAllTestimonialsForAdmin = catchAsync(
   async (req: Request, res: Response) => {
     const query = req.query;
 
-    const result = await testimonialService.getAllTestimonials(
+    const result = await testimonialService.getAllTestimonialsForAdmin(
       query as IqueryParams,
       true
     );
