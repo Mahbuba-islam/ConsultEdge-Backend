@@ -249,7 +249,6 @@ const googleLogin = catchAsync((req: Request, res: Response) => {
     const encodedRedirectPath = encodeURIComponent(redirectPath as string);
 
     const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
-    const betterAuthUrl = envVars.BETTER_AUTH_URL;
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -263,7 +262,10 @@ const googleLogin = catchAsync((req: Request, res: Response) => {
     <script>
     (async () => {
         try {
-            const response = await fetch(${JSON.stringify(betterAuthUrl)} + "/api/auth/sign-in/social", {
+            // Use a relative URL so the request always targets this same backend
+            // origin, regardless of how BETTER_AUTH_URL is configured. Avoids
+            // mixed-content / cross-origin failures behind a proxy.
+            const response = await fetch("/api/auth/sign-in/social", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

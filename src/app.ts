@@ -28,7 +28,7 @@ app.use("/demo", express.static(path.join(process.cwd(), "public")));
    Stripe Webhook (RAW BODY)
 -------------------------------------------- */
 app.post(
-  "/webhook",
+  "/api/v1/webhook",
   express.raw({ type: "application/json" }),
   PaymentController.handleStripeWebhookEvent
 );
@@ -70,9 +70,18 @@ app.get("/", (req: Request, res: Response) => {
 
 /* -------------------------------------------
    Health Check (for uptime monitoring / load balancer)
+   -------------------------------------------
+   NOTE on Render free tier:
+   - Free web services sleep after ~15 minutes of inactivity.
+   - The first request after sleep may take 30–60 seconds (cold start).
+   - Upgrading to a paid Render plan removes cold starts entirely.
+   - To mitigate on the free plan, configure an EXTERNAL uptime pinger
+     (e.g. cron-job.org, UptimeRobot) to hit this endpoint every
+     ~10 minutes. Do NOT self-ping from inside this process — it will
+     not prevent sleep and wastes resources.
 -------------------------------------------- */
 app.get("/healthz", (_req: Request, res: Response) => {
-  res.status(200).json({ status: "ok", uptime: process.uptime() });
+  res.status(200).json({ status: "ok" });
 });
 
 /* -------------------------------------------

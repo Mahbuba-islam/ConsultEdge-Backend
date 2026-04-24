@@ -9,7 +9,7 @@ import {
   indexRoutes,
   prisma,
   prismaNamespace_exports
-} from "./chunk-D56FH27A.js";
+} from "./chunk-3JQZ7TRF.js";
 
 // src/app.ts
 import express from "express";
@@ -320,7 +320,7 @@ app.set("trust proxy", 1);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/demo", express.static(path.join(process.cwd(), "public")));
 app.post(
-  "/webhook",
+  "/api/v1/webhook",
   express.raw({ type: "application/json" }),
   PaymentController.handleStripeWebhookEvent
 );
@@ -340,7 +340,7 @@ app.get("/", (req, res) => {
   res.send("ConsultEdge Backend Running Successfully!");
 });
 app.get("/healthz", (_req, res) => {
-  res.status(200).json({ status: "ok", uptime: process.uptime() });
+  res.status(200).json({ status: "ok" });
 });
 app.use("/auth", authRoutes);
 app.use("/api/v1", indexRoutes);

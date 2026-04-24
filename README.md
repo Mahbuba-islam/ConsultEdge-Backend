@@ -439,3 +439,43 @@ For a fully free deployment path that supports Socket.IO + Multer + EJS, follow:
 <div align="center">
   <sub>Built with â˜• and TypeScript. ConsultEdge Backend â€” Â© 2026</sub>
 </div>
+
+
+---
+
+## ?? Deploying to Render (Free Tier) & Keep-Alive
+
+Render's free web service plan suspends your service after **~15 minutes of inactivity**. The first request after sleep will trigger a **cold start (~30–60 seconds)**. Upgrading to any paid Render plan removes this entirely.
+
+### Health endpoint
+
+The backend exposes:
+
+```
+GET https://<your-service>.onrender.com/healthz
+? 200 OK
+{ "status": "ok" }
+```
+
+This same path is configured as Render's `healthCheckPath` in [render.yaml](render.yaml).
+
+### External keep-alive (recommended for free tier)
+
+Do **not** self-ping from inside the Node process — it does not prevent Render from sleeping the container and wastes resources. Use an **external** pinger instead:
+
+1. Sign up for a free scheduler such as:
+   - [cron-job.org](https://cron-job.org) (recommended, free, HTTPS)
+   - [UptimeRobot](https://uptimerobot.com)
+   - [BetterStack Uptime](https://betterstack.com/uptime)
+2. Create a new cron / monitor with:
+   - **URL**: `https://<your-render-service>.onrender.com/healthz`
+   - **Method**: `GET`
+   - **Interval**: every **10 minutes**
+   - **Expected status**: `200`
+3. Save. The scheduler will hit `/healthz` around the clock and keep the dyno warm during business hours.
+
+> ?? Be aware that Render's free plan also has a monthly instance-hour quota. Pinging 24/7 is fine for a single service but will count toward that quota. If you only need uptime during business hours, configure the scheduler's active window accordingly.
+
+### HTTPS only
+
+All configured URLs (`BETTER_AUTH_URL`, `FRONTEND_URL`, `GOOGLE_CALLBACK_URL`, Stripe webhook, Ably endpoint) must use `https://`. The backend performs no HTTP?HTTPS redirect itself — Render terminates TLS at its edge and forwards HTTPS traffic to the app. `app.set("trust proxy", 1)` is already enabled so `req.secure` and cookies with `secure: true` work correctly behind the Render proxy.
