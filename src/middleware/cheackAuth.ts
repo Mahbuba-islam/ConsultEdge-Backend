@@ -128,7 +128,13 @@ export const checkAuth =
         ? authHeader.slice(7).trim()
         : undefined;
       const cookieToken = CookieUtils.getCookie(req, "accessToken");
-      const accessToken = cookieToken || bearerToken;
+      // Prefer the explicit Bearer token over the cookie. For an API, the
+      // caller's explicit Authorization header should always win over an
+      // ambient session cookie. This avoids "ghost identity" bugs where a
+      // stale BetterAuth session cookie causes the server to authenticate
+      // as the wrong user even though the client sent a fresh Bearer
+      // token.
+      const accessToken = bearerToken || cookieToken;
 
       const betterAuthSessionToken =
         CookieUtils.getCookie(req, "better-auth.session_token") ||

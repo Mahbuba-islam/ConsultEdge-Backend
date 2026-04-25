@@ -9,7 +9,7 @@ import {
   indexRoutes,
   prisma,
   prismaNamespace_exports
-} from "./chunk-ITL6VHU5.js";
+} from "./chunk-34M6UVNS.js";
 
 // src/app.ts
 import express from "express";
