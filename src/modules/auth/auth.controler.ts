@@ -316,14 +316,29 @@ const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
 
     const {accessToken, refreshToken} = result;
 
+    // Still set the cross-site cookies for browsers that allow them (same-domain
+    // deploys, custom domains, etc.). They will simply be ignored by the
+    // frontend on a different site.
     tokenUtils.setAccessTokenCookie(res, accessToken);
     tokenUtils.setRefreshTokenCookie(res, refreshToken);
     tokenUtils.setBetterAuthSessionCookie(res, sessionToken);
- // ?redirect=//profile -> /profile
+
+    // ?redirect=//profile -> /profile
     const isValidRedirectPath = redirectPath.startsWith("/") && !redirectPath.startsWith("//");
     const finalRedirectPath = isValidRedirectPath ? redirectPath : "/dashboard";
 
-    res.redirect(`${envVars.FRONTEND_URL}${finalRedirectPath}`);
+    // Cross-site cookie workaround: pass tokens to the frontend via the URL
+    // hash so that the Vercel-hosted frontend (different site than the API
+    // origin) can persist them in localStorage and authenticate via the
+    // Authorization header. The hash is never sent to any server, so the
+    // tokens do not appear in server logs / referrers.
+    const hashParams = new URLSearchParams({
+        accessToken,
+        refreshToken,
+        sessionToken,
+    }).toString();
+
+    res.redirect(`${envVars.FRONTEND_URL}${finalRedirectPath}#${hashParams}`);
 })
 // const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
 //   const redirectPath = req.query.redirect as string || "/dashboard";
