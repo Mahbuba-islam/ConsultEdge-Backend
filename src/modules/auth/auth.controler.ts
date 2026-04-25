@@ -175,21 +175,32 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
 const logOutUser = catchAsync(async(req:Request, res:Response)=>{
     const betterAuthSessionToken = getBetterAuthSessionToken(req)
     const result = await authService.logOutUser(betterAuthSessionToken)
-    CookieUtils.clearCookie(res, 'accessToken', {
-        httpOnly:true,
-        secure:true,
-        sameSite:"none",
-    })
-    CookieUtils.clearCookie(res, 'refreshToken', {
-        httpOnly:true,
-        secure:true,
-        sameSite:"none",
-    })
-    CookieUtils.clearCookie(res, 'better-auth.session_token', {
-        httpOnly:true,
-        secure:true,
-        sameSite:"none",
-    })
+
+    // Aggressive purge: cookies set with different option combinations
+    // (sameSite, secure, path, name prefix) historically left "ghost"
+    // duplicates in the browser's Application tab. Clear every variant we
+    // have ever set so the user ends up with zero auth cookies after
+    // logout. Subsequent logins then start clean.
+    const cookieNames = [
+        "accessToken",
+        "refreshToken",
+        "better-auth.session_token",
+        "__Secure-better-auth.session_token",
+    ];
+
+    const clearOptionVariants = [
+        { httpOnly: true, secure: true, sameSite: "none" as const, path: "/" },
+        { httpOnly: true, secure: false, sameSite: "lax" as const, path: "/" },
+        { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" },
+        { path: "/" },
+        {},
+    ];
+
+    for (const name of cookieNames) {
+        for (const opts of clearOptionVariants) {
+            CookieUtils.clearCookie(res, name, opts);
+        }
+    }
      sendResponse(res,{
         httpStatusCode:status.OK,
         success:true,
@@ -327,18 +338,22 @@ const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
     const isValidRedirectPath = redirectPath.startsWith("/") && !redirectPath.startsWith("//");
     const finalRedirectPath = isValidRedirectPath ? redirectPath : "/dashboard";
 
-    // Cross-site cookie workaround: pass tokens to the frontend via the URL
-    // hash so that the Vercel-hosted frontend (different site than the API
-    // origin) can persist them in localStorage and authenticate via the
-    // Authorization header. The hash is never sent to any server, so the
-    // tokens do not appear in server logs / referrers.
-    const hashParams = new URLSearchParams({
+    // Cross-site cookie workaround: pass tokens to the frontend via a
+    // dedicated `/auth/oauth-callback` route. The frontend route reads the
+    // tokens from the query string, persists them via `setTokenInCookies`,
+    // and then redirects to the originally requested page. Query params are
+    // used (instead of a hash) so that the frontend's server-side handler
+    // (e.g. Next.js App Router) can also read them if needed. The callback
+    // URL is short-lived and tokens are immediately removed by the
+    // frontend after consumption.
+    const callbackParams = new URLSearchParams({
         accessToken,
         refreshToken,
         sessionToken,
+        redirect: finalRedirectPath,
     }).toString();
 
-    res.redirect(`${envVars.FRONTEND_URL}${finalRedirectPath}#${hashParams}`);
+    res.redirect(`${envVars.FRONTEND_URL}/auth/oauth-callback?${callbackParams}`);
 })
 // const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
 //   const redirectPath = req.query.redirect as string || "/dashboard";

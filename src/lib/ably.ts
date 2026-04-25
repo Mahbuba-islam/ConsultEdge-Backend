@@ -60,7 +60,7 @@ export const publishToUser = async (
  */
 export const createAblyTokenRequest = async (
   clientId: string,
-  capability: Record<string, string[]>
+  capability?: Record<string, string[] | ["*"]>
 ) => {
   const client = getAblyClient();
   if (!client) {
@@ -69,7 +69,7 @@ export const createAblyTokenRequest = async (
 
   return client.auth.createTokenRequest({
     clientId,
-    capability,
+   
     ttl: 60 * 60 * 1000,
   });
 };

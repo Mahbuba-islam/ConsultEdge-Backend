@@ -50,9 +50,18 @@ const getExpertById = async (id: string) => {
           isDeleted: false,
           isPublished: true,
           isBooked: false,
+          schedule: {
+            isDeleted: false,
+            // Only return future / currently-active slots so that the
+            // "next available time" reflects upcoming availability rather
+            // than slots created earlier in time.
+            endDateTime: { gt: new Date() },
+          },
         },
         include: { schedule: true },
-        orderBy: { createdAt: "asc" },
+        // Order by the actual slot start time so that the nearest upcoming
+        // slot appears first, regardless of when it was created.
+        orderBy: { schedule: { startDateTime: "asc" } },
       },
       consultations: {
         include: {
