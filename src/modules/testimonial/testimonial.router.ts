@@ -22,7 +22,7 @@ router.post(
 
 router.get("/", TestimonialController.getAllTestimonials);
 router.get("/admin", checkAuth(Role.ADMIN), TestimonialController.getAllTestimonialsForAdmin);
-router.get("/expert/", TestimonialController.getTestimonialsByExpert);
+router.get("/expert/:expertId", TestimonialController.getTestimonialsByExpert);
 
 router.patch(
   "/:id/reply",
