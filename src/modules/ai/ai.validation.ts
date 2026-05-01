@@ -26,15 +26,16 @@ const expertItem = z.object({
 
 const recommendations = z.object({
   body: z.object({
-    userBehavior: z
-      .object({
-        recentSearches: z.array(z.string().max(200)).max(20).optional(),
-        viewedExperts: z.array(z.string()).max(50).optional(),
-        industries: z.array(z.string().max(120)).max(20).optional(),
-      })
-      .default({}),
-    experts: z.array(expertItem).min(1).max(200),
-    industries: z.array(z.string().max(120)).max(100).optional(),
+    viewedExperts: z.array(z.string().max(200)).max(100).optional(),
+    exploredIndustries: z.array(z.string().max(120)).max(100).optional(),
+    searchHistory: z.array(z.string().max(200)).max(100).optional(),
+    clickedCategories: z.array(z.string().max(120)).max(100).optional(),
+  }),
+});
+
+const industryCreation = z.object({
+  body: z.object({
+    industryName: z.string().trim().min(2).max(100),
   }),
 });
 
@@ -71,6 +72,7 @@ const documentAnalysis = z.object({
 export const aiValidation = {
   askSupport,
   recommendations,
+  industryCreation,
   search,
   summary,
   chat,

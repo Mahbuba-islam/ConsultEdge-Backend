@@ -68,6 +68,35 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const clientDemoLogin = catchAsync(async (_req: Request, res: Response) => {
+  const result = await authService.loginDemoClient();
+
+  const {
+    accessToken,
+    refreshToken,
+    token,
+    user,
+    ...rest
+  } = result;
+
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+  tokenUtils.setBetterAuthSessionCookie(res, token);
+
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "demo login successfully",
+    data: {
+      accessToken,
+      refreshToken,
+      token,
+      user,
+      ...rest,
+    },
+  });
+});
+
 
 // get me
 const getMe = catchAsync(
@@ -443,6 +472,7 @@ const handlerOAuthError = catchAsync(async(req:Request, res:Response)=>{
 export const authControler = {
     registeredUser,
     loginUser,
+  clientDemoLogin,
     getMe,
     getNewToken,
     changePassword,

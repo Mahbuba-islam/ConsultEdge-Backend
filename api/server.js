@@ -1,15 +1,16 @@
 import {
   AppError_default,
   PaymentController,
-  Role,
   auth,
   authRoutes,
   connectPrismaWithRetry,
   envVars,
   indexRoutes,
   prisma,
-  prismaNamespace_exports
-} from "./chunk-34M6UVNS.js";
+  prismaNamespace_exports,
+  seedAdmin,
+  seedDemoClient
+} from "./chunk-7MZFGK5G.js";
 
 // src/app.ts
 import express from "express";
@@ -350,65 +351,6 @@ var app_default = app;
 
 // src/server.ts
 import { createServer } from "http";
-
-// src/utilis/seed.ts
-var seedAdmin = async () => {
-  try {
-    const isAdminExists = await prisma.user.findFirst({
-      where: {
-        role: Role.ADMIN
-      }
-    });
-    if (isAdminExists) {
-      console.log(" admin already exists");
-      return;
-    }
-    const adminUser = await auth.api.signUpEmail({
-      body: {
-        email: envVars.ADMIN_EMAIL,
-        password: envVars.ADMIN_PASSWORD,
-        name: "Admin Saheb",
-        role: Role.ADMIN,
-        rememberMe: false
-      }
-    });
-    await prisma.$transaction(async (tx) => {
-      await tx.user.update({
-        where: {
-          id: adminUser.user.id
-        },
-        data: {
-          emailVerified: true
-        }
-      });
-      await tx.admin.create({
-        data: {
-          userId: adminUser.user.id,
-          name: " Admin Saheb",
-          email: envVars.ADMIN_EMAIL
-        }
-      });
-    });
-    const admin = await prisma.admin.findFirst({
-      where: {
-        email: envVars.ADMIN_EMAIL
-      },
-      include: {
-        user: true
-      }
-    });
-    console.log(" admin created", admin);
-  } catch (error) {
-    console.error("Error sending  admin", error);
-    await prisma.user.delete({
-      where: {
-        email: envVars.ADMIN_EMAIL
-      }
-    });
-  }
-};
-
-// src/server.ts
 var httpServer = createServer(app_default);
 var isShuttingDown = false;
 var shutdown = async (signal, exitCode = 0) => {
@@ -460,6 +402,7 @@ var bootstrap = async () => {
   try {
     await connectPrismaWithRetry({ retries: 5, retryDelayMs: 2e3 });
     await seedAdmin();
+    await seedDemoClient();
     httpServer.listen(envVars.PORT, () => {
       console.log(`Server is running on http://localhost:${envVars.PORT}`);
     });

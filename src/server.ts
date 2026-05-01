@@ -2,7 +2,7 @@ import app from "./app";
 import { envVars } from "./config/env";
 import { createServer } from "node:http";
 
-import { seedAdmin } from "./utilis/seed";
+import { seedAdmin, seedDemoClient } from "./utilis/seed";
 import { connectPrismaWithRetry, prisma } from "./lib/prisma";
 
 const httpServer = createServer(app);
@@ -70,6 +70,7 @@ const bootstrap = async() => {
     try {
         await connectPrismaWithRetry({ retries: 5, retryDelayMs: 2000 });
         await seedAdmin();
+        await seedDemoClient();
 
         httpServer.listen(envVars.PORT, () => {
             console.log(`Server is running on http://localhost:${envVars.PORT}`);

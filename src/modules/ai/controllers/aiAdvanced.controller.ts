@@ -12,6 +12,15 @@ const recommendations = catchAsync(async (req: Request, res: Response) => {
   sendAIResponse(res, data, meta);
 });
 
+const industryCreation = catchAsync(async (req: Request, res: Response) => {
+  const payload = sanitizeObject(req.body) as Parameters<
+    typeof aiAdvancedService.industryCreation
+  >[0];
+  payload.industryName = sanitizeText(payload.industryName, 100);
+  const { data, meta } = await aiAdvancedService.industryCreation(payload);
+  sendAIResponse(res, data, meta);
+});
+
 const search = catchAsync(async (req: Request, res: Response) => {
   const payload = sanitizeObject(req.body) as Parameters<typeof aiAdvancedService.search>[0];
   payload.query = sanitizeText(payload.query, 500);
@@ -46,6 +55,7 @@ const documentAnalysis = catchAsync(async (req: Request, res: Response) => {
 
 export const aiAdvancedController = {
   recommendations,
+  industryCreation,
   search,
   summary,
   chat,

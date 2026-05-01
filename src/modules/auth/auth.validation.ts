@@ -21,6 +21,10 @@ export const loginZodSchema = z.object({
         .regex(/[@$!%*?&]/, "Password must contain at least one special character (@, $, !, %, *, ?, &)")
 })
 
+export const clientDemoLoginZodSchema = z.object({
+  mode: z.literal("client").optional(),
+});
+
 
 
 

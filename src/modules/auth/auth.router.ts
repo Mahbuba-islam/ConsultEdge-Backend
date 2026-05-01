@@ -3,12 +3,13 @@ import { authControler } from "./auth.controler";
 import { checkAuth } from "../../middleware/cheackAuth";
 import { Role } from "../../generated/enums";
 import { validateRequest } from "../../middleware/validateRequest";
-import { changePasswordZodSchema, forgotPasswordZodSchema, loginZodSchema, registerZodSchema, updateProfileSchema } from "./auth.validation";
+import { changePasswordZodSchema, clientDemoLoginZodSchema, forgotPasswordZodSchema, loginZodSchema, registerZodSchema, updateProfileSchema } from "./auth.validation";
 
 const router = Router()
 
 router.post("/register", validateRequest(registerZodSchema), authControler.registeredUser)
 router.post("/login", validateRequest(loginZodSchema), authControler.loginUser)
+router.post("/demo-login", validateRequest(clientDemoLoginZodSchema), authControler.clientDemoLogin)
 router.get("/me", checkAuth(), authControler.getMe)
 router.post("/refresh-token", authControler.getNewToken)
 router.post('/change-password', 

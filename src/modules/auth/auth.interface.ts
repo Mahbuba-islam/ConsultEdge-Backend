@@ -11,6 +11,10 @@ export interface ILoginUserPayload{
     password:string
 }
 
+export interface IClientDemoLoginPayload {
+    mode?: "client"
+}
+
 
 export interface IChangePasswordPayload {
   currentPassword?: string

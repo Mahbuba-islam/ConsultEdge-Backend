@@ -16,6 +16,7 @@ router.use(aiLogger);
 
 // Per-endpoint rate limits (per minute)
 const recommendationsLimiter = rateLimit({ windowMs: 60_000, max: 10, keyPrefix: "ai-rec" });
+const industryCreationLimiter = rateLimit({ windowMs: 60_000, max: 10, keyPrefix: "ai-industry" });
 const searchLimiter = rateLimit({ windowMs: 60_000, max: 15, keyPrefix: "ai-search" });
 const summaryLimiter = rateLimit({ windowMs: 60_000, max: 5, keyPrefix: "ai-summary" });
 const chatLimiter = rateLimit({ windowMs: 60_000, max: 20, keyPrefix: "ai-chat" });
@@ -40,6 +41,13 @@ router.post(
   recommendationsLimiter,
   validateRequest(aiValidation.recommendations),
   aiAdvancedController.recommendations
+);
+
+router.post(
+  "/industry-creation",
+  industryCreationLimiter,
+  validateRequest(aiValidation.industryCreation),
+  aiAdvancedController.industryCreation
 );
 
 router.post(
