@@ -1,9 +1,13 @@
 import { Router } from "express";
 
+import { checkAuth } from "../../middleware/cheackAuth";
 import { validateRequest } from "../../middleware/validateRequest";
+import { Role } from "../../generated/enums";
 import { aiController } from "./ai.controller";
 import { aiAdvancedController } from "./controllers/aiAdvanced.controller";
+import { aiChatController } from "./controllers/aiChat.controller";
 import { aiOpsController } from "./controllers/aiOps.controller";
+import { aiRagController } from "./controllers/aiRag.controller";
 import { aiValidation } from "./ai.validation";
 import { aiLogger } from "./utils/aiLogger";
 import { rateLimit } from "./utils/rateLimiter";
@@ -72,10 +76,45 @@ router.post(
 );
 
 router.post(
+  "/chat/messages",
+  chatLimiter,
+  checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
+  validateRequest(aiValidation.persistedChatMessage),
+  aiChatController.sendMessage
+);
+
+router.get(
+  "/chat/conversations",
+  checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
+  aiChatController.listConversations
+);
+
+router.get(
+  "/chat/conversations/:conversationId",
+  checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
+  validateRequest(aiValidation.conversationParams),
+  aiChatController.getConversation
+);
+
+router.patch(
+  "/chat/conversations/:conversationId/messages/:messageId/feedback",
+  checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
+  validateRequest(aiValidation.messageFeedback),
+  aiChatController.updateMessageFeedback
+);
+
+router.post(
   "/document-analysis",
   docLimiter,
   validateRequest(aiValidation.documentAnalysis),
   aiAdvancedController.documentAnalysis
+);
+
+router.post(
+  "/rag/query",
+  searchLimiter,
+  validateRequest(aiValidation.ragQuery),
+  aiRagController.query
 );
 
 // AI-scoped error normalization (503 / provider errors)

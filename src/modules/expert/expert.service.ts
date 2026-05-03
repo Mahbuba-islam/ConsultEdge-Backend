@@ -7,7 +7,7 @@ import { IqueryParams } from "../../interfaces/query.interface";
 import { QueryBuilder } from "../../utilis/queryBuilder";
 
 import { expertFilterableFields, expertIncludeConfig, expertSearchableFields } from "./expert.constant";
-import { Expert, Prisma, Role, UserStatus } from "../../generated/client";
+import { Expert, ExpertApplicationStatus, Prisma, Role, UserStatus } from "../../generated/client";
 import { any } from "zod";
 import { prisma } from "../../lib/prisma";
 
@@ -154,69 +154,90 @@ const deleteExpert = async (id: string) => {
 //apply expert
 
 const applyExpert = async (userId: string, payload: any) => {
-  // Check if already applied
-  const existing = await prisma.expert.findUnique({
-    where: { userId },
-  });
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  if (existing) {
-    throw new AppError(status.BAD_REQUEST, "You have already applied to become an expert");
+  if (!user || user.isDeleted || user.status !== UserStatus.ACTIVE) {
+    throw new AppError(status.UNAUTHORIZED, "Active user account is required");
   }
 
-  const clientProfile = await prisma.client.findUnique({
-    where: { userId },
+  const existingExpert = await prisma.expert.findFirst({
+    where: { userId, isDeleted: false },
   });
+
+  if (existingExpert) {
+    throw new AppError(status.BAD_REQUEST, "You are already an expert");
+  }
+
+  const pendingApplication = await prisma.expertApplication.findFirst({
+    where: {
+      userId,
+      status: ExpertApplicationStatus.PENDING,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (pendingApplication) {
+    throw new AppError(status.BAD_REQUEST, "You already have a pending application");
+  }
 
   const parsedExperience = Number(payload.experience ?? 0);
   const parsedConsultationFee = Number(payload.consultationFee);
+  const fullName = String(payload.fullName ?? user.name ?? "").trim();
+  const email = String(payload.email ?? user.email ?? "").trim();
+  const industryId = String(payload.industryId ?? "").trim();
+
+  if (!fullName) {
+    throw new AppError(status.BAD_REQUEST, "Full name is required");
+  }
+
+  if (!email) {
+    throw new AppError(status.BAD_REQUEST, "Email is required");
+  }
+
+  if (!industryId) {
+    throw new AppError(status.BAD_REQUEST, "Industry is required");
+  }
 
   if (!Number.isInteger(parsedExperience) || parsedExperience < 0) {
-    throw new AppError(
-      status.BAD_REQUEST,
-      "Experience must be a non-negative integer"
-    );
+    throw new AppError(status.BAD_REQUEST, "Experience must be a non-negative integer");
   }
 
   if (!Number.isInteger(parsedConsultationFee) || parsedConsultationFee <= 0) {
-    throw new AppError(
-      status.BAD_REQUEST,
-      "Consultation fee must be a positive integer"
-    );
+    throw new AppError(status.BAD_REQUEST, "Consultation fee must be a positive integer");
   }
 
-  const expert = await prisma.$transaction(async (tx) => {
-    const createdExpert = await tx.expert.create({
+  const industry = await prisma.industry.findUnique({
+    where: { id: industryId, isDeleted: false },
+    select: { id: true },
+  });
+
+  if (!industry) {
+    throw new AppError(status.NOT_FOUND, "Industry not found");
+  }
+
+  const application = await prisma.$transaction(async (tx) => {
+    const createdApplication = await tx.expertApplication.create({
       data: {
-        fullName: payload.fullName,
-        email: payload.email,
-        phone: payload.phone,
-        bio: payload.bio,
-        title: payload.title,
+        userId,
+        industryId,
+        fullName,
+        email,
+        phone: payload.phone ? String(payload.phone).trim() : null,
+        bio: payload.bio ? String(payload.bio).trim() : null,
+        title: payload.title ? String(payload.title).trim() : null,
         experience: parsedExperience,
         consultationFee: parsedConsultationFee,
-        industryId: payload.industryId,
-        profilePhoto: payload.profilePicture ?? payload.profilePhoto,
-        userId,
+        profilePhoto: payload.profilePhoto ? String(payload.profilePhoto).trim() : user.image,
+        resumeUrl: payload.resume?.resumeUrl ?? null,
+        resumeFileName: payload.resume?.resumeFileName ?? null,
+        resumeFileType: payload.resume?.resumeFileType ?? null,
+        resumeFileSize: payload.resume?.resumeFileSize ?? null,
+      },
+      include: {
+        industry: true,
       },
     });
 
-    // Convert the account from client to expert immediately
-    await tx.user.update({
-      where: { id: userId },
-      data: { role: Role.EXPERT },
-    });
-
-    if (clientProfile && !clientProfile.isDeleted) {
-      await tx.client.update({
-        where: { id: clientProfile.id },
-        data: {
-          isDeleted: true,
-          deletedAt: new Date(),
-        },
-      });
-    }
-
-    // Notify all active admins
     const admins = await tx.user.findMany({
       where: {
         role: Role.ADMIN,
@@ -230,16 +251,16 @@ const applyExpert = async (userId: string, payload: any) => {
       await tx.notification.createMany({
         data: admins.map((admin) => ({
           type: "EXPERT_APPLICATION",
-          message: `${createdExpert.fullName} applied to become an expert`,
+          message: `${createdApplication.fullName} submitted an expert application`,
           userId: admin.id,
         })),
       });
     }
 
-    return createdExpert;
+    return createdApplication;
   });
 
-  return expert;
+  return application;
 };
 
 

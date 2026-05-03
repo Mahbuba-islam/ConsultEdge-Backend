@@ -10,7 +10,7 @@ import {
   prismaNamespace_exports,
   seedAdmin,
   seedDemoClient
-} from "./chunk-7MZFGK5G.js";
+} from "./chunk-ILAVIZEX.js";
 
 // src/app.ts
 import express from "express";
@@ -359,19 +359,21 @@ var shutdown = async (signal, exitCode = 0) => {
   }
   isShuttingDown = true;
   console.log(`${signal} received. Shutting down gracefully...`);
-  try {
-    await new Promise((resolve, reject) => {
-      httpServer.close((error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
+  if (httpServer.listening) {
+    try {
+      await new Promise((resolve, reject) => {
+        httpServer.close((error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        });
       });
-    });
-  } catch (error) {
-    console.error("Failed to close HTTP server cleanly:", error);
-    exitCode = 1;
+    } catch (error) {
+      console.error("Failed to close HTTP server cleanly:", error);
+      exitCode = 1;
+    }
   }
   try {
     await prisma.$disconnect();
@@ -399,16 +401,30 @@ process.on("uncaughtException", (error) => {
   void shutdown("uncaughtException", 1);
 });
 var bootstrap = async () => {
+  const port = Number(envVars.PORT);
   try {
     await connectPrismaWithRetry({ retries: 5, retryDelayMs: 2e3 });
     await seedAdmin();
     await seedDemoClient();
-    httpServer.listen(envVars.PORT, () => {
-      console.log(`Server is running on http://localhost:${envVars.PORT}`);
+    await new Promise((resolve, reject) => {
+      httpServer.once("error", reject);
+      httpServer.listen(port, () => {
+        httpServer.off("error", reject);
+        console.log(`Server is running on http://localhost:${port}`);
+        resolve();
+      });
     });
   } catch (error) {
-    console.error("Failed to start server:", error);
+    const startupError = error;
+    if (startupError.code === "EADDRINUSE") {
+      console.error(
+        `Port ${port} is already in use. Stop the existing process or change PORT in .env.`
+      );
+    } else {
+      console.error("Failed to start server:", error);
+    }
     await prisma.$disconnect().catch(() => null);
+    process.exit(1);
   }
 };
 bootstrap();

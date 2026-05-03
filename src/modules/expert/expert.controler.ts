@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 import { expertService } from "./expert.service";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponsr";
-import { string } from "zod";
+import { mapUploadedResume } from "./expertApplication.upload";
 
 
 // ===============================
@@ -85,14 +85,15 @@ const deleteExpert = catchAsync(async (req: Request, res: Response) => {
 // apply expert
 
 const applyExpert = catchAsync(async (req, res) => {
-  const userId = req.user.userId; 
-  const profilePicture = req.file ? req.file.path : null;
-  const result = await expertService.applyExpert(userId, { ...req.body, profilePicture });
+  const userId = req.user.userId;
+
+  const resume = req.file ? mapUploadedResume(req.file) : undefined;
+  const result = await expertService.applyExpert(userId, { ...req.body, resume });
 
   sendResponse(res, {
     success: true,
     httpStatusCode: 201,
-    message: "Expert application submitted successfully",
+    message: "Expert application submitted for admin review",
     data: result,
   });
 });

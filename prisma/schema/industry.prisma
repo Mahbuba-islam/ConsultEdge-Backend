@@ -12,6 +12,7 @@ model Industry {
     deletedAt DateTime?
 
     experts Expert[]
+    expertApplications ExpertApplication[]
 
     @@index([isDeleted], name: "idx_industry_isDeleted")
     @@index([name], name: "idx_industry_name")

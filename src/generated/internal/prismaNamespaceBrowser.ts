@@ -52,6 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Admin: 'Admin',
+  AIConversation: 'AIConversation',
+  AIChatMessage: 'AIChatMessage',
   Attachment: 'Attachment',
   User: 'User',
   Session: 'Session',
@@ -63,6 +65,7 @@ export const ModelName = {
   Client: 'Client',
   Consultation: 'Consultation',
   Expert: 'Expert',
+  ExpertApplication: 'ExpertApplication',
   ExpertSchedule: 'ExpertSchedule',
   ExpertVerification: 'ExpertVerification',
   Industry: 'Industry',
@@ -106,6 +109,33 @@ export const AdminScalarFieldEnum = {
 } as const
 
 export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
+
+
+export const AIConversationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AIConversationScalarFieldEnum = (typeof AIConversationScalarFieldEnum)[keyof typeof AIConversationScalarFieldEnum]
+
+
+export const AIChatMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  role: 'role',
+  content: 'content',
+  model: 'model',
+  provider: 'provider',
+  tokensUsed: 'tokensUsed',
+  latencyMs: 'latencyMs',
+  feedback: 'feedback',
+  createdAt: 'createdAt'
+} as const
+
+export type AIChatMessageScalarFieldEnum = (typeof AIChatMessageScalarFieldEnum)[keyof typeof AIChatMessageScalarFieldEnum]
 
 
 export const AttachmentScalarFieldEnum = {
@@ -282,6 +312,33 @@ export const ExpertScalarFieldEnum = {
 } as const
 
 export type ExpertScalarFieldEnum = (typeof ExpertScalarFieldEnum)[keyof typeof ExpertScalarFieldEnum]
+
+
+export const ExpertApplicationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  industryId: 'industryId',
+  fullName: 'fullName',
+  email: 'email',
+  phone: 'phone',
+  bio: 'bio',
+  title: 'title',
+  experience: 'experience',
+  consultationFee: 'consultationFee',
+  profilePhoto: 'profilePhoto',
+  resumeUrl: 'resumeUrl',
+  resumeFileName: 'resumeFileName',
+  resumeFileType: 'resumeFileType',
+  resumeFileSize: 'resumeFileSize',
+  status: 'status',
+  reviewNotes: 'reviewNotes',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExpertApplicationScalarFieldEnum = (typeof ExpertApplicationScalarFieldEnum)[keyof typeof ExpertApplicationScalarFieldEnum]
 
 
 export const ExpertScheduleScalarFieldEnum = {

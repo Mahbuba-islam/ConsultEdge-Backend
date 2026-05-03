@@ -56,3 +56,20 @@ enum UserStatus {
     DELETED
     SUSPENDED
 }
+
+enum AIChatMessageRole {
+    USER
+    ASSISTANT
+    SYSTEM
+}
+
+enum AIMessageFeedback {
+    LIKE
+    DISLIKE
+}
+
+enum ExpertApplicationStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}

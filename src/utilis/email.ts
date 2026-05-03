@@ -40,8 +40,41 @@ const renderOtpTemplate = (data: Record<string, any>) => {
 </html>`;
 };
 
+const renderExpertApplicationDecisionTemplate = (data: Record<string, any>) => {
+  const name = escapeHtml(data.name ?? "User");
+  const statusText = String(data.status ?? "PENDING").toUpperCase();
+  const isApproved = statusText === "APPROVED";
+  const notes = data.notes ? escapeHtml(data.notes) : "";
+
+  return `<!DOCTYPE html>
+<html>
+  <body style="font-family: Arial, sans-serif; background:#f6f8fb; padding:24px;">
+    <div style="max-width:560px;margin:auto;background:#ffffff;border-radius:8px;padding:24px;">
+      <h2 style="margin:0 0 16px;color:#111;">Hello ${name},</h2>
+      <p style="color:#333;line-height:1.6;">
+        Your expert application review is now complete.
+      </p>
+      <div style="margin:16px 0;padding:14px;border-radius:6px;background:${
+        isApproved ? "#ecfdf3" : "#fef2f2"
+      };color:${isApproved ? "#065f46" : "#991b1b"};font-weight:700;">
+        Status: ${statusText}
+      </div>
+      ${
+        notes
+          ? `<p style="color:#374151;line-height:1.6;"><strong>Admin Notes:</strong> ${notes}</p>`
+          : ""
+      }
+      <p style="color:#666;font-size:13px;margin-top:16px;">
+        If you have questions, please contact support.
+      </p>
+    </div>
+  </body>
+</html>`;
+};
+
 const templateRegistry: Record<string, (data: Record<string, any>) => string> = {
   otp: renderOtpTemplate,
+  expertApplicationDecision: renderExpertApplicationDecisionTemplate,
 };
 
 export interface sendEmailOptions {
@@ -82,7 +115,7 @@ export const sendEmail = async ({
       html,
       attachments: attachments?.map((attachment) => ({
         filename: attachment.fileName,
-        content: attachment.contentType,
+        content: attachment.context,
         contentType: attachment.contentType,
       })),
     });

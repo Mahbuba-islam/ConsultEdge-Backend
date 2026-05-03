@@ -92,3 +92,29 @@ export const UserStatus = {
 } as const
 
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const AIChatMessageRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type AIChatMessageRole = (typeof AIChatMessageRole)[keyof typeof AIChatMessageRole]
+
+
+export const AIMessageFeedback = {
+  LIKE: 'LIKE',
+  DISLIKE: 'DISLIKE'
+} as const
+
+export type AIMessageFeedback = (typeof AIMessageFeedback)[keyof typeof AIMessageFeedback]
+
+
+export const ExpertApplicationStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ExpertApplicationStatus = (typeof ExpertApplicationStatus)[keyof typeof ExpertApplicationStatus]

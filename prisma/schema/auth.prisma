@@ -18,6 +18,8 @@ model User {
     admin              Admin?
     notifications Notification[]
     messageReactions MessageReaction[]
+    aiConversations AIConversation[]
+    expertApplications ExpertApplication[]
 
     @@unique([email])
     @@map("user")

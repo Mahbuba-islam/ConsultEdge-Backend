@@ -13,12 +13,13 @@ export interface IResponseData<T> {
   };
 }
 
-export const sendResponse = <T>(res:Response, responseData:IResponseData<T>)=>{
-    const {httpStatusCode, success, message, data} = responseData
-    res.status(httpStatusCode).json({
-        success,
-        message,
-        data
-    })
+export const sendResponse = <T>(res: Response, responseData: IResponseData<T>) => {
+  const { httpStatusCode, success, message, data, meta } = responseData;
 
-}
+  res.status(httpStatusCode).json({
+    success,
+    message,
+    data,
+    ...(meta ? { meta } : {}),
+  });
+};

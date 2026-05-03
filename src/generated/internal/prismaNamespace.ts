@@ -385,6 +385,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Admin: 'Admin',
+  AIConversation: 'AIConversation',
+  AIChatMessage: 'AIChatMessage',
   Attachment: 'Attachment',
   User: 'User',
   Session: 'Session',
@@ -396,6 +398,7 @@ export const ModelName = {
   Client: 'Client',
   Consultation: 'Consultation',
   Expert: 'Expert',
+  ExpertApplication: 'ExpertApplication',
   ExpertSchedule: 'ExpertSchedule',
   ExpertVerification: 'ExpertVerification',
   Industry: 'Industry',
@@ -422,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin" | "attachment" | "user" | "session" | "account" | "verification" | "call" | "callParticipant" | "chatRoom" | "client" | "consultation" | "expert" | "expertSchedule" | "expertVerification" | "industry" | "message" | "messageReaction" | "notification" | "payment" | "schedule" | "testimonial" | "typingState" | "userPresence"
+    modelProps: "admin" | "aIConversation" | "aIChatMessage" | "attachment" | "user" | "session" | "account" | "verification" | "call" | "callParticipant" | "chatRoom" | "client" | "consultation" | "expert" | "expertApplication" | "expertSchedule" | "expertVerification" | "industry" | "message" | "messageReaction" | "notification" | "payment" | "schedule" | "testimonial" | "typingState" | "userPresence"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -497,6 +500,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AdminCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AdminCountAggregateOutputType> | number
+        }
+      }
+    }
+    AIConversation: {
+      payload: Prisma.$AIConversationPayload<ExtArgs>
+      fields: Prisma.AIConversationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AIConversationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AIConversationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>
+        }
+        findFirst: {
+          args: Prisma.AIConversationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AIConversationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>
+        }
+        findMany: {
+          args: Prisma.AIConversationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>[]
+        }
+        create: {
+          args: Prisma.AIConversationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>
+        }
+        createMany: {
+          args: Prisma.AIConversationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AIConversationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>[]
+        }
+        delete: {
+          args: Prisma.AIConversationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>
+        }
+        update: {
+          args: Prisma.AIConversationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>
+        }
+        deleteMany: {
+          args: Prisma.AIConversationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AIConversationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AIConversationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>[]
+        }
+        upsert: {
+          args: Prisma.AIConversationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIConversationPayload>
+        }
+        aggregate: {
+          args: Prisma.AIConversationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAIConversation>
+        }
+        groupBy: {
+          args: Prisma.AIConversationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AIConversationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AIConversationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AIConversationCountAggregateOutputType> | number
+        }
+      }
+    }
+    AIChatMessage: {
+      payload: Prisma.$AIChatMessagePayload<ExtArgs>
+      fields: Prisma.AIChatMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AIChatMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AIChatMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.AIChatMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AIChatMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>
+        }
+        findMany: {
+          args: Prisma.AIChatMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>[]
+        }
+        create: {
+          args: Prisma.AIChatMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>
+        }
+        createMany: {
+          args: Prisma.AIChatMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AIChatMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.AIChatMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>
+        }
+        update: {
+          args: Prisma.AIChatMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.AIChatMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AIChatMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AIChatMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.AIChatMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIChatMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.AIChatMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAIChatMessage>
+        }
+        groupBy: {
+          args: Prisma.AIChatMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AIChatMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AIChatMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AIChatMessageCountAggregateOutputType> | number
         }
       }
     }
@@ -1311,6 +1462,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ExpertCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ExpertCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExpertApplication: {
+      payload: Prisma.$ExpertApplicationPayload<ExtArgs>
+      fields: Prisma.ExpertApplicationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExpertApplicationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExpertApplicationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>
+        }
+        findFirst: {
+          args: Prisma.ExpertApplicationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExpertApplicationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>
+        }
+        findMany: {
+          args: Prisma.ExpertApplicationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>[]
+        }
+        create: {
+          args: Prisma.ExpertApplicationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>
+        }
+        createMany: {
+          args: Prisma.ExpertApplicationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExpertApplicationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>[]
+        }
+        delete: {
+          args: Prisma.ExpertApplicationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>
+        }
+        update: {
+          args: Prisma.ExpertApplicationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExpertApplicationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExpertApplicationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExpertApplicationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExpertApplicationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExpertApplicationPayload>
+        }
+        aggregate: {
+          args: Prisma.ExpertApplicationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExpertApplication>
+        }
+        groupBy: {
+          args: Prisma.ExpertApplicationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExpertApplicationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExpertApplicationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExpertApplicationCountAggregateOutputType> | number
         }
       }
     }
@@ -2183,6 +2408,33 @@ export const AdminScalarFieldEnum = {
 export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
 
 
+export const AIConversationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AIConversationScalarFieldEnum = (typeof AIConversationScalarFieldEnum)[keyof typeof AIConversationScalarFieldEnum]
+
+
+export const AIChatMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  role: 'role',
+  content: 'content',
+  model: 'model',
+  provider: 'provider',
+  tokensUsed: 'tokensUsed',
+  latencyMs: 'latencyMs',
+  feedback: 'feedback',
+  createdAt: 'createdAt'
+} as const
+
+export type AIChatMessageScalarFieldEnum = (typeof AIChatMessageScalarFieldEnum)[keyof typeof AIChatMessageScalarFieldEnum]
+
+
 export const AttachmentScalarFieldEnum = {
   id: 'id',
   messageId: 'messageId',
@@ -2357,6 +2609,33 @@ export const ExpertScalarFieldEnum = {
 } as const
 
 export type ExpertScalarFieldEnum = (typeof ExpertScalarFieldEnum)[keyof typeof ExpertScalarFieldEnum]
+
+
+export const ExpertApplicationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  industryId: 'industryId',
+  fullName: 'fullName',
+  email: 'email',
+  phone: 'phone',
+  bio: 'bio',
+  title: 'title',
+  experience: 'experience',
+  consultationFee: 'consultationFee',
+  profilePhoto: 'profilePhoto',
+  resumeUrl: 'resumeUrl',
+  resumeFileName: 'resumeFileName',
+  resumeFileType: 'resumeFileType',
+  resumeFileSize: 'resumeFileSize',
+  status: 'status',
+  reviewNotes: 'reviewNotes',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExpertApplicationScalarFieldEnum = (typeof ExpertApplicationScalarFieldEnum)[keyof typeof ExpertApplicationScalarFieldEnum]
 
 
 export const ExpertScheduleScalarFieldEnum = {
@@ -2587,6 +2866,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'AIChatMessageRole'
+ */
+export type EnumAIChatMessageRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AIChatMessageRole'>
+    
+
+
+/**
+ * Reference to a field of type 'AIChatMessageRole[]'
+ */
+export type ListEnumAIChatMessageRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AIChatMessageRole[]'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -2597,6 +2890,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AIMessageFeedback'
+ */
+export type EnumAIMessageFeedbackFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AIMessageFeedback'>
+    
+
+
+/**
+ * Reference to a field of type 'AIMessageFeedback[]'
+ */
+export type ListEnumAIMessageFeedbackFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AIMessageFeedback[]'>
     
 
 
@@ -2681,6 +2988,20 @@ export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'PaymentStatus[]'
  */
 export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ExpertApplicationStatus'
+ */
+export type EnumExpertApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpertApplicationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ExpertApplicationStatus[]'
+ */
+export type ListEnumExpertApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpertApplicationStatus[]'>
     
 
 
@@ -2849,6 +3170,8 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   admin?: Prisma.AdminOmit
+  aIConversation?: Prisma.AIConversationOmit
+  aIChatMessage?: Prisma.AIChatMessageOmit
   attachment?: Prisma.AttachmentOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
@@ -2860,6 +3183,7 @@ export type GlobalOmitConfig = {
   client?: Prisma.ClientOmit
   consultation?: Prisma.ConsultationOmit
   expert?: Prisma.ExpertOmit
+  expertApplication?: Prisma.ExpertApplicationOmit
   expertSchedule?: Prisma.ExpertScheduleOmit
   expertVerification?: Prisma.ExpertVerificationOmit
   industry?: Prisma.IndustryOmit

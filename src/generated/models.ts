@@ -9,6 +9,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Admin.js'
+export type * from './models/AIConversation.js'
+export type * from './models/AIChatMessage.js'
 export type * from './models/Attachment.js'
 export type * from './models/User.js'
 export type * from './models/Session.js'
@@ -20,6 +22,7 @@ export type * from './models/ChatRoom.js'
 export type * from './models/Client.js'
 export type * from './models/Consultation.js'
 export type * from './models/Expert.js'
+export type * from './models/ExpertApplication.js'
 export type * from './models/ExpertSchedule.js'
 export type * from './models/ExpertVerification.js'
 export type * from './models/Industry.js'

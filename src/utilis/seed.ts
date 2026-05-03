@@ -89,7 +89,7 @@ export const seedAdmin = async()=>{
         }
     })
     if(isAdminExists){
-        console.log(" admin already exists");
+        console.log("Admin seed skipped: admin already exists");
         return;
     }
 

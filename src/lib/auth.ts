@@ -183,7 +183,9 @@ export const auth = betterAuth({
     trustedOrigins: [process.env.BETTER_AUTH_URL || "http://localhost:5000", envVars.FRONTEND_URL],
 
     advanced: {
-        // disableCSRFCheck: true,
+        // Backend routes call Better Auth APIs server-to-server (no browser Origin header).
+        // Keep CORS as the browser boundary and bypass Better Auth's Origin-based CSRF check.
+        disableCSRFCheck: true,
         useSecureCookies : false,
         cookies:{
             state:{

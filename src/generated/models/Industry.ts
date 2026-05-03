@@ -207,6 +207,7 @@ export type IndustryWhereInput = {
   isDeleted?: Prisma.BoolFilter<"Industry"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"Industry"> | Date | string | null
   experts?: Prisma.ExpertListRelationFilter
+  expertApplications?: Prisma.ExpertApplicationListRelationFilter
 }
 
 export type IndustryOrderByWithRelationInput = {
@@ -219,6 +220,7 @@ export type IndustryOrderByWithRelationInput = {
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   experts?: Prisma.ExpertOrderByRelationAggregateInput
+  expertApplications?: Prisma.ExpertApplicationOrderByRelationAggregateInput
 }
 
 export type IndustryWhereUniqueInput = Prisma.AtLeast<{
@@ -234,6 +236,7 @@ export type IndustryWhereUniqueInput = Prisma.AtLeast<{
   isDeleted?: Prisma.BoolFilter<"Industry"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"Industry"> | Date | string | null
   experts?: Prisma.ExpertListRelationFilter
+  expertApplications?: Prisma.ExpertApplicationListRelationFilter
 }, "id" | "name">
 
 export type IndustryOrderByWithAggregationInput = {
@@ -274,6 +277,7 @@ export type IndustryCreateInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   experts?: Prisma.ExpertCreateNestedManyWithoutIndustryInput
+  expertApplications?: Prisma.ExpertApplicationCreateNestedManyWithoutIndustryInput
 }
 
 export type IndustryUncheckedCreateInput = {
@@ -286,6 +290,7 @@ export type IndustryUncheckedCreateInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   experts?: Prisma.ExpertUncheckedCreateNestedManyWithoutIndustryInput
+  expertApplications?: Prisma.ExpertApplicationUncheckedCreateNestedManyWithoutIndustryInput
 }
 
 export type IndustryUpdateInput = {
@@ -298,6 +303,7 @@ export type IndustryUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   experts?: Prisma.ExpertUpdateManyWithoutIndustryNestedInput
+  expertApplications?: Prisma.ExpertApplicationUpdateManyWithoutIndustryNestedInput
 }
 
 export type IndustryUncheckedUpdateInput = {
@@ -310,6 +316,7 @@ export type IndustryUncheckedUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   experts?: Prisma.ExpertUncheckedUpdateManyWithoutIndustryNestedInput
+  expertApplications?: Prisma.ExpertApplicationUncheckedUpdateManyWithoutIndustryNestedInput
 }
 
 export type IndustryCreateManyInput = {
@@ -397,6 +404,20 @@ export type IndustryUpdateOneRequiredWithoutExpertsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.IndustryUpdateToOneWithWhereWithoutExpertsInput, Prisma.IndustryUpdateWithoutExpertsInput>, Prisma.IndustryUncheckedUpdateWithoutExpertsInput>
 }
 
+export type IndustryCreateNestedOneWithoutExpertApplicationsInput = {
+  create?: Prisma.XOR<Prisma.IndustryCreateWithoutExpertApplicationsInput, Prisma.IndustryUncheckedCreateWithoutExpertApplicationsInput>
+  connectOrCreate?: Prisma.IndustryCreateOrConnectWithoutExpertApplicationsInput
+  connect?: Prisma.IndustryWhereUniqueInput
+}
+
+export type IndustryUpdateOneRequiredWithoutExpertApplicationsNestedInput = {
+  create?: Prisma.XOR<Prisma.IndustryCreateWithoutExpertApplicationsInput, Prisma.IndustryUncheckedCreateWithoutExpertApplicationsInput>
+  connectOrCreate?: Prisma.IndustryCreateOrConnectWithoutExpertApplicationsInput
+  upsert?: Prisma.IndustryUpsertWithoutExpertApplicationsInput
+  connect?: Prisma.IndustryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.IndustryUpdateToOneWithWhereWithoutExpertApplicationsInput, Prisma.IndustryUpdateWithoutExpertApplicationsInput>, Prisma.IndustryUncheckedUpdateWithoutExpertApplicationsInput>
+}
+
 export type IndustryCreateWithoutExpertsInput = {
   id?: string
   name: string
@@ -406,6 +427,7 @@ export type IndustryCreateWithoutExpertsInput = {
   updatedAt?: Date | string
   isDeleted?: boolean
   deletedAt?: Date | string | null
+  expertApplications?: Prisma.ExpertApplicationCreateNestedManyWithoutIndustryInput
 }
 
 export type IndustryUncheckedCreateWithoutExpertsInput = {
@@ -417,6 +439,7 @@ export type IndustryUncheckedCreateWithoutExpertsInput = {
   updatedAt?: Date | string
   isDeleted?: boolean
   deletedAt?: Date | string | null
+  expertApplications?: Prisma.ExpertApplicationUncheckedCreateNestedManyWithoutIndustryInput
 }
 
 export type IndustryCreateOrConnectWithoutExpertsInput = {
@@ -444,6 +467,7 @@ export type IndustryUpdateWithoutExpertsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expertApplications?: Prisma.ExpertApplicationUpdateManyWithoutIndustryNestedInput
 }
 
 export type IndustryUncheckedUpdateWithoutExpertsInput = {
@@ -455,6 +479,71 @@ export type IndustryUncheckedUpdateWithoutExpertsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expertApplications?: Prisma.ExpertApplicationUncheckedUpdateManyWithoutIndustryNestedInput
+}
+
+export type IndustryCreateWithoutExpertApplicationsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  icon?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  experts?: Prisma.ExpertCreateNestedManyWithoutIndustryInput
+}
+
+export type IndustryUncheckedCreateWithoutExpertApplicationsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  icon?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  experts?: Prisma.ExpertUncheckedCreateNestedManyWithoutIndustryInput
+}
+
+export type IndustryCreateOrConnectWithoutExpertApplicationsInput = {
+  where: Prisma.IndustryWhereUniqueInput
+  create: Prisma.XOR<Prisma.IndustryCreateWithoutExpertApplicationsInput, Prisma.IndustryUncheckedCreateWithoutExpertApplicationsInput>
+}
+
+export type IndustryUpsertWithoutExpertApplicationsInput = {
+  update: Prisma.XOR<Prisma.IndustryUpdateWithoutExpertApplicationsInput, Prisma.IndustryUncheckedUpdateWithoutExpertApplicationsInput>
+  create: Prisma.XOR<Prisma.IndustryCreateWithoutExpertApplicationsInput, Prisma.IndustryUncheckedCreateWithoutExpertApplicationsInput>
+  where?: Prisma.IndustryWhereInput
+}
+
+export type IndustryUpdateToOneWithWhereWithoutExpertApplicationsInput = {
+  where?: Prisma.IndustryWhereInput
+  data: Prisma.XOR<Prisma.IndustryUpdateWithoutExpertApplicationsInput, Prisma.IndustryUncheckedUpdateWithoutExpertApplicationsInput>
+}
+
+export type IndustryUpdateWithoutExpertApplicationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  experts?: Prisma.ExpertUpdateManyWithoutIndustryNestedInput
+}
+
+export type IndustryUncheckedUpdateWithoutExpertApplicationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  experts?: Prisma.ExpertUncheckedUpdateManyWithoutIndustryNestedInput
 }
 
 
@@ -464,10 +553,12 @@ export type IndustryUncheckedUpdateWithoutExpertsInput = {
 
 export type IndustryCountOutputType = {
   experts: number
+  expertApplications: number
 }
 
 export type IndustryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   experts?: boolean | IndustryCountOutputTypeCountExpertsArgs
+  expertApplications?: boolean | IndustryCountOutputTypeCountExpertApplicationsArgs
 }
 
 /**
@@ -487,6 +578,13 @@ export type IndustryCountOutputTypeCountExpertsArgs<ExtArgs extends runtime.Type
   where?: Prisma.ExpertWhereInput
 }
 
+/**
+ * IndustryCountOutputType without action
+ */
+export type IndustryCountOutputTypeCountExpertApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExpertApplicationWhereInput
+}
+
 
 export type IndustrySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -498,6 +596,7 @@ export type IndustrySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   isDeleted?: boolean
   deletedAt?: boolean
   experts?: boolean | Prisma.Industry$expertsArgs<ExtArgs>
+  expertApplications?: boolean | Prisma.Industry$expertApplicationsArgs<ExtArgs>
   _count?: boolean | Prisma.IndustryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["industry"]>
 
@@ -537,6 +636,7 @@ export type IndustrySelectScalar = {
 export type IndustryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "icon" | "createdAt" | "updatedAt" | "isDeleted" | "deletedAt", ExtArgs["result"]["industry"]>
 export type IndustryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   experts?: boolean | Prisma.Industry$expertsArgs<ExtArgs>
+  expertApplications?: boolean | Prisma.Industry$expertApplicationsArgs<ExtArgs>
   _count?: boolean | Prisma.IndustryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type IndustryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -546,6 +646,7 @@ export type $IndustryPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Industry"
   objects: {
     experts: Prisma.$ExpertPayload<ExtArgs>[]
+    expertApplications: Prisma.$ExpertApplicationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -951,6 +1052,7 @@ readonly fields: IndustryFieldRefs;
 export interface Prisma__IndustryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   experts<T extends Prisma.Industry$expertsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Industry$expertsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  expertApplications<T extends Prisma.Industry$expertApplicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Industry$expertApplicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpertApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1402,6 +1504,30 @@ export type Industry$expertsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.ExpertScalarFieldEnum | Prisma.ExpertScalarFieldEnum[]
+}
+
+/**
+ * Industry.expertApplications
+ */
+export type Industry$expertApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExpertApplication
+   */
+  select?: Prisma.ExpertApplicationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExpertApplication
+   */
+  omit?: Prisma.ExpertApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExpertApplicationInclude<ExtArgs> | null
+  where?: Prisma.ExpertApplicationWhereInput
+  orderBy?: Prisma.ExpertApplicationOrderByWithRelationInput | Prisma.ExpertApplicationOrderByWithRelationInput[]
+  cursor?: Prisma.ExpertApplicationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExpertApplicationScalarFieldEnum | Prisma.ExpertApplicationScalarFieldEnum[]
 }
 
 /**

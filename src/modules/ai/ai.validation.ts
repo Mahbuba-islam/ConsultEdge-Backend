@@ -42,8 +42,22 @@ const industryCreation = z.object({
 const search = z.object({
   body: z.object({
     query: z.string().trim().min(1).max(500),
-    experts: z.array(expertItem).min(1).max(200),
-    industries: z.array(z.string().max(120)).max(100).optional(),
+    userActivity: z
+      .object({
+        viewedExperts: z.array(z.string().max(200)).max(100).optional(),
+        exploredIndustries: z.array(z.string().max(120)).max(100).optional(),
+        searchHistory: z.array(z.string().max(200)).max(100).optional(),
+        clickedCategories: z.array(z.string().max(120)).max(100).optional(),
+      })
+      .optional(),
+    db: z
+      .object({
+        experts: z.array(expertItem).max(300).optional(),
+        industries: z.array(z.record(z.string(), z.unknown())).max(300).optional(),
+        testimonials: z.array(z.record(z.string(), z.unknown())).max(500).optional(),
+        trending: z.array(z.record(z.string(), z.unknown())).max(200).optional(),
+      })
+      .optional(),
   }),
 });
 
@@ -62,6 +76,47 @@ const chat = z.object({
   }),
 });
 
+const persistedChatMessage = z.object({
+  body: z.object({
+    message: z.string().trim().min(1).max(4000),
+    context: z.string().max(500).optional(),
+    conversationId: z.string().uuid().optional(),
+  }),
+});
+
+const conversationParams = z.object({
+  params: z.object({
+    conversationId: z.string().uuid(),
+  }),
+});
+
+const messageFeedback = z.object({
+  params: z.object({
+    conversationId: z.string().uuid(),
+    messageId: z.string().uuid(),
+  }),
+  body: z.object({
+    feedback: z.enum(["LIKE", "DISLIKE"]).nullable(),
+  }),
+});
+
+const ragQuery = z.object({
+  body: z.object({
+    query: z.string().trim().min(1).max(1000),
+    topK: z.coerce.number().int().min(1).max(20).optional(),
+    context: z
+      .array(
+        z.object({
+          source_id: z.string().trim().min(1).max(200),
+          content: z.string().trim().min(1).max(12000),
+          metadata: z.record(z.string(), z.unknown()).optional(),
+        })
+      )
+      .min(1)
+      .max(100),
+  }),
+});
+
 const documentAnalysis = z.object({
   body: z.object({
     text: z.string().trim().min(50).max(40000),
@@ -76,5 +131,9 @@ export const aiValidation = {
   search,
   summary,
   chat,
+  persistedChatMessage,
+  conversationParams,
+  messageFeedback,
+  ragQuery,
   documentAnalysis,
 };

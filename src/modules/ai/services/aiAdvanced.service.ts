@@ -1,7 +1,6 @@
 import { aiProvider } from "../utils/aiProvider";
 import {
   summaryPrompt,
-  searchPrompt,
   buildChatMessages,
   documentAnalysisPrompt,
 } from "../prompts";
@@ -564,97 +563,534 @@ const industryCreation = async (
 
 export type AISearchInput = {
   query: string;
-  experts: Array<{
-    id: string;
-    name: string;
-    industry?: string;
-    expertise?: string[];
-    bio?: string;
-  }>;
-  industries?: string[];
+  userActivity?: {
+    viewedExperts?: string[];
+    exploredIndustries?: string[];
+    searchHistory?: string[];
+    clickedCategories?: string[];
+  };
+  db?: {
+    experts?: Array<{
+      id: string;
+      name: string;
+      title?: string;
+      specialization?: string;
+      industry?: string;
+      tags?: string[];
+      description?: string;
+      bio?: string;
+      expertise?: string[];
+    }>;
+    industries?: Array<{
+      id?: string;
+      industryName?: string;
+      name?: string;
+      description?: string;
+      keywords?: string[];
+    }>;
+    testimonials?: Array<{
+      id?: string;
+      expertName?: string;
+      content?: string;
+      comment?: string;
+    }>;
+    trending?: Array<{
+      title?: string;
+      category?: string;
+      reason?: string;
+    }>;
+  };
 };
 
 export type AISearchResult = {
-  experts: Array<{ id: string; score: number; highlight: string }>;
-  industries: Array<{ name: string; score: number }>;
-  suggestedQueries: string[];
+  experts: Array<{
+    type: "expert";
+    id: string;
+    name: string;
+    title: string;
+    specialization: string;
+    industry: string;
+    matchScore: number;
+  }>;
+  industries: Array<{
+    type: "industry";
+    id: string;
+    industryName: string;
+    description: string;
+    matchScore: number;
+  }>;
+  testimonials: Array<{
+    type: "testimonial";
+    id: string;
+    expertName: string;
+    contentSnippet: string;
+    matchScore: number;
+  }>;
+  trending: Array<{
+    type: "trending";
+    title: string;
+    category: string;
+    reason: string;
+  }>;
+  aiSuggestions: string[];
+  recentSearches: string[];
 };
 
-const heuristicSearch = (input: AISearchInput): AISearchResult => {
-  const q = input.query.toLowerCase();
-  const tokens = q.split(/\s+/).filter(Boolean);
+type SearchActivity = {
+  viewedExperts: string[];
+  exploredIndustries: string[];
+  searchHistory: string[];
+  clickedCategories: string[];
+};
 
-  const experts = input.experts
-    .map((e) => {
-      const haystack = [
-        e.name,
-        e.industry ?? "",
-        (e.expertise ?? []).join(" "),
-        e.bio ?? "",
-      ]
-        .join(" ")
-        .toLowerCase();
-      const hits = tokens.filter((t) => haystack.includes(t)).length;
-      const score = tokens.length ? hits / tokens.length : 0;
-      return { id: e.id, score, highlight: e.name };
-    })
-    .filter((r) => r.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+type SearchExpertRow = {
+  id: string;
+  name: string;
+  title: string;
+  specialization: string;
+  industry: string;
+  tags: string[];
+  description: string;
+  popularity: number;
+};
 
-  const industries = (input.industries ?? [])
-    .map((name) => ({
-      name,
-      score: tokens.some((t) => name.toLowerCase().includes(t)) ? 0.8 : 0,
-    }))
-    .filter((r) => r.score > 0)
-    .slice(0, 5);
+type SearchIndustryRow = {
+  id: string;
+  industryName: string;
+  description: string;
+  keywords: string[];
+};
 
-  return { experts, industries, suggestedQueries: [] };
+type SearchTestimonialRow = {
+  id: string;
+  expertName: string;
+  content: string;
+  popularity: number;
+};
+
+const tokenize = (text: string): string[] =>
+  sanitizeText(text, 500)
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((token) => token.length > 1);
+
+const uniqueStrings = (items: string[], max = 100): string[] =>
+  Array.from(new Set(items.map((item) => sanitizeText(item, 160).trim()).filter(Boolean))).slice(0, max);
+
+const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+
+const countTokenMatches = (tokens: string[], haystack: string) =>
+  tokens.reduce((sum, token) => (haystack.includes(token) ? sum + 1 : sum), 0);
+
+const mapPopularityBoost = (popularity: number) => Math.min(0.2, popularity * 0.02);
+
+const buildRecentSearches = (query: string, history: string[]) => {
+  const cleanedQuery = sanitizeText(query, 200).trim();
+  const deduped = [cleanedQuery, ...history.filter((item) => item.toLowerCase() !== cleanedQuery.toLowerCase())];
+  return uniqueStrings(deduped, 5);
+};
+
+const snippet = (text: string, max = 160) => {
+  const clean = sanitizeText(text, 1000).trim();
+  return clean.length <= max ? clean : `${clean.slice(0, max - 3)}...`;
+};
+
+const normalizeActivity = (activity?: AISearchInput["userActivity"]): SearchActivity => ({
+  viewedExperts: uniqueStrings(activity?.viewedExperts ?? [], 100),
+  exploredIndustries: uniqueStrings(activity?.exploredIndustries ?? [], 100),
+  searchHistory: uniqueStrings(activity?.searchHistory ?? [], 100),
+  clickedCategories: uniqueStrings(activity?.clickedCategories ?? [], 100),
+});
+
+const aggregateFrequency = (items: string[]) => {
+  const map = new Map<string, number>();
+  for (const item of items) {
+    const key = item.toLowerCase();
+    map.set(key, (map.get(key) ?? 0) + 1);
+  }
+  return map;
+};
+
+const fetchUniversalSearchData = async (input: AISearchInput) => {
+  const [bookingCounts, dbExperts, dbIndustries, dbTestimonials] = await Promise.all([
+    prisma.consultation.groupBy({
+      by: ["expertId"],
+      where: { expertId: { not: null } },
+      _count: { _all: true },
+    }),
+    prisma.expert.findMany({
+      where: { isDeleted: false },
+      select: {
+        id: true,
+        fullName: true,
+        title: true,
+        bio: true,
+        industry: { select: { name: true } },
+      },
+      take: 300,
+    }),
+    prisma.industry.findMany({
+      where: { isDeleted: false },
+      select: { id: true, name: true, description: true },
+      take: 300,
+    }),
+    prisma.testimonial.findMany({
+      where: { status: ReviewStatus.APPROVED, comment: { not: null } },
+      select: {
+        id: true,
+        comment: true,
+        expert: { select: { fullName: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 500,
+    }),
+  ]);
+
+  const bookingMap = new Map(
+    bookingCounts
+      .filter((item): item is typeof item & { expertId: string } => !!item.expertId)
+      .map((item) => [item.expertId, item._count._all])
+  );
+
+  const sourceExperts: SearchExpertRow[] = [
+    ...dbExperts.map((expert) => ({
+      id: expert.id,
+      name: expert.fullName,
+      title: expert.title?.trim() || "Consulting Expert",
+      specialization: expert.industry.name,
+      industry: expert.industry.name,
+      tags: uniqueStrings([expert.title ?? "", expert.industry.name]),
+      description:
+        expert.bio?.trim() ||
+        `${expert.fullName} advises teams in ${expert.industry.name.toLowerCase()}.`,
+      popularity: bookingMap.get(expert.id) ?? 0,
+    })),
+    ...((input.db?.experts ?? []).map((expert) => ({
+      id: sanitizeText(expert.id, 80).trim(),
+      name: sanitizeText(expert.name, 200).trim(),
+      title: sanitizeText(expert.title ?? "Consulting Expert", 120).trim() || "Consulting Expert",
+      specialization: sanitizeText(expert.specialization ?? expert.industry ?? "General Consulting", 120).trim() || "General Consulting",
+      industry: sanitizeText(expert.industry ?? "General", 120).trim() || "General",
+      tags: uniqueStrings([...(expert.tags ?? []), ...(expert.expertise ?? [])], 12),
+      description: sanitizeText(expert.description ?? expert.bio ?? "", 600).trim(),
+      popularity: 0,
+    })) ?? []),
+  ].filter((expert) => expert.id && expert.name);
+
+  const sourceIndustries: SearchIndustryRow[] = [
+    ...dbIndustries.map((industry) => ({
+      id: industry.id,
+      industryName: industry.name,
+      description: industry.description?.trim() || `${industry.name} consulting and strategic advisory.`,
+      keywords: uniqueStrings([industry.name, ...(industry.description ? tokenize(industry.description).slice(0, 8) : [])]),
+    })),
+    ...((input.db?.industries ?? []).map((industry) => ({
+      id: sanitizeText(industry.id ?? industry.name ?? industry.industryName ?? "", 80).trim(),
+      industryName:
+        sanitizeText(industry.industryName ?? industry.name ?? "", 120).trim() || "General",
+      description: sanitizeText(industry.description ?? "", 600).trim(),
+      keywords: uniqueStrings(industry.keywords ?? [], 20),
+    })) ?? []),
+  ].filter((industry) => industry.id && industry.industryName);
+
+  const sourceTestimonials: SearchTestimonialRow[] = [
+    ...dbTestimonials.map((testimonial) => ({
+      id: testimonial.id,
+      expertName: testimonial.expert.fullName,
+      content: testimonial.comment?.trim() ?? "",
+      popularity: 1,
+    })),
+    ...((input.db?.testimonials ?? []).map((testimonial) => ({
+      id: sanitizeText(testimonial.id ?? "", 80).trim(),
+      expertName: sanitizeText(testimonial.expertName ?? "", 200).trim(),
+      content: sanitizeText(testimonial.content ?? testimonial.comment ?? "", 1200).trim(),
+      popularity: 0,
+    })) ?? []),
+  ].filter((testimonial) => testimonial.id && testimonial.expertName && testimonial.content);
+
+  return {
+    experts: sourceExperts,
+    industries: sourceIndustries,
+    testimonials: sourceTestimonials,
+    bookingMap,
+  };
+};
+
+const generateAISuggestions = (input: {
+  query: string;
+  topIndustries: string[];
+  topExpertSkills: string[];
+  trendingTitles: string[];
+}): string[] => {
+  const intent = sanitizeText(input.query, 120).trim();
+  const pool = uniqueStrings(
+    [
+      `${intent} strategy for founders`,
+      input.topIndustries[0] ? `${intent} in ${input.topIndustries[0]}` : "",
+      input.topExpertSkills[0] ? `${intent} with ${input.topExpertSkills[0]} experts` : "",
+      input.trendingTitles[0] ? `${input.trendingTitles[0]} playbook` : "",
+      input.topIndustries[1] ? `${intent} roadmap for ${input.topIndustries[1]}` : "",
+      input.topExpertSkills[1] ? `How to execute ${intent} with ${input.topExpertSkills[1]}` : "",
+    ],
+    5
+  );
+  return pool.slice(0, 5);
 };
 
 const search = async (
   input: AISearchInput
 ): Promise<{ data: AISearchResult; meta: AIMeta }> => {
   try {
-    const { data, meta } = await aiProvider.generateJSON<AISearchResult>({
-      messages: [
-        { role: "system", content: "You are ConsultEdge's semantic search engine. Always return strict JSON." },
-        { role: "user", content: searchPrompt(input) },
-      ],
-      temperature: 0.2,
-      maxTokens: 700,
-    });
+    const query = sanitizeText(input.query, 500).trim();
+    const queryTokens = tokenize(query);
+    const activity = normalizeActivity(input.userActivity);
+    const viewedFreq = aggregateFrequency(activity.viewedExperts);
+    const exploredIndustryFreq = aggregateFrequency(activity.exploredIndustries);
+    const clickedCategoryFreq = aggregateFrequency(activity.clickedCategories);
 
-    if (!data || !Array.isArray(data.experts)) {
-      return {
-        data: heuristicSearch(input),
-        meta: {
-          model: meta.model,
-          provider: meta.provider,
-          tokensUsed: meta.tokensUsed,
-          latencyMs: meta.latencyMs,
-        },
-      };
-    }
+    const sources = await fetchUniversalSearchData(input);
 
-    const validIds = new Set(input.experts.map((e) => e.id));
-    data.experts = data.experts.filter((r) => validIds.has(r.id)).slice(0, 10);
-    data.industries = (data.industries ?? []).slice(0, 5);
-    data.suggestedQueries = (data.suggestedQueries ?? []).slice(0, 5);
+    const experts = sources.experts
+      .map((expert) => {
+        const haystack = [
+          expert.name,
+          expert.title,
+          expert.specialization,
+          expert.industry,
+          expert.tags.join(" "),
+          expert.description,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        const textScore =
+          queryTokens.length === 0 ? 0 : countTokenMatches(queryTokens, haystack) / queryTokens.length;
+        const viewedBoost =
+          (viewedFreq.get(expert.name.toLowerCase()) ?? 0) > 0 ||
+          (viewedFreq.get(expert.id.toLowerCase()) ?? 0) > 0
+            ? 0.12
+            : 0;
+        const industryBoost = (exploredIndustryFreq.get(expert.industry.toLowerCase()) ?? 0) > 0 ? 0.1 : 0;
+        const categoryBoost = (clickedCategoryFreq.get(expert.specialization.toLowerCase()) ?? 0) > 0 ? 0.08 : 0;
+        const popularityBoost = mapPopularityBoost(expert.popularity);
+        const finalScore = clamp01(textScore * 0.65 + viewedBoost + industryBoost + categoryBoost + popularityBoost);
+
+        return {
+          type: "expert" as const,
+          id: expert.id,
+          name: expert.name,
+          title: expert.title,
+          specialization: expert.specialization,
+          industry: expert.industry,
+          matchScore: Math.round(finalScore * 1000) / 1000,
+        };
+      })
+      .filter((item) => item.matchScore > 0)
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, 12);
+
+    const industries = sources.industries
+      .map((industry) => {
+        const haystack = `${industry.industryName} ${industry.description} ${industry.keywords.join(" ")}`.toLowerCase();
+        const textScore =
+          queryTokens.length === 0 ? 0 : countTokenMatches(queryTokens, haystack) / queryTokens.length;
+        const activityBoost = (exploredIndustryFreq.get(industry.industryName.toLowerCase()) ?? 0) > 0 ? 0.15 : 0;
+        const finalScore = clamp01(textScore * 0.8 + activityBoost);
+
+        return {
+          type: "industry" as const,
+          id: industry.id,
+          industryName: industry.industryName,
+          description: snippet(industry.description, 180),
+          matchScore: Math.round(finalScore * 1000) / 1000,
+        };
+      })
+      .filter((item) => item.matchScore > 0)
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, 8);
+
+    const testimonials = sources.testimonials
+      .map((testimonial) => {
+        const haystack = `${testimonial.expertName} ${testimonial.content}`.toLowerCase();
+        const textScore =
+          queryTokens.length === 0 ? 0 : countTokenMatches(queryTokens, haystack) / queryTokens.length;
+        const finalScore = clamp01(textScore * 0.9 + mapPopularityBoost(testimonial.popularity));
+
+        return {
+          type: "testimonial" as const,
+          id: testimonial.id,
+          expertName: testimonial.expertName,
+          contentSnippet: snippet(testimonial.content),
+          matchScore: Math.round(finalScore * 1000) / 1000,
+        };
+      })
+      .filter((item) => item.matchScore > 0)
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, 8);
+
+    const mostBookedExperts = sources.experts
+      .map((expert) => ({
+        title: expert.name,
+        category: "most-booked-experts",
+        reason: `Booked ${expert.popularity} consultations`,
+        score: expert.popularity,
+      }))
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+
+    const mostSearched = Array.from(aggregateFrequency(activity.searchHistory).entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 2)
+      .map(([title, count]) => ({
+        title,
+        category: "most-searched-queries",
+        reason: `Searched ${count} time${count > 1 ? "s" : ""}`,
+        score: count,
+      }));
+
+    const mostViewed = Array.from(viewedFreq.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 2)
+      .map(([title, count]) => ({
+        title,
+        category: "most-viewed-experts",
+        reason: `Viewed ${count} time${count > 1 ? "s" : ""}`,
+        score: count,
+      }));
+
+    const mostExploredIndustries = Array.from(exploredIndustryFreq.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 2)
+      .map(([title, count]) => ({
+        title,
+        category: "most-explored-industries",
+        reason: `Explored ${count} time${count > 1 ? "s" : ""}`,
+        score: count,
+      }));
+
+    const incomingTrending = (input.db?.trending ?? [])
+      .map((item) => ({
+        title: sanitizeText(item.title ?? "", 120).trim(),
+        category: sanitizeText(item.category ?? "trending", 80).trim() || "trending",
+        reason: sanitizeText(item.reason ?? "Popular this week", 200).trim() || "Popular this week",
+        score: 1,
+      }))
+      .filter((item) => item.title);
+
+    const trending = [
+      ...incomingTrending,
+      ...mostSearched,
+      ...mostViewed,
+      ...mostExploredIndustries,
+      ...mostBookedExperts,
+    ]
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map((item) => ({
+        type: "trending" as const,
+        title: item.title,
+        category: item.category,
+        reason: item.reason,
+      }));
+
+    const topExpertScore = experts[0]?.matchScore ?? 0;
+    const topIndustryScore = industries[0]?.matchScore ?? 0;
+    const weakResults = experts.length + industries.length + testimonials.length < 4 ||
+      Math.max(topExpertScore, topIndustryScore) < 0.45;
+
+    const aiSuggestions = weakResults
+      ? generateAISuggestions({
+          query,
+          topIndustries: industries.map((item) => item.industryName),
+          topExpertSkills: experts.map((item) => item.specialization),
+          trendingTitles: trending.map((item) => item.title),
+        })
+      : [];
+
+    const recentSearches = buildRecentSearches(query, activity.searchHistory);
 
     return {
-      data,
+      data: {
+        experts,
+        industries,
+        testimonials,
+        trending,
+        aiSuggestions,
+        recentSearches,
+      },
       meta: {
-        model: meta.model,
-        provider: meta.provider,
-        tokensUsed: meta.tokensUsed,
-        latencyMs: meta.latencyMs,
+        model: "heuristic",
+        provider: "fallback",
+        tokensUsed: 0,
+        latencyMs: 0,
       },
     };
   } catch {
+    const activity = normalizeActivity(input.userActivity);
+    const query = sanitizeText(input.query, 500).trim();
+    const fallbackExperts = (input.db?.experts ?? [])
+      .map((expert) => ({
+        type: "expert" as const,
+        id: sanitizeText(expert.id, 80).trim(),
+        name: sanitizeText(expert.name, 200).trim(),
+        title: sanitizeText(expert.title ?? "Consulting Expert", 120).trim() || "Consulting Expert",
+        specialization:
+          sanitizeText(expert.specialization ?? expert.industry ?? "General Consulting", 120).trim() ||
+          "General Consulting",
+        industry: sanitizeText(expert.industry ?? "General", 120).trim() || "General",
+        matchScore: 0.3,
+      }))
+      .filter((item) => item.id && item.name)
+      .slice(0, 5);
+
+    const fallbackIndustries = (input.db?.industries ?? [])
+      .map((industry) => ({
+        type: "industry" as const,
+        id: sanitizeText(industry.id ?? industry.name ?? industry.industryName ?? "", 80).trim(),
+        industryName:
+          sanitizeText(industry.industryName ?? industry.name ?? "", 120).trim() || "General",
+        description: snippet(industry.description ?? "", 180),
+        matchScore: 0.3,
+      }))
+      .filter((item) => item.id && item.industryName)
+      .slice(0, 5);
+
+    const fallbackTestimonials = (input.db?.testimonials ?? [])
+      .map((testimonial) => ({
+        type: "testimonial" as const,
+        id: sanitizeText(testimonial.id ?? "", 80).trim(),
+        expertName: sanitizeText(testimonial.expertName ?? "", 200).trim(),
+        contentSnippet: snippet(testimonial.content ?? testimonial.comment ?? ""),
+        matchScore: 0.25,
+      }))
+      .filter((item) => item.id && item.expertName && item.contentSnippet)
+      .slice(0, 5);
+
+    const fallbackTrending = (input.db?.trending ?? [])
+      .map((item) => ({
+        type: "trending" as const,
+        title: sanitizeText(item.title ?? "", 120).trim(),
+        category: sanitizeText(item.category ?? "trending", 80).trim() || "trending",
+        reason: sanitizeText(item.reason ?? "Popular this week", 200).trim() || "Popular this week",
+      }))
+      .filter((item) => item.title)
+      .slice(0, 5);
+
     return {
-      data: heuristicSearch(input),
+      data: {
+        experts: fallbackExperts,
+        industries: fallbackIndustries,
+        testimonials: fallbackTestimonials,
+        trending: fallbackTrending,
+        aiSuggestions: generateAISuggestions({
+          query,
+          topIndustries: fallbackIndustries.map((item) => item.industryName),
+          topExpertSkills: fallbackExperts.map((item) => item.specialization),
+          trendingTitles: fallbackTrending.map((item) => item.title),
+        }),
+        recentSearches: buildRecentSearches(query, activity.searchHistory),
+      },
       meta: { model: "heuristic", provider: "fallback", tokensUsed: 0, latencyMs: 0 },
     };
   }

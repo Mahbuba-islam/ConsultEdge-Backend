@@ -47,6 +47,16 @@ export { Prisma }
  */
 export type Admin = Prisma.AdminModel
 /**
+ * Model AIConversation
+ * 
+ */
+export type AIConversation = Prisma.AIConversationModel
+/**
+ * Model AIChatMessage
+ * 
+ */
+export type AIChatMessage = Prisma.AIChatMessageModel
+/**
  * Model Attachment
  * 
  */
@@ -101,6 +111,11 @@ export type Consultation = Prisma.ConsultationModel
  * 
  */
 export type Expert = Prisma.ExpertModel
+/**
+ * Model ExpertApplication
+ * 
+ */
+export type ExpertApplication = Prisma.ExpertApplicationModel
 /**
  * Model ExpertSchedule
  * 

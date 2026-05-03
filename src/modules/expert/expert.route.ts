@@ -5,7 +5,7 @@ import { validateRequest } from "../../middleware/validateRequest";
 import { checkAuth } from "../../middleware/cheackAuth";
 import { Role } from "../../generated/enums";
 import { updateExpertValidationSchema } from "./expert.validationSchema";
-import { multerUpload } from "../../config/multer.config";
+import { expertApplicationUpload } from "./expertApplication.upload";
 
 const router = Router()
 
@@ -13,7 +13,7 @@ router.get("/", expertController.getAllExperts)
 router.get("/:id", expertController.getExpertById)
 router.post(
 	"/apply",
-	multerUpload.single("profilePhoto"),
+	expertApplicationUpload.single("resume"),
 	checkAuth(Role.CLIENT, Role.EXPERT, Role.ADMIN),
 	expertController.applyExpert
 )
