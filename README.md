@@ -1,8 +1,3 @@
-ঠিক আছে 👍 নিচে আমি তোমার **ConsultEdge Backend README (professional, clean, SaaS-level structure)** করে সাজিয়ে দিলাম—copy-paste ready 🔥
-
----
-
-````md id="backend_readme"
 # 🚀 ConsultEdge Backend
 
 ConsultEdge Backend is a scalable REST API + realtime system that powers the ConsultEdge platform — a multi-role expert consultation marketplace.
